@@ -1,0 +1,88 @@
+
+"use client"
+import { accountLogo } from '@/assets';
+import Link from 'next/link';
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { FaRegEyeSlash } from "react-icons/fa";
+import { IoEyeOutline } from "react-icons/io5";
+
+
+interface LoginFormValues {
+  current_password:string
+  confirm_password: string
+  password: string
+}
+export const ResetPasswordPage = () => {
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConformPassword, setShowConformPassword] = useState(false);
+  const { register, handleSubmit, formState: { errors }, watch, getValues } = useForm<LoginFormValues>({
+    mode: "onTouched"
+  });
+
+  const password = watch("password", "");
+
+  const onSubmit = (data: LoginFormValues) => {
+    console.log(data);
+  };
+
+  return (
+    <div className='min-h-screen w-full flex justify-center items-center bg-[#f5f4f8] '>
+      <div className='w-full desktop:w-1/2 mx-auto bg-white border rounded-xl flex items-center flex-col tablet:flex-row'>
+        <div className='w-full tablet:w-1/2 p-6 tablet:p-12  flex justify-center items-center'>
+          <div>
+            <img src={accountLogo.src} alt="Logo" />
+          </div>
+        </div>
+        <div className='w-full tablet:w-1/2 p-6 tablet:p-12 tablet:border-l'>
+          <h2 className='text-2xl tablet:text-3xl font-bold pb-6 tablet:pb-12'>Reset Password</h2>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <label className='text-gray-500'>Current password</label>
+            <div className='relative'>
+              <div className='mb-6'>
+                <input {...register("current_password", { required: true})} type={showCurrentPassword ? "text" : "password"} className='w-full py-[10px] px-4 border rounded-lg mt-2 ' placeholder='Enter Current Password' />
+                {errors.current_password && <p className='text-red-500 text-xs '>Current Password is required </p>}
+              </div>
+              <div className='absolute top-5 right-5 cursor-pointer text-gray-500 hover:text-black' onClick={() => setShowCurrentPassword(!showCurrentPassword)}>
+                {showCurrentPassword ? <FaRegEyeSlash className=' text-xl ' /> : <IoEyeOutline className=' text-xl ' />}
+              </div>
+            </div>
+            <label className='text-gray-500'>New password</label>
+            <div className='relative'>
+              <div className='mb-6'>
+                <input {...register("password", { required: true, minLength: 6 })} type={showPassword ? "text" : "password"} className='w-full py-[10px] px-4 border rounded-lg mt-2 ' placeholder='Enter Password' />
+                {errors.password && <p className='text-red-500 text-xs '>Password is required and should be at least 6 characters long</p>}
+              </div>
+              <div className='absolute top-5 right-5 cursor-pointer text-gray-500 hover:text-black' onClick={() => setShowPassword(!showPassword)}>
+                {showPassword ? <FaRegEyeSlash className=' text-xl ' /> : <IoEyeOutline className=' text-xl ' />}
+              </div>
+            </div>
+            <label className='text-gray-500'>Confirm new password</label>
+            <div className='relative'>
+              <div className='mb-2'>
+                <input
+                  {...register("confirm_password", {
+                    required: "Conform Password is required",
+                    validate: (value) => value === password || "Passwords do not match"
+                  })}
+                  type={showConformPassword ? "text" : "password"}
+                  className='w-full py-[10px] px-4 border rounded-lg mt-2 '
+                  placeholder='Enter Conform ' />
+                {<p className='text-red-500 text-xs '>{errors.confirm_password?.message}</p>}
+              </div>
+              <div className='absolute top-5 right-5 cursor-pointer text-gray-500 hover:text-black' onClick={() => setShowConformPassword(!showConformPassword)}>
+                {showConformPassword ? <FaRegEyeSlash className=' text-xl ' /> : <IoEyeOutline className=' text-xl ' />}
+              </div>
+            </div>
+            <button type="submit" className='bg-primaryText mt-5 py-[9px] px-6 font-bold text-white rounded-lg'>Reset</button>
+            <button type="submit" className='bg-primaryButton py-[9px] px-6 font-bold text-white rounded-lg ms-2'>Cancel</button>
+            <p className='pt-7 text-gray-500'>Don't have an account? <Link href="/account/register" className='text-primaryText '>Sign up</Link></p>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  );
+}
+
