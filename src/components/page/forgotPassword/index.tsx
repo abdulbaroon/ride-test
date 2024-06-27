@@ -1,21 +1,40 @@
 
 "use client"
 import { accountLogo } from '@/assets';
+import { forgotPassword } from '@/redux/slices/authSlice';
 import Link from 'next/link';
-import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { FaRegEyeSlash } from "react-icons/fa";
-import { IoEyeOutline } from "react-icons/io5";
+import { useDispatch, useSelector } from 'react-redux';
+import type { AppDispatch } from '@/redux/store/store';
+import { toast } from 'react-toastify';
+import { CgSpinner } from "react-icons/cg";
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 
-interface LoginFormValues {
+interface Email {
   email: string;
 }
 export const ForgotPage = () => {
-  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormValues>();
+  const [loading, setloading] = useState(false)
+  const dispatch = useDispatch<AppDispatch>()
+  const { register, handleSubmit, formState: { errors } } = useForm<Email>();
+  const {push} = useRouter()
+  const onSubmit = async (data: Email) => {
 
-  const onSubmit = (data: LoginFormValues) => {
-    console.log(data);
+    try {
+      setloading(true)
+      const response = await dispatch(forgotPassword(data.email))
+      setloading(false)
+      if (forgotPassword.fulfilled.match(response)) {
+        toast.success(response.payload.message)
+        push("/account/resetPassword")
+      } else if (forgotPassword.rejected.match(response)) {
+        toast.error("failed to send email")
+      }
+    } catch {
+      toast.error("something went wrong")
+    }
   };
 
   return (
@@ -34,7 +53,9 @@ export const ForgotPage = () => {
               <input {...register("email", { required: true, pattern: /^\S+@\S+$/i })} className='w-full py-[10px] px-4 border rounded-lg mt-2 ' placeholder='Enter your Email' type='email' />
               {errors.email && <p className='text-red-500 text-xs '>Email is required</p>}
             </div>
-            <button type="submit" className='w-full bg-primaryText py-[9px] font-bold text-white rounded-lg'>Email Link</button>
+            <button type="submit" disabled={loading} className='  w-full bg-primaryText py-[10px] font-bold text-white rounded-lg'>
+              {loading ? <CgSpinner className=' mx-auto animate-spin w-6 h-6 ' /> : "Email Link"}
+            </button>
             <p className='pt-6 tablet:pt-7 text-gray-500'> Nevermind? <Link href="/account/login" className='text-primaryText '>Log In</Link></p>
             <p className='pt-2 text-gray-500'>Don't have an account? <Link href="/account/register" className='text-primaryText '>Sign up</Link></p>
           </form>

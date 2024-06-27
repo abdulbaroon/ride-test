@@ -7,6 +7,11 @@ import { useForm } from 'react-hook-form';
 import { TbCircleCheck } from "react-icons/tb";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { IoEyeOutline } from "react-icons/io5";
+import { useDispatch } from 'react-redux';
+import { login } from '@/redux/slices/authSlice';
+import { AppDispatch } from '@/redux/store/store';
+import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
 
 const logindata  = [
   "Find your rides",
@@ -21,9 +26,20 @@ interface LoginFormValues {
  export const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { register, handleSubmit, formState: { errors } } = useForm<LoginFormValues>();
-
-  const onSubmit = (data: LoginFormValues) => {
-    console.log(data);
+  const dispatch = useDispatch<AppDispatch>()
+  const router = useRouter()
+  const onSubmit = async(data: LoginFormValues) => {
+    try{
+      const response = await dispatch(login(data))
+      if (login.fulfilled.match(response)) {
+        // router.push("/account/forgot");
+        toast.success("login success")
+      } else if (login.rejected.match(response)) {
+        toast.error("Email or password is incorrect")
+      }
+    }catch{
+      toast.error("something went wrong")
+    }
   };
 
   return (

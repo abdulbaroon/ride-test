@@ -6,25 +6,49 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FaRegEyeSlash } from "react-icons/fa";
 import { IoEyeOutline } from "react-icons/io5";
+import { useDispatch } from 'react-redux';
+import type { AppDispatch } from '@/redux/store/store';
+import { resetPassword } from '@/redux/slices/authSlice';
+import { toast } from 'react-toastify';
+import { CgSpinner } from 'react-icons/cg';
+import { useRouter } from 'next/navigation';
 
 
 interface LoginFormValues {
-  current_password:string
+  reset_code:string
   confirm_password: string
   password: string
 }
 export const ResetPasswordPage = () => {
-  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConformPassword, setShowConformPassword] = useState(false);
+  const [loading,setloading]=useState(false)
+  const {push,back} = useRouter()
+  const dispatch = useDispatch<AppDispatch>()
   const { register, handleSubmit, formState: { errors }, watch, getValues } = useForm<LoginFormValues>({
     mode: "onTouched"
   });
-
   const password = watch("password", "");
 
-  const onSubmit = (data: LoginFormValues) => {
-    console.log(data);
+  const onSubmit = async (data: LoginFormValues) => {
+    const resetData={
+      confirmPassword: data.confirm_password,
+      password: data.password,
+      token: data.reset_code
+    }
+    try{
+      setloading(true)
+      const response = await dispatch(resetPassword(resetData))
+      setloading(false)
+      if (resetPassword.fulfilled.match(response)) {
+        toast.success(response.payload.message)
+        push("/account/login")
+      } else if (resetPassword.rejected.match(response)) {
+        toast.error("Invalid reset code")
+      }
+    }catch{
+      toast.error("something went wrong")
+    }
   };
 
   return (
@@ -38,14 +62,11 @@ export const ResetPasswordPage = () => {
         <div className='w-full tablet:w-1/2 p-6 tablet:p-12 tablet:border-l'>
           <h2 className='text-2xl tablet:text-3xl font-bold pb-6 tablet:pb-12'>Reset Password</h2>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <label className='text-gray-500'>Current password</label>
+            <label className='text-gray-500'>Reset Code</label>
             <div className='relative'>
               <div className='mb-6'>
-                <input {...register("current_password", { required: true})} type={showCurrentPassword ? "text" : "password"} className='w-full py-[10px] px-4 border rounded-lg mt-2 ' placeholder='Enter Current Password' />
-                {errors.current_password && <p className='text-red-500 text-xs '>Current Password is required </p>}
-              </div>
-              <div className='absolute top-5 right-5 cursor-pointer text-gray-500 hover:text-black' onClick={() => setShowCurrentPassword(!showCurrentPassword)}>
-                {showCurrentPassword ? <FaRegEyeSlash className=' text-xl ' /> : <IoEyeOutline className=' text-xl ' />}
+                <input {...register("reset_code", { required: true})} type= "text"  className='w-full py-[10px] px-4 border rounded-lg mt-2 ' placeholder='Enter Reset Code' />
+                {errors.reset_code && <p className='text-red-500 text-xs '>Reset code is required</p>}
               </div>
             </div>
             <label className='text-gray-500'>New password</label>
@@ -75,8 +96,12 @@ export const ResetPasswordPage = () => {
                 {showConformPassword ? <FaRegEyeSlash className=' text-xl ' /> : <IoEyeOutline className=' text-xl ' />}
               </div>
             </div>
-            <button type="submit" className='bg-primaryText mt-5 py-[9px] px-6 font-bold text-white rounded-lg'>Reset</button>
-            <button type="submit" className='bg-primaryButton py-[9px] px-6 font-bold text-white rounded-lg ms-2'>Cancel</button>
+            <div className='mt-5 flex items-start'>
+            <button type="submit" className='bg-primaryText py-[9px] px-6 font-bold text-white rounded-lg w-28'>
+             {loading?<CgSpinner className=' mx-auto animate-spin w-6 h-6 ' />:"Reset"}
+              </button>
+            <button type="submit" onClick={()=>back()} className='bg-primaryButton py-[9px] px-6 font-bold text-white rounded-lg ms-2'>Back</button>
+            </div>
             <p className='pt-7 text-gray-500'>Don't have an account? <Link href="/account/register" className='text-primaryText '>Sign up</Link></p>
           </form>
         </div>
