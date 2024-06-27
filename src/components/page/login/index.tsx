@@ -32,7 +32,7 @@ interface LoginFormValues {
     try{
       const response = await dispatch(login(data))
       if (login.fulfilled.match(response)) {
-        // router.push("/account/forgot");
+        router.push("/account/profile");
         toast.success("login success")
       } else if (login.rejected.match(response)) {
         toast.error("Email or password is incorrect")
@@ -48,7 +48,7 @@ interface LoginFormValues {
         <div className='w-full tablet:w-1/2 p-6 tablet:p-12 '>
           <div>
             <img src={accountLogo.src} alt="Logo" />
-            <h3 className='text-2xl tablet:text-3xl font-bold pb-6'>LET'S RIDE.</h3>
+            <h3 className='text-2xl tablet:text-3xl font-bold pb-6'>LET&apos;S RIDE.</h3>
             <div className='mb-3'>
               {logindata.map((d, index) => (
                 <div className='flex items-center gap-2 mb-2 text-gray-500' key={index}>
@@ -81,8 +81,8 @@ interface LoginFormValues {
                 {showPassword ? <FaRegEyeSlash className=' text-xl ' /> : <IoEyeOutline className=' text-xl ' />}
               </div>
             </div>
-            <button type="submit" className='w-full bg-primaryText py-[9px] font-bold text-white rounded-lg'>Let's Ride</button>
-            <p className='pt-6 tablet:pt-12 text-gray-500'>Don't have an account? <Link href="/account/register" className='text-primaryText pt-4 mb-12'>Sign up</Link></p>
+            <button type="submit" className='w-full bg-primaryText py-[9px] font-bold text-white rounded-lg'>Let&apos;s Ride</button>
+            <p className='pt-6 tablet:pt-12 text-gray-500'>Don&apos;t have an account? <Link href="/account/register" className='text-primaryText pt-4 mb-12'>Sign up</Link></p>
           </form>
         </div>
       </div>

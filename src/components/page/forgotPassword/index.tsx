@@ -57,7 +57,7 @@ export const ForgotPage = () => {
               {loading ? <CgSpinner className=' mx-auto animate-spin w-6 h-6 ' /> : "Email Link"}
             </button>
             <p className='pt-6 tablet:pt-7 text-gray-500'> Nevermind? <Link href="/account/login" className='text-primaryText '>Log In</Link></p>
-            <p className='pt-2 text-gray-500'>Don't have an account? <Link href="/account/register" className='text-primaryText '>Sign up</Link></p>
+            <p className='pt-2 text-gray-500'>Don&apos;t have an account? <Link href="/account/register" className='text-primaryText '>Sign up</Link></p>
           </form>
         </div>
       </div>

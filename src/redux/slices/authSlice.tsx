@@ -9,7 +9,6 @@ interface AuthState {
   token: string | null;
   loading: boolean;
   error: string | null;
-  currentUser: any | null; 
 }
 
 const initialState:AuthState = {
@@ -17,7 +16,6 @@ const initialState:AuthState = {
   token: null,
   loading: false,
   error: null,
-  currentUser: null,
 };
 
 export const signUp = createAsyncThunk(
@@ -64,6 +62,19 @@ export const resetPassword = createAsyncThunk(
   async (resetData:ResetData, { rejectWithValue }) => {
     try {
       const endpoint = "/api/v4/accounts/reset-password"
+      const response = await api.post(endpoint,resetData);
+      return response.data;
+    } catch (error:any) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const userprofile = createAsyncThunk(
+  "accounts/userprofile",
+  async (resetData:ResetData, { rejectWithValue }) => {
+    try {
+      const endpoint = "/api/v4/accounts/userprofile"
       const response = await api.post(endpoint,resetData);
       return response.data;
     } catch (error:any) {
