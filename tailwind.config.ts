@@ -12,7 +12,8 @@ const config: Config = {
     extend: {
       colors: {
         primaryText:"#29a9e1",
-        primaryButton:"#115674"
+        primaryButton:"#266c9a",
+        secondaryButton:"#244161"
       },
       screens: {
         desktop: "1180px",

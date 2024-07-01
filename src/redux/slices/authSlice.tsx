@@ -13,7 +13,9 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
-  user: null,
+  user: {
+    id:null
+  },
   token: null,
   loading: false,
   error: null,
@@ -23,7 +25,7 @@ export const signUp = createAsyncThunk(
   "accounts/register",
   async (signUpData: RegisterFormValues, { rejectWithValue }) => {
     try {
-      const endpoint = "/api/v4/accounts/register"
+      const endpoint = "/accounts/register"
       const response = await api.post(endpoint, signUpData);
       return response.data;
     } catch (error: any) {
@@ -36,7 +38,7 @@ export const login = createAsyncThunk(
   "accounts/authenticate",
   async (loginData: LoginFormValues, { rejectWithValue }) => {
     try {
-      const endpoint = "/api/v4/accounts/authenticate"
+      const endpoint = "/accounts/authenticate"
       const response = await api.post(endpoint, loginData);
       return response.data;
     } catch (error: any) {
@@ -62,7 +64,7 @@ export const resetPassword = createAsyncThunk(
   "accounts/reset-password",
   async (resetData: ResetData, { rejectWithValue }) => {
     try {
-      const endpoint = "/api/v4/accounts/reset-password"
+      const endpoint = "/accounts/reset-password"
       const response = await api.post(endpoint, resetData);
       return response.data;
     } catch (error: any) {
@@ -75,7 +77,7 @@ export const userprofile = createAsyncThunk(
   "userprofile",
   async (payload: UserProfile, { rejectWithValue }) => {
     try {
-      const endpoint = "/api/v4/userprofile"
+      const endpoint = "/userprofile"
       const response = await api.post(endpoint, payload);
       return response.data;
     } catch (error: any) {
@@ -88,7 +90,7 @@ export const uploadedFile= createAsyncThunk(
   "fileupload/upload_files",
   async (payload: UploadFile, { rejectWithValue }) => {   
     try {
-      const endpoint = "/api/v4/fileupload/upload_files"
+      const endpoint = "/fileupload/upload_files"
       const response = await api.post(endpoint, payload);
       return response.data;
     } catch (error: any) {
@@ -101,7 +103,7 @@ export const getProfile= createAsyncThunk(
   "userprofile",
   async (payload:number, { rejectWithValue }) => {
     try {
-      const endpoint = `/api/v4/userprofile/${payload}`
+      const endpoint = `/userprofile/${payload}`
       const response = await api.get(endpoint);
       return response.data;
     } catch (error: any) {
@@ -113,7 +115,7 @@ export const updateProfile = createAsyncThunk(
   "update/userprofile",
   async (payload: UpdateProfile, { rejectWithValue }) => {   
     try {
-      const endpoint = `/api/v4/userprofile/${payload.id}`
+      const endpoint = `/userprofile/${payload.id}`
       const response = await api.put(endpoint, payload.userdata);
       return response.data;
     } catch (error: any) {

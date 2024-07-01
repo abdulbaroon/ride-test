@@ -11,15 +11,12 @@ interface MapBoxProps {
   circle?: number;
 }
 
-const MapBox: React.FC<MapBoxProps> = ({ center = [28.5355, 77.3910], initialZoom = 2, circle = 1000 }) => {
+const MapBox: React.FC<MapBoxProps> = ({ center = [0,0], initialZoom = 2, circle = 1000 }) => {
   const [mapStyle, setMapStyle] = useState<string>("mapbox://styles/mapbox/streets-v11");
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const [map, setMap] = useState<mapboxgl.Map | null>(null);
-  const [markerPosition, setMarkerPosition] = useState<[number, number]>(center); // Initial marker position
-  const [circleRadius, setCircleRadius] = useState<number>(circle); // Initial circle radius in meters
-  const circleLayerRef = useRef<mapboxgl.Layer | null>(null); // Ref to store circle layer
+  const circleLayerRef = useRef<mapboxgl.Layer | null>(null);
 
-  // Function to create a circle feature
   const createCircleFeature = (center: [number, number], radius: number) => {
     const steps = 64;
     const coords = { latitude: center[1], longitude: center[0] };
@@ -43,10 +40,6 @@ const MapBox: React.FC<MapBoxProps> = ({ center = [28.5355, 77.3910], initialZoo
   };
 
   useEffect(() => {
-    setCircleRadius(circle);
-  }, [circle]);
-
-  useEffect(() => {
     if (mapContainerRef.current) {
       const newMap = new mapboxgl.Map({
         container: mapContainerRef.current,
@@ -63,13 +56,11 @@ const MapBox: React.FC<MapBoxProps> = ({ center = [28.5355, 77.3910], initialZoo
         newMap.addControl(new NavigationControl(), "bottom-right");
         newMap.addControl(new FullscreenControl(), "bottom-right");
 
-        // Add initial marker
-        new mapboxgl.Marker().setLngLat(markerPosition).addTo(newMap);
+        new mapboxgl.Marker({ color: '#FF0000' }).setLngLat(center).addTo(newMap);
 
-        // Add circle source and layer
         newMap.addSource('circle', {
           type: 'geojson',
-          data: createCircleFeature(markerPosition, circleRadius) as any
+          data: createCircleFeature(center, circle) as any
         });
 
         newMap.addLayer({ 
@@ -78,7 +69,7 @@ const MapBox: React.FC<MapBoxProps> = ({ center = [28.5355, 77.3910], initialZoo
           source: 'circle',
           layout: {},
           paint: {
-            'fill-color': '#007cbf',
+            'fill-color': '#615c5c',
             'fill-opacity': 0.3
           }
         });
@@ -92,26 +83,28 @@ const MapBox: React.FC<MapBoxProps> = ({ center = [28.5355, 77.3910], initialZoo
     }                       
   }, [center, initialZoom, mapStyle]);
 
-  useEffect(() => {
+  useEffect(() => {                               
     if (map && map.isStyleLoaded()) {
-      const marker = new mapboxgl.Marker().setLngLat(markerPosition).addTo(map);
+      const existingMarker = document.querySelector('.mapboxgl-marker');
+      if (existingMarker) {
+        existingMarker.remove();
+      }
+
+      const marker = new mapboxgl.Marker({ color: '#FF0000' }).setLngLat(center).addTo(map);
+
       if (circleLayerRef.current && map.getSource('circle')) {
-        (map.getSource('circle') as mapboxgl.GeoJSONSource).setData(createCircleFeature(markerPosition, circleRadius) as any);
+        (map.getSource('circle') as mapboxgl.GeoJSONSource).setData(createCircleFeature(center, circle) as any);
       }
 
       return () => {
         marker.remove();
       };
     }
-  }, [markerPosition, circleRadius, map]);
-
-  useEffect(() => {
-    setMarkerPosition(center);
-  }, [center]);            
+  }, [center, circle, map]);
 
   return (
     <section className="bg-darkBlack">
-      <div className="h-[30vh] w-11/12">
+      <div className="h-[30vh] w-full rounded-xl overflow-hidden">
         <div ref={mapContainerRef} className="w-full h-full" />
       </div>
     </section>

@@ -28,15 +28,15 @@ export interface AuthState {
 }
 
 export interface User {
-  id: number;
-  email: string;
-  role: string;
-  created: string;
-  updated: string | null;
-  isVerified: boolean;
-  jwtToken: string;
-  userProfile: UserProfile;
-  userDevices: Array<any>; 
+  id?: number | null;
+  email?: string;
+  role?: string;
+  created?: string;
+  updated?: string | null;
+  isVerified?: boolean;
+  jwtToken?: string;
+  userProfile?: UserProfile;
+  userDevices?: Array<any>; 
 }
 
 export interface UserProfile {

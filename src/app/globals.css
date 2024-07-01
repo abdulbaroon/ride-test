@@ -28,3 +28,15 @@
       "wdth" 100;
     background-color: #f5f4f8;
   }
+  select{
+    -webkit-appearance: none;
+    -moz-appearance: none;
+     appearance: none;
+    padding: 0px 10px;
+}
+select option[value=""] {
+  color: gray;
+}
+select option:not([value=""]) {
+  color: black;
+}
