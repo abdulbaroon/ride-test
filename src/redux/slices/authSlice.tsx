@@ -160,6 +160,7 @@ const authSlice = createSlice({
         const token = action.payload.jwtToken;
         state.loading = false;
         setCookie('token', token);
+        setCookie('user',action.payload)
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
