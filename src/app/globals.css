@@ -40,3 +40,28 @@ select option[value=""] {
 select option:not([value=""]) {
   color: black;
 }
+
+.fileUploader {
+  border: 2px dashed #ccc !important;
+  height: 150px !important;
+  font-size: 18px !important;
+}
+
+.fileUploader svg {
+  display: none !important;
+}
+
+.sc-fqkvVR {
+  font-size: 16px !important;
+  margin-left: 10px !important;
+  text-align: center !important;
+}
+.sc-eqUAAy{
+  display: flex !important;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.file-types{
+  display: none !important;
+}

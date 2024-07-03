@@ -132,7 +132,7 @@ const authSlice = createSlice({
       state.error = null;
     },
     logout(state) {
-      state.user = null;
+      // state.user = null;
       state.token = null;
     },
   },
