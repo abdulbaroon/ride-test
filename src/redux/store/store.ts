@@ -4,9 +4,11 @@ import { persistStore } from "redux-persist";
 
 // Slices
 import authReducer from "../slices/authSlice";
+import addRideReducer from "../slices/addRideSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
+  addRide:addRideReducer,
 });
 
 export const store = configureStore({

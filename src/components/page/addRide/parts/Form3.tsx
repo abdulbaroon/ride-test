@@ -1,9 +1,11 @@
 "use client";
 import { stravaIcon } from "@/assets";
+import MapComponent from "@/components/module/MapComponent";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FileUploader } from "react-drag-drop-files";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { IoMdArrowDropdown } from "react-icons/io";
 import { IoAlert } from "react-icons/io5";
 
 export const placeholderStyle = {
@@ -22,23 +24,13 @@ interface Form1Props {
 interface FormData {
     routeType?: string;
     url?: string
+    distance?: string
 }
-interface FormHeading {
-    gps: string;
-    strava: string;
-    gpx: string;
-    noroute: string;
-    [key: string]: string;
-}
-const formHeading: FormHeading = {
-    gps: "Ride with GPS",
-    strava: "Strava",
-    gpx: "GPX File",
-    noroute: "No route"
-}
-const fileTypes = ["GPX", "GPS"];
+
+
 const Form3: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }) => {
     const [file, setFile] = useState<File>();
+    const autocompleteRef = useRef<any>(null);
     const {
         register,
         handleSubmit,
@@ -50,7 +42,38 @@ const Form3: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
     const handleSubmits: SubmitHandler<FormData> = (data) => {
         nextForm(data);
     };
-    const heading = formData?.routeType && formHeading[formData?.routeType]
+
+    useEffect(() => {
+        const loadGoogleMapsScript = () => {
+            const script = document.createElement("script");
+            script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_API}&libraries=places`;
+            script.async = true;
+            script.onload = () => {
+                initAutocomplete();
+            };
+            document.body.appendChild(script);
+        };
+        if (!window.google) {
+            loadGoogleMapsScript();
+        } else {
+            initAutocomplete();
+        }
+        return () => {
+            if (autocompleteRef.current) {
+                window.google.maps.event.clearInstanceListeners(autocompleteRef.current);
+            }
+        };
+    }, []);
+
+    const initAutocomplete = () => {
+        const input = document.getElementById("autocomplete") as HTMLInputElement;
+        if (input) {
+            autocompleteRef.current = new window.google.maps.places.Autocomplete(input, {
+                types: ["address"]
+            });
+            autocompleteRef.current.addListener("place_changed", );
+        }
+    };
     return (
         <div className="mt-2 mb-5">
             <form onSubmit={handleSubmit(handleSubmits)} className="">
@@ -75,36 +98,31 @@ const Form3: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
                             </div>
 
                         </div>
-                        <div className="flex gap-4">
-                            <div className="flex flex-col w-1/2">
-                                <label className="font-medium text-gray-600">Distance (miles)</label>
-                                <input type="input" placeholder={"Distance"} {...register("url", { required: true })} className=" border px-2 py-[6px]" />
-                            </div>
-                            <div className="flex flex-col w-1/2">
-                                <label className="font-medium text-gray-600">Avg speed (mph)</label>
-                                <input type="input" placeholder={"Avg speed"} {...register("url", { required: true })} className=" border px-2 py-[6px]" />
+                        <div className="flex ">
+                            <div className='w-full flex flex-col'>
+                                <label className='font-medium text-gray-600'>Start Location - search</label>
+                                <input {...register("homeLocation", { required: "Home location is required" })} id="autocomplete" className='bg-white border px-2 py-[6px]' placeholder='Search location' type='text' />
+                                {errors.homeLocation && <p className='text-red-500 text-xs pt-1'>{errors.homeLocation.message}</p>}
                             </div>
                         </div>
-                        <div className="flex gap-4">
-                            <div className="flex flex-col w-1/2">
-                                <select {...register("url", { required: "Ride type is required" })} className={`bg-white py-[10px] w-full px-4 border rounded-lg `}>
-                                    <option value="" disabled selected>Activity Type</option>
-                                    <option value={1}>Road</option>
-                                    <option value={2}>MTB</option>
-                                    <option value={3}>Mountain</option>
+                        <div className="flex flex-col">
+                            <label className="font-medium text-gray-600">Ride Type </label>
+                            <div className="flex flex-col w-full relative">
+                                <select {...register("distance", { required: "Ride type is required" })} className={` bg-white border px-2 py-[6px] `}>
+                                    <option value="" disabled selected>Ride Type</option>
+                                    {[1, 2, 3, 4]?.map((data) => (
+                                        <option value={data} key={data}>{data}</option>
+                                    ))}
                                 </select>
-                            </div>
-                            <div className="flex flex-col w-1/2">
-                                <select {...register("url", { required: "Ride type is required" })} className={`bg-white py-[10px] w-full px-4 border rounded-lg `}>
-                                    <option value="" disabled selected>ride type</option>
-                                    <option value={1}>Road</option>
-                                    <option value={2}>MTB</option>
-                                    <option value={3}>Mountain</option>
-                                </select>
+                                <IoMdArrowDropdown className=' w-5 h-auto  absolute right-3 top-[11px]' />
                             </div>
                         </div>
                     </div>
-                    <div className="w-1/2"></div>
+                    <div className="w-1/2 mt-5">
+                        <div>
+                            {formData?.centerLatitude && <MapComponent centerLatitude={formData?.centerLatitude} centerLongitude={formData?.centerLongitude} geoJSON={formData?.geoJSON} />}
+                        </div>
+                    </div>
                 </div>
                 <div className="flex justify-between mt-5">
                     <button type="button" onClick={startOver} className="bg-gray-100 shadow-md text-gray-600 px-3 py-2 rounded-sm font-semibold">START OVER</button>

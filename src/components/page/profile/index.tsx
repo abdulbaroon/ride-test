@@ -55,6 +55,7 @@ export const ProfilePage = () => {
     const ride = watch("rideStartRadius");
     const gender = watch("gender")
     const type = watch("rideType")
+    
     useEffect(() => {
         const loadGoogleMapsScript = () => {
             const script = document.createElement("script");
