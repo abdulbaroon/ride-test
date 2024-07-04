@@ -1,33 +1,34 @@
 "use client"
 import { api } from "@/shared/api";
-import { LoginFormValues, RegisterFormValues, ResetData } from "@/shared/types/account.types";
+import { LoginFormValues, RegisterFormValues, ResetData, UpdateProfile, User, UserProfile } from "@/shared/types/account.types";
+import { UploadFile } from "@/shared/types/profile.types";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { setCookie } from "cookies-next";
 
 interface AuthState {
-  user: any | null; 
+  user: User | null;
   token: string | null;
   loading: boolean;
   error: string | null;
-  currentUser: any | null; 
 }
 
-const initialState:AuthState = {
-  user: null,
+const initialState: AuthState = {
+  user: {
+    id:null
+  },
   token: null,
   loading: false,
   error: null,
-  currentUser: null,
 };
 
 export const signUp = createAsyncThunk(
   "accounts/register",
-  async (signUpData:RegisterFormValues, { rejectWithValue }) => {
+  async (signUpData: RegisterFormValues, { rejectWithValue }) => {
     try {
-      const endpoint = "/api/v4/accounts/register"
+      const endpoint = "/accounts/register"
       const response = await api.post(endpoint, signUpData);
       return response.data;
-    } catch (error:any) {
+    } catch (error: any) {
       return rejectWithValue(error.response.data);
     }
   }
@@ -35,12 +36,12 @@ export const signUp = createAsyncThunk(
 
 export const login = createAsyncThunk(
   "accounts/authenticate",
-  async (loginData:LoginFormValues, { rejectWithValue }) => {
+  async (loginData: LoginFormValues, { rejectWithValue }) => {
     try {
-      const endpoint = "/api/v4/accounts/authenticate"
+      const endpoint = "/accounts/authenticate"
       const response = await api.post(endpoint, loginData);
       return response.data;
-    } catch (error:any) {
+    } catch (error: any) {
       return rejectWithValue(error.response.data);
     }
   }
@@ -48,12 +49,12 @@ export const login = createAsyncThunk(
 
 export const forgotPassword = createAsyncThunk(
   "accounts/forgot-password",
-  async (gmail:string, { rejectWithValue }) => {
+  async (gmail: string, { rejectWithValue }) => {
     try {
       const endpoint = "api/v4/accounts/forgot-password"
-      const response = await api.post(endpoint, {Email:gmail});
+      const response = await api.post(endpoint, { Email: gmail });
       return response.data;
-    } catch (error:any) {
+    } catch (error: any) {
       return rejectWithValue(error.response.data);
     }
   }
@@ -61,12 +62,63 @@ export const forgotPassword = createAsyncThunk(
 
 export const resetPassword = createAsyncThunk(
   "accounts/reset-password",
-  async (resetData:ResetData, { rejectWithValue }) => {
+  async (resetData: ResetData, { rejectWithValue }) => {
     try {
-      const endpoint = "/api/v4/accounts/reset-password"
-      const response = await api.post(endpoint,resetData);
+      const endpoint = "/accounts/reset-password"
+      const response = await api.post(endpoint, resetData);
       return response.data;
-    } catch (error:any) {
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const userprofile = createAsyncThunk(
+  "userprofile",
+  async (payload: UserProfile, { rejectWithValue }) => {
+    try {
+      const endpoint = "/userprofile"
+      const response = await api.post(endpoint, payload);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const uploadedFile= createAsyncThunk(
+  "fileupload/upload_files",
+  async (payload: UploadFile, { rejectWithValue }) => {   
+    try {
+      const endpoint = "/fileupload/upload_files"
+      const response = await api.post(endpoint, payload);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const getProfile= createAsyncThunk(
+  "userprofile",
+  async (payload:number, { rejectWithValue }) => {
+    try {
+      const endpoint = `/userprofile/${payload}`
+      const response = await api.get(endpoint);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }    
+);
+export const updateProfile = createAsyncThunk(
+  "update/userprofile",
+  async (payload: UpdateProfile, { rejectWithValue }) => {   
+    try {
+      const endpoint = `/userprofile/${payload.id}`
+      const response = await api.put(endpoint, payload.userdata);
+      return response.data;
+    } catch (error: any) {
       return rejectWithValue(error.response.data);
     }
   }
@@ -80,7 +132,7 @@ const authSlice = createSlice({
       state.error = null;
     },
     logout(state) {
-      state.user = null;
+      // state.user = null;
       state.token = null;
     },
   },
@@ -97,7 +149,7 @@ const authSlice = createSlice({
       })
       .addCase(signUp.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload  as string | null;
+        state.error = action.payload as string | null;
       })
       .addCase(login.pending, (state) => {
         state.loading = true;
@@ -108,10 +160,11 @@ const authSlice = createSlice({
         const token = action.payload.jwtToken;
         state.loading = false;
         setCookie('token', token);
+        setCookie('user',action.payload)
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload  as string | null ;
+        state.error = action.payload as string | null;
       });
   },
 });

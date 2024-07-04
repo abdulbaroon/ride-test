@@ -12,6 +12,7 @@ import { login } from '@/redux/slices/authSlice';
 import { AppDispatch } from '@/redux/store/store';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
+import { CgSpinner } from 'react-icons/cg';
 
 const logindata  = [
   "Find your rides",
@@ -25,15 +26,22 @@ interface LoginFormValues {
 }
  export const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setloading]= useState(false)
   const { register, handleSubmit, formState: { errors } } = useForm<LoginFormValues>();
   const dispatch = useDispatch<AppDispatch>()
   const router = useRouter()
   const onSubmit = async(data: LoginFormValues) => {
     try{
+      setloading(true)
       const response = await dispatch(login(data))
+      setloading(false)
       if (login.fulfilled.match(response)) {
-        // router.push("/account/forgot");
         toast.success("login success")
+        if(response.payload.userProfile){
+          router.push("/dashboard");
+        }else{
+          router.push("/account/profile");
+        }
       } else if (login.rejected.match(response)) {
         toast.error("Email or password is incorrect")
       }
@@ -48,7 +56,7 @@ interface LoginFormValues {
         <div className='w-full tablet:w-1/2 p-6 tablet:p-12 '>
           <div>
             <img src={accountLogo.src} alt="Logo" />
-            <h3 className='text-2xl tablet:text-3xl font-bold pb-6'>LET'S RIDE.</h3>
+            <h3 className='text-2xl tablet:text-3xl font-bold pb-6'>LET&apos;S RIDE.</h3>
             <div className='mb-3'>
               {logindata.map((d, index) => (
                 <div className='flex items-center gap-2 mb-2 text-gray-500' key={index}>
@@ -81,12 +89,13 @@ interface LoginFormValues {
                 {showPassword ? <FaRegEyeSlash className=' text-xl ' /> : <IoEyeOutline className=' text-xl ' />}
               </div>
             </div>
-            <button type="submit" className='w-full bg-primaryText py-[9px] font-bold text-white rounded-lg'>Let's Ride</button>
-            <p className='pt-6 tablet:pt-12 text-gray-500'>Don't have an account? <Link href="/account/register" className='text-primaryText pt-4 mb-12'>Sign up</Link></p>
+            <button type="submit" disabled={loading} className='w-full bg-primaryText py-[9px] font-bold text-white rounded-lg'>
+            {loading?<CgSpinner className='mx-auto animate-spin w-6 h-6 ' />:"Let's Ride"}
+            </button>
+            <p className='pt-6 tablet:pt-12 text-gray-500'>Don&apos;t have an account? <Link href="/account/register" className='text-primaryText pt-4 mb-12'>Sign up</Link></p>
           </form>
         </div>
       </div>
-
     </div>
   );
 }

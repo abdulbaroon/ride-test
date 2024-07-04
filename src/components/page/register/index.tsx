@@ -30,7 +30,7 @@ export const RegisterPage = () => {
     const [showConformPassword, setShowConformPassword] = useState(false);
     const [loading, setloading]= useState(false)
     const dispatch = useDispatch<AppDispatch>()
-    const { register, handleSubmit, formState: { errors }, watch, getValues } = useForm<RegisterFormValues>({
+    const { register, handleSubmit, formState: { errors }, watch, getValues} = useForm<RegisterFormValues>({
         mode: "onTouched"
     });
 
@@ -62,7 +62,7 @@ export const RegisterPage = () => {
                     <div>
                         <img src={accountLogo.src} alt="Logo" />
                         <h3 className=' text-2xl tablet:text-3xl font-bold pb-6'>Join the community
-                            and let's ride!</h3>
+                            and let&apos;s ride!</h3>
                         <div className='mb-3'>
                             {logindata.map((d, index) => (
                                 <div className='flex items-center gap-2 mb-2 text-gray-500' key={index}>
@@ -71,7 +71,7 @@ export const RegisterPage = () => {
                                 </div>
                             ))}
                         </div>
-                        <p className='pt-2 tablet:pt-6 tablet:mb-12 text-gray-500'>Don't have an account?  <Link href="/account/login" className='text-primaryText '>Sign in</Link></p>
+                        <p className='pt-2 tablet:pt-6 tablet:mb-12 text-gray-500'>Don&apos;t have an account?  <Link href="/account/login" className='text-primaryText '>Sign in</Link></p>
                     </div> 
                 </div>
                 <div className='w-full tablet:w-1/2 p-6 tablet:p-12 '>

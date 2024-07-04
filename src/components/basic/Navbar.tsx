@@ -1,3 +1,4 @@
+
 "use client"
 import { navLogo } from "@/assets"
 import { RootState } from "@/redux/store/store"
@@ -9,8 +10,8 @@ import { useEffect, useState } from "react"
 import { FaBell } from "react-icons/fa"
 import { useSelector } from "react-redux"
 
-export const Header = () => {
-  const router = useRouter()
+const NavBar = () => {
+    const router = useRouter()
     const [user, setUser] = useState<string>()
     const userData = useSelector<RootState>(
         (state) => state.auth.user
@@ -21,8 +22,8 @@ export const Header = () => {
             setUser(userCookie)
         }
     }, [userData])
-  return (
-    <header className=" bg-secondaryButton   " >
+    return (
+        <header className=" bg-secondaryButton   " >
             <div className="w-11/12 mx-auto py-4 flex justify-between">
                 <div className="flex items-center ">
                     <div className="">
@@ -31,8 +32,8 @@ export const Header = () => {
                     <div className="ms-6">
                         <div className="text-gray-400 font-semibold flex gap-5 py-4 cursor-pointer">
                             {user ? <Link href={"#"} className=" hover:text-white ">Dashboard</Link> :
-                                <Link href={"/dashboard"} className="border-r pe-4 hover:text-white ">Register</Link>}
-                            {user ? <Link href={"/activities/add"} className="hover:text-white">Add Ride</Link>
+                                <Link href={"#"} className="border-r pe-4 hover:text-white ">Register</Link>}
+                            {user ? <Link href={"#"} className="hover:text-white">Add Ride</Link>
                                 : <Link href={"#"} className="hover:text-white">Feature</Link>}
                             <Link href={"#"} className="hover:text-white">Search</Link>
                             <Link href={"#"} className="hover:text-white">Calender</Link>
@@ -54,5 +55,6 @@ export const Header = () => {
                 </div>
             </div>
         </header>
-  )
+    )
 }
+export default NavBar

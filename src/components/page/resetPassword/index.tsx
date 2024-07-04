@@ -102,7 +102,7 @@ export const ResetPasswordPage = () => {
               </button>
             <button type="submit" onClick={()=>back()} className='bg-primaryButton py-[9px] px-6 font-bold text-white rounded-lg ms-2'>Back</button>
             </div>
-            <p className='pt-7 text-gray-500'>Don't have an account? <Link href="/account/register" className='text-primaryText '>Sign up</Link></p>
+            <p className='pt-7 text-gray-500'>Don&apos;t have an account? <Link href="/account/register" className='text-primaryText '>Sign up</Link></p>
           </form>
         </div>
       </div>

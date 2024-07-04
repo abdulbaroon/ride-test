@@ -15,7 +15,7 @@ export const store = configureStore({
 });
      
 export const getStore = () => {
-  return store;
+  return store; 
 }      
 
 export const persistor = persistStore(store);

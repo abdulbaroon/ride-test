@@ -10,9 +10,13 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      colors: {
+      colors: { 
         primaryText:"#29a9e1",
-        primaryButton:"#115674"
+        primaryButton:"#266c9a",
+        secondaryButton:"#244161",
+        primaryDarkblue:"#003057",
+        violet:"#1f1b2d",
+        lightViolet:"#282435"
       },
       screens: {
         desktop: "1180px",
