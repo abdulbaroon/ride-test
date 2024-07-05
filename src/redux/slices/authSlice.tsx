@@ -47,6 +47,19 @@ export const login = createAsyncThunk(
   }
 );
 
+export const refreshToken= createAsyncThunk(
+  "accounts/refresh-token",
+  async (_, { rejectWithValue }) => {
+    try {
+      const endpoint = `/accounts/refresh-token`
+      const response = await api.post(endpoint);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }    
+);
+
 export const forgotPassword = createAsyncThunk(
   "accounts/forgot-password",
   async (gmail: string, { rejectWithValue }) => {
@@ -111,6 +124,8 @@ export const getProfile= createAsyncThunk(
     }
   }    
 );
+
+
 export const updateProfile = createAsyncThunk(
   "update/userprofile",
   async (payload: UpdateProfile, { rejectWithValue }) => {   

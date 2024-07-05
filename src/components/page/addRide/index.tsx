@@ -1,8 +1,12 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Form1 from "./parts/Form1";
 import Form2 from "./parts/Form2";
 import Form3 from "./parts/Form3";
+import { useDispatch } from "react-redux";
+import { getActivityTag, getActivityType, getDifficultyLevel, getHubList } from "@/redux/slices/addRideSlice";
+import { AppDispatch } from "@/redux/store/store";
+import Form4 from "./parts/Form4";
 
 const stepName = [
   "Have a Route?",
@@ -25,9 +29,15 @@ interface FormProps {
 }
 
 export const AddRidePage: React.FC = () => {
-  const [currentForm, setCurrentForm] = useState<number>(1);
+  const [currentForm, setCurrentForm] = useState<number>(4);
   const [formData, setFormData] = useState<FormData>({});
-
+  const dispatch = useDispatch<AppDispatch>()
+  useEffect(()=>{
+    dispatch(getDifficultyLevel())
+    dispatch(getActivityType())
+    dispatch(getActivityTag())
+    dispatch(getHubList())
+  },[])
   const nextForm = (data: FormData) => {
     setFormData({ ...formData, ...data });
     if (currentForm < stepName.length) {
@@ -51,7 +61,7 @@ export const AddRidePage: React.FC = () => {
     1: <Form1 nextForm={nextForm} formData={formData} startOver={startOver}   />,
     2: <Form2 nextForm={nextForm} formData={formData} startOver={startOver} prevForm={prevForm}  />,
     3: <Form3 nextForm={nextForm} formData={formData} startOver={startOver} prevForm={prevForm}  />,
-    4: <Form2 nextForm={nextForm} formData={formData} startOver={startOver} prevForm={prevForm}  />,
+    4: <Form4 nextForm={nextForm} formData={formData} startOver={startOver} prevForm={prevForm}  />,
   };
 
   return (

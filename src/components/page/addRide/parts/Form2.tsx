@@ -2,8 +2,9 @@
 import { stravaIcon } from "@/assets";
 import MapComponent from "@/components/module/MapComponent";
 import { getDifficultyLevel } from "@/redux/slices/addRideSlice";
-import { AppDispatch } from "@/redux/store/store";
+import { AppDispatch, RootState } from "@/redux/store/store";
 import useGpxToGeoJson from "@/shared/hook/useGpxToGeoJson";
+import { extractRouteId } from "@/shared/util/format.util";
 import Link from "next/link";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { FileUploader } from "react-drag-drop-files";
@@ -11,7 +12,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { CgSpinner } from "react-icons/cg";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { IoAlert } from "react-icons/io5";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 export const placeholderStyle = {
     color: "#050505",
@@ -59,8 +60,9 @@ const formHeading: FormHeading = {
 }
 const fileTypes = ["GPX", "GPS"];
 const Form2: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }) => {
-    const [difficultyLevel, setDifficultyLevel] = useState<DifficultyLevel[] | undefined>()
-    const dispatch = useDispatch<AppDispatch>()
+    const difficultyLevel = useSelector<RootState>(
+        (state) => state.addRide.difficultyLevels
+    ) as DifficultyLevel[]
     const {
         handlePickDocument,
         handleDownloadUrl,
@@ -72,6 +74,7 @@ const Form2: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
         routeDistance,
         geoJSON,
         gpxFilePath,
+        features,
         loading,
         errorMessage,
     } = useGpxToGeoJson();
@@ -97,6 +100,9 @@ const Form2: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
         await handleDownloadUrl(data.url)
         const form2Data = {
             ...data,
+            routeName: features?.properties?.name.trimEnd(),
+            mapUrl: features?.properties?.links?.[0]?.href,
+            routeNumber: extractRouteId(features?.properties?.links?.[0]?.href),
             centerLatitude,
             centerLongitude,
             routeDistance,
@@ -104,19 +110,7 @@ const Form2: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
             gpxFilePath,
         }
         nextForm(form2Data);
-    };
-    useEffect(() => {
-        const getDeff = async () => {
-            const response = await dispatch(getDifficultyLevel()) as difficultyLevelPayload
-            if (getDifficultyLevel.fulfilled.match(response)) {
-                const diff = response.payload
-                setDifficultyLevel(diff)
-                console.log(diff, "Sdf")
-            }
-        }
-        getDeff()
-    }, []);
-
+    }; 
     const heading = formData?.routeType && formHeading[formData?.routeType]
     return (
         <div className="mt-2 mb-5">
@@ -142,7 +136,7 @@ const Form2: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
                             </div>
                             <div className="flex gap-4 mt-3">
                                 <div className="flex flex-col w-full relative">
-                                    <select {...register("distance", { required: "Ride type is required" })} className={` bg-white border px-2 py-[6px] `}>
+                                    <select {...register("difficulty", { required: "Ride type is required" })} className={` bg-white border px-2 py-[6px] `}>
                                         <option value="" disabled selected>Activity Type</option>
                                         {difficultyLevel?.map((data) => (
                                             <option value={data.difficultyLevelID} key={data.difficultyLevelID}>{data.levelName}</option>
@@ -151,7 +145,7 @@ const Form2: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
                                     <IoMdArrowDropdown className=' w-5 h-auto  absolute right-3 top-[11px]' />
                                 </div>
                             </div>
-                            <div className="mt-4">
+                            <div className="mt-4">                         
                                 <label className="inline-flex items-center cursor-pointer">
                                     <input {...register("isGroup")} type="checkbox" className="sr-only peer" />
                                     <div className="relative me-3 w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primaryButton"></div>

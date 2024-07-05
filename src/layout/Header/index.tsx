@@ -1,17 +1,19 @@
 "use client"
 import { navLogo } from "@/assets"
-import { RootState } from "@/redux/store/store"
+import { refreshToken } from "@/redux/slices/authSlice"
+import { AppDispatch, RootState } from "@/redux/store/store"
 import { User } from "@/shared/types/account.types"
 import { getCookie } from "cookies-next"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { FaBell } from "react-icons/fa"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 
 export const Header = () => {
   const router = useRouter()
     const [user, setUser] = useState<string>()
+    const dispatch = useDispatch<AppDispatch>()
     const userData = useSelector<RootState>(
         (state) => state.auth.user
     ) as User
@@ -21,6 +23,10 @@ export const Header = () => {
             setUser(userCookie)
         }
     }, [userData])
+    useEffect(()=>{
+      const response = dispatch(refreshToken())
+      console.log(response,"reftr")
+    },[])
   return (
     <header className=" bg-secondaryButton   " >
             <div className="w-11/12 mx-auto py-4 flex justify-between">

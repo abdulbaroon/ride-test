@@ -50,7 +50,16 @@ select option:not([value=""]) {
 .fileUploader svg {
   display: none !important;
 }
-
+.pdfuploader{
+  width: 100% !important;
+  height: 150px !important;
+  border: 2px dashed #ccc !important;
+  max-width: none !important;
+  min-width: auto !important;
+}
+.pdfuploader svg {
+  display: none !important;
+}
 .sc-fqkvVR {
   font-size: 16px !important;
   margin-left: 10px !important;
@@ -64,4 +73,8 @@ select option:not([value=""]) {
 }
 .file-types{
   display: none !important;
+}
+
+.quill{
+  height: 135px !important;
 }

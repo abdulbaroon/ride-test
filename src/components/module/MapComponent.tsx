@@ -1,14 +1,16 @@
 "use client"
 import React, { useEffect, useRef, useState } from 'react';
 import mapboxgl, { LngLatLike } from 'mapbox-gl';
+import { twMerge } from 'tailwind-merge';
 
 interface MapProps {
   centerLatitude: number;
   centerLongitude: number;
-  geoJSON: GeoJSON.FeatureCollection<any>;
+  geoJSON: any,
+  className?:string,
 }
 
-const MapComponent: React.FC<MapProps> = ({ centerLatitude, centerLongitude, geoJSON }) => {
+const MapComponent: React.FC<MapProps> = ({ centerLatitude, centerLongitude, geoJSON, className}) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<mapboxgl.Map | null>(null);
 
@@ -56,7 +58,7 @@ const MapComponent: React.FC<MapProps> = ({ centerLatitude, centerLongitude, geo
     if (!map) initializeMap({ setMap, mapContainer: mapContainerRef.current! });
   }, [centerLatitude, centerLongitude, geoJSON, map]);
 
-  return <div className="rounded-lg" ref={mapContainerRef} style={{ height: '40vh', width: '100%' }} />;
+  return <div className={twMerge(`rounded-lg`)} ref={mapContainerRef} style={{ height: '40vh', width: '100%' }} />;
 };
 
 export default MapComponent;

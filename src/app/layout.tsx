@@ -8,6 +8,7 @@ import { Header } from "@/layout";
 import NavBar from "@/components/basic/Navbar";
 import Footer from "@/components/basic/Footer";
 import NextTopLoader from "nextjs-toploader";
+import 'react-quill/dist/quill.snow.css';
 
 const inter = Inter({ subsets: ["latin"] });
 

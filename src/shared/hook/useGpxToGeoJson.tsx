@@ -182,7 +182,7 @@ const useGpxToGeoJson = () => {
   const fetchAndOpenUrl = async (url: string, onSuccess?: () => void) => {
     try {
       if (url) {
-        const supported = true; // Assume the URL can be opened
+        const supported = true; 
         if (supported) {
           window.open(url, '_blank');
           if (onSuccess) onSuccess();

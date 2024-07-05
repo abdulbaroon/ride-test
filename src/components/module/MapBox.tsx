@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import mapboxgl, { NavigationControl, FullscreenControl } from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
+import { twMerge } from "tailwind-merge";
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN as string;
 
@@ -9,9 +10,10 @@ interface MapBoxProps {
   center?: [number, number];
   initialZoom?: number;
   circle?: number;
+  className?:string;
 }
 
-const MapBox: React.FC<MapBoxProps> = ({ center = [0,0], initialZoom = 2, circle = 1000 }) => {
+const MapBox: React.FC<MapBoxProps> = ({ center = [0,0], initialZoom = 2, circle = 1000, className}) => {
   const [mapStyle, setMapStyle] = useState<string>("mapbox://styles/mapbox/streets-v11");
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const [map, setMap] = useState<mapboxgl.Map | null>(null);
@@ -104,7 +106,7 @@ const MapBox: React.FC<MapBoxProps> = ({ center = [0,0], initialZoom = 2, circle
 
   return (
     <section className="bg-darkBlack">
-      <div className="h-[30vh] w-full rounded-xl overflow-hidden">
+      <div className={twMerge("h-[30vh] w-full rounded-xl overflow-hidden",className)}>
         <div ref={mapContainerRef} className="w-full h-full" />
       </div>
     </section>
