@@ -25,7 +25,6 @@ export const Header = () => {
     }, [userData])
     useEffect(()=>{
       const response = dispatch(refreshToken())
-      console.log(response,"reftr")
     },[])
   return (
     <header className=" bg-secondaryButton   " >
@@ -34,8 +33,8 @@ export const Header = () => {
                     <div className="">
                         <img src={navLogo.src} alt="logo" />
                     </div>
-                    <div className="ms-6">
-                        <div className="text-gray-400 font-semibold flex gap-5 py-4 cursor-pointer">
+                    <div className="ms-6 ">
+                        <div className="text-gray-400 font-semibold hidden tablet:flex gap-5 py-4 cursor-pointer">
                             {user ? <Link href={"#"} className=" hover:text-white ">Dashboard</Link> :
                                 <Link href={"/dashboard"} className="border-r pe-4 hover:text-white ">Register</Link>}
                             {user ? <Link href={"/activities/add"} className="hover:text-white">Add Ride</Link>

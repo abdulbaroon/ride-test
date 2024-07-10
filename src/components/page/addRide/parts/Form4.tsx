@@ -1,17 +1,29 @@
 "use client";
-import { RootState } from "@/redux/store/store";
-import Link from "next/link";
-import React from "react";
+import { AppDispatch, RootState } from "@/redux/store/store";
+import { ChangeEvent, useState } from "react";
 import { FileUploader } from "react-drag-drop-files";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { IoMdArrowDropdown } from "react-icons/io";
-import { IoAlert } from "react-icons/io5";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import Modal from 'react-modal';
+import { genrateImage } from "@/redux/slices/addRideSlice";
+import { toast } from "react-toastify";
+import { CgSpinner } from "react-icons/cg";
+import { IoCloseSharp } from "react-icons/io5";
+import { User } from "@/shared/types/account.types";
+import { saveRide } from "../feature/rideFeature";
+import Select, { IndicatorSeparatorProps } from 'react-select'
+import Image from "next/image";
 
-export const placeholderStyle = {
-    color: "#050505",
-    fontSize: "15px",
-    fontWeight: 400,
+const customStyles = {
+    content: {
+        top: '50%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '-50%',
+        transform: 'translate(-50%, -50%)',
+    },
 };
 
 interface Form1Props {
@@ -33,105 +45,150 @@ interface HubList {
     hubID: number;
     hubName: string;
 }
+const indicatorSeparatorStyle = {
+    alignSelf: 'stretch',
+    backgroundColor: "blue",
+    marginBottom: 8,
+    marginTop: 8,
+    width: 1,
+};
 
-const Form4: React.FC<Form1Props> = ({ nextForm, formData, startOver }) => {
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-    } = useForm<FormData>();
+const IndicatorSeparator = ({
+    innerProps,
+}: IndicatorSeparatorProps<any, true>) => {
+    return <span style={indicatorSeparatorStyle} {...innerProps} />;
+};
 
-    const activityTag = useSelector<RootState, string[]>(
-        (state) => state.addRide.activityTags
-    );
-    const hublist = useSelector<RootState, HubList[]>(
-        (state) => state.addRide.hubList
-    );
+const Form4: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }) => {
+    const [modalIsOpen, setIsOpen] = useState<boolean>(false);
+    const [dallEInput, setDallEInput] = useState<string>("");
+    const [loading, setLoading] = useState<boolean>(false);
+    const [aiImage, setAiImage] = useState<string | null>(null);
+    const [image, setImage] = useState<File>()
+    const [waiver, setWaiver] = useState<File>()
+    const [select, setSelect] = useState<String[]>()
+    const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
+    const dispatch = useDispatch<AppDispatch>();
+    const activityTags = useSelector<RootState, string[]>((state) => state.addRide.activityTags);
+    const hubList = useSelector<RootState, HubList[]>((state) => state.addRide.hubList);
+    const formattedActivityTags = activityTags.map(tag => ({ label: tag, value: tag }));
+    console.log(activityTags, "#@")
+    const userData = useSelector<RootState>((state) => state.auth.user) as User
+    const handleSubmits: SubmitHandler<FormData> = async (data) => {
+        const payload = {
+            routeData: {
+                ...formData,
+                ...data,
+                document: waiver,
+                image: image,
+                dalleUrl: aiImage,
+                tags: select
+            },
+            user: userData
+        }
+        console.log(payload, "SD")
+        const onSuccess = (response: any) => {
+            console.log('Ride saved successfully', response);
+        };
 
-    const handleSubmits: SubmitHandler<FormData> = (data) => {
-        nextForm(data);
+        const onError = (error: any) => {
+            console.error('Error saving ride', error);
+        };
+
+        await saveRide(dispatch, onSuccess, onError, payload);
+
     };
+
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setDallEInput(e.target.value);
+    };
+
+    const handleGenerate = async () => {
+        const payload = {
+            prompt: dallEInput,
+            distance: 121
+        };
+        setLoading(true);
+        const response = await dispatch(genrateImage(payload));
+        setLoading(false);
+        if (genrateImage.fulfilled.match(response)) {
+            setAiImage(response.payload.data[0].url);
+        } else {
+            toast.error("Failed to generate image");
+        }
+    };
+
+    const handleOpenModal = () => {
+        setIsOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsOpen(false);
+    };
+    const handleWaiver = (file: File) => {
+        setWaiver(file)
+    }
+    const handleImage = (file: File) => {
+        setImage(file)
+    }
+    const handleSelect = (selectedOptions: any) => {
+        console.log(selectedOptions);
+        const tags = selectedOptions?.map((item: any) => item.label)
+        setSelect(tags)
+    };
+    const renderCheckbox = (label: string, description: string, field: string) => (
+        <div className="border-b w-full tablet:w-1/2 pb-2">
+            <label className="inline-flex items-center cursor-pointer">
+                <input {...register(field as keyof FormData)} type="checkbox" className="sr-only peer" />
+                <div className="relative me-3 w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primaryButton"></div>
+                <div className="flex flex-col leading-5 w-[85%]">
+                    <span className="font-medium">{label}</span>
+                    <span className="text-sm text-gray-500">{description}</span>
+                </div>
+            </label>
+        </div>
+    );
 
     return (
         <div className="mt-2 mb-5">
             <form onSubmit={handleSubmit(handleSubmits)} className="">
                 <div>
-                    <div className="flex gap-7 mt-5">
-                        <div className="border-b w-1/2 pb-2">
-                            <label className="inline-flex items-center cursor-pointer">
-                                <input {...register("isGroup")} type="checkbox" className="sr-only peer" />
-                                <div className="relative me-3 w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primaryButton"></div>
-                                <div className="flex flex-col leading-5">
-                                    <span className="font-medium">Community</span>
-                                    <span className="text-sm text-gray-500">Can’t lead the ride, select this option set as a community ride.</span>
-                                </div>
-                            </label>
-                        </div>
-                        <div className="border-b w-1/2 pb-2">
-                            <label className="inline-flex items-center cursor-pointer">
-                                <input {...register("isGroup")} type="checkbox" className="sr-only peer" />
-                                <div className="relative me-3 w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primaryButton"></div>
-                                <div className="flex flex-col leading-5">
-                                    <span className="font-medium">Private</span>
-                                    <span className="text-sm text-gray-500">Private ride. You must invite your friends.</span>
-                                </div>
-                            </label>
-                        </div>
+                    <div className="flex gap-7 mt-5 flex-col tablet:flex-row">
+                        {renderCheckbox("Community", "Can’t lead the ride, select this option set as a community ride.", "isCommunity")}
+                        {renderCheckbox("Private", "Private ride. You must invite your friends.", "isPrivate")}
                     </div>
-                    <div className="flex gap-7 mt-5 ">
-                        <div className="border-b w-1/2 pb-2 ">
-                            <label className="inline-flex items-center cursor-pointer">
-                                <input {...register("isGroup")} type="checkbox" className="sr-only peer" />
-                                <div className="relative me-3 w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primaryButton"></div>
-                                <div className="flex flex-col leading-5">
-                                    <span className="font-medium">Drop</span>
-                                    <span className="text-sm text-gray-500">Want to wait for anyone that may drop off?</span>
-                                </div>
-                            </label>
-                        </div>
-                        <div className="border-b w-1/2 pb-2">
-                            <label className="inline-flex items-center cursor-pointer">
-                                <input {...register("isGroup")} type="checkbox" className="sr-only peer" />
-                                <div className="relative me-3 w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primaryButton"></div>
-                                <div className="flex flex-col leading-5">
-                                    <span className="font-medium">Lights Required</span>
-                                    <span className="text-sm text-gray-500">Need to ensure all has lights for safety?</span>
-                                </div>
-                            </label>
-                        </div>
+                    <div className="flex gap-7 mt-5 flex-col tablet:flex-row">
+                        {renderCheckbox("Drop", "Want to wait for anyone that may drop off?", "isDrop")}
+                        {renderCheckbox("Lights Required", "Need to ensure all has lights for safety?", "isLights")}
                     </div>
-                    <div className="flex gap-7 mt-5">
-                        <div className="flex flex-col w-1/2">
-                            <label className="font-medium text-gray-600 ">Activity Tags</label>
+                    <div className="flex gap-7 mt-5 flex-col tablet:flex-row">
+                        <div className="flex flex-col w-full tablet:w-1/2">
+
+                            <label className="font-medium text-gray-600">Activity Tags</label>
                             <div className="flex flex-col relative mt-1">
-                                <select
-                                    {...register("activityTags", { required: "Activity tags are required" })}
-                                    className="bg-white border px-2 py-[6px]"
-                                >
-                                    {activityTag?.map((data, i) => (
-                                        <option value={data} key={i}>
-                                            {data}
-                                        </option>
-                                    ))}
-                                </select>
-                                <IoMdArrowDropdown className="w-5 h-auto absolute right-3 top-[11px]" />
+                                <Select
+                                    closeMenuOnSelect={false}
+                                    components={{ IndicatorSeparator }}
+                                    isMulti
+                                    options={formattedActivityTags}
+                                    onChange={handleSelect}
+                                />
                             </div>
                             {errors.activityTags && (
                                 <p className="text-red-500 text-xs pt-1">{errors.activityTags.message}</p>
                             )}
                         </div>
-                        <div className="flex flex-col w-1/2">
+                        <div className="flex flex-col w-full tablet:w-1/2">
                             <label className="font-medium text-gray-600">Hub List</label>
-                            <div className="flex flex-col relative mt-1 ">
+                            <div className="flex flex-col relative mt-1">
                                 <select
                                     {...register("hubList", { required: "Hub list is required" })}
                                     className="bg-white border px-2 py-[6px]"
-
                                 >
                                     <option value="" disabled selected>
                                         Select Hub
                                     </option>
-                                    {hublist?.map((data) => (
+                                    {hubList.map((data) => (
                                         <option value={data.hubID} key={data.hubID}>
                                             {data.hubName}
                                         </option>
@@ -144,11 +201,11 @@ const Form4: React.FC<Form1Props> = ({ nextForm, formData, startOver }) => {
                             )}
                         </div>
                     </div>
-                    <div className="mt-5 gap-7">
-                        <div className="flex flex-col w-[49%]">
-                            <label className="font-medium text-gray-600">Event promoter link</label>
+                    <div className="mt-5 gap-7 flex flex-col tablet:flex-row">
+                        <div className="flex flex-col w-full tablet:w-1/2">
+                            <label className="font-medium text-gray-600">Event Promoter Link</label>
                             <input
-                                className="border px-2 py-[6px]"
+                                className="border px-2 py-[6px] mt-1"
                                 placeholder="Event promoter link"
                                 type="text"
                                 {...register("promoLink")}
@@ -157,24 +214,68 @@ const Form4: React.FC<Form1Props> = ({ nextForm, formData, startOver }) => {
                                 <p className="text-red-500 text-xs pt-1">{errors.promoLink.message}</p>
                             )}
                         </div>
-                        <div className="w-1/2"></div>
-                    </div>
-                    <div className="mt-5 flex w-full justify-between gap-7">
-                        <div className="w-1/2">
-                            <FileUploader  name="file" types={["pdf"]} classes="pdfuploader" multiple={false} label="Select or drag & drop your Waiver PDF file here!" />
+                        <div className="w-full tablet:w-1/2">
+                            <div className="flex flex-col">
+                                <label className="font-medium text-gray-600">Need an image? Let us generate one!</label>
+                                <button type="button" className="bg-primaryText text-white px-9 py-2 rounded-sm font-semibold mt-1" onClick={handleOpenModal}>
+                                    {aiImage ? "Preview Image" : "Generate AI Image"}
+                                </button>
+                            </div>
                         </div>
-                        <div className="w-1/2">
-                            <FileUploader  name="file" types={["pdf"]} classes="pdfuploader" multiple={false} label="Select or drag & drop your Ride Image file here!" />
+                    </div>
+                    <div className="mt-5 flex w-full justify-between gap-7 flex-col tablet:flex-row">
+                        <div className="w-full tablet:w-1/2">
+                            <FileUploader name="file" handleChange={handleWaiver} types={["pdf"]} ha classes="pdfuploader" multiple={false} label="Select or drag & drop your Waiver PDF file here!" />
+                        </div>
+                        <div className="w-full tablet:w-1/2">
+                            <FileUploader name="file" handleChange={handleImage} types={["JPG", "PNG", "GIF"]} classes="pdfuploader" multiple={false} label="Select or drag & drop your Ride Image file here!" />
                         </div>
                     </div>
                 </div>
-                <div className="flex justify-between mt-5">
-                    <button type="button" onClick={startOver} className="bg-gray-100 shadow-md text-gray-600 px-3 py-2 rounded-sm font-semibold">START OVER</button>
-                    <div className="flex gap-3">
-                        <button type="submit" className="bg-primaryText text-white px-9 py-2 rounded-sm font-semibold">NEXT</button>
+                <div className="flex justify-between mt-6 ">
+                    <button type="button" onClick={startOver} className="text-sm tablet:text-base bg-gray-100 shadow-md text-gray-600 px-3 py-2 rounded-sm font-semibold h-fit">START OVER</button>
+                    <div className="flex gap-3 flex-col-reverse tablet:flex-row">
+                        <button type="button" onClick={prevForm} className="text-sm tablet:text-base bg-gray-100 shadow-md text-gray-600 px-3 py-2 rounded-sm font-semibold">PREVIOUS</button>
+                        <button type="submit" className="text-sm tablet:text-base bg-primaryText text-white px-9 py-2 rounded-sm font-semibold">FINISH</button>
                     </div>
                 </div>
             </form>
+            <Modal
+                isOpen={modalIsOpen}
+                style={customStyles}
+                contentLabel="Generate AI Image"
+            >
+                <div className="w-[300px] tablet:w-[500px]  relative">
+                    <div className="flex flex-col">
+                        <label className="font-medium text-gray-600 text-xs tablet:text-base">Need an image? Let us generate one!</label>
+                        <div className="flex gap-3 mt-2">
+                            <input
+                                className="border px-2 py-[6px] w-full"
+                                placeholder="Enter your keyword"
+                                type="text"
+                                value={dallEInput}
+                                onChange={handleChange}
+                            />
+                            <button type="submit" disabled={loading} className="bg-primaryText text-white px-3 tablet:px-9  py-1 rounded-sm font-semibold text-xs tablet:text-base" onClick={handleGenerate}>
+                                {loading ? <CgSpinner className='mx-auto animate-spin w-6 h-6' /> : "Generate"}
+                            </button>
+                        </div>
+                    </div>
+                    <div className="h-40 tablet:h-[250px] mx-2 my-6 border rounded-md overflow-hidden ">
+                        {aiImage && (
+                            <div className="w-full ">
+                                <Image src={aiImage} alt="Generated AI" width={500} height={350} />
+                            </div>
+                        )}
+                    </div>
+                    <div className="flex justify-end">
+                        <button type="submit" disabled={loading} className="bg-primaryText text-white  px-3 tablet:px-9 py-2 tablet:py-2 text-xs tablet:text-base rounded-sm font-semibold" onClick={handleCloseModal}>
+                            Add Image
+                        </button>
+                    </div>
+                    <IoCloseSharp className="absolute -top-3 -right-3 text-xl cursor-pointer" onClick={handleCloseModal} />
+                </div>
+            </Modal>
         </div>
     );
 };

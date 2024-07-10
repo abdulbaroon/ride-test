@@ -15,11 +15,11 @@ export type Geojson = {
 
   export interface RouteData {
     activityID?: number;
-    rideTypeID?: number;
+    rideType?: number ;
     rideName?: string;
     startName?: string;
     createdBy?: string;
-    startW3W?: string;
+    startW3W?: string|null;
     startDate?: string;
     startTime?: string;
     endTime?: string;
@@ -27,7 +27,7 @@ export type Geojson = {
     isCommunity?: boolean;
     isDrop?: boolean;
     isPrivate?: boolean;
-    isLightsRequired?: boolean;
+    isLights?: boolean;
     startAddress?: string;
     startCity?: string;
     startState?: string;
@@ -49,11 +49,24 @@ export type Geojson = {
     gpxFilePath?: string;
     tags?: string[];
     dalleUrl?: string;
-    difficultyLevelID?: number;
+    difficulty?: number;
     distance?: number;
     avgSpeed?: number;
     routeNumber?: string;
     mapUrl?: string;
-    routeName?:string
-    mapSourceID?:number
-  }
+    routeName?: string;
+    mapSourceID?: number;
+    note?:string;
+}
+
+export interface AddRidePayload {
+  Activity?: RouteData;
+  FileUploads?: number;
+  ActivityRoute?: {
+    filePath?: string;
+    activityID?: number;
+    fileUploadTypeID?: number;
+  }[];
+  ActivityTags?: string[];
+  DalleUrl?: string;
+}

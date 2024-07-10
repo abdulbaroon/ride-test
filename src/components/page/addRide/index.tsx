@@ -55,7 +55,6 @@ export const AddRidePage: React.FC = () => {
     setCurrentForm(1);
   };
 
-  console.log("final form data", formData);
 
   const resultBox: { [key: number]: JSX.Element } = {
     1: <Form1 nextForm={nextForm} formData={formData} startOver={startOver}   />,
@@ -65,20 +64,21 @@ export const AddRidePage: React.FC = () => {
   };
 
   return (
-    <section className="bg-white w-[90%] md:w-[90%] mx-auto my-10 py-2 rounded-md">
+    <section className="bg-white w-[95%]  mx-auto my-10 py-2 rounded-md">
       <div className="border-b">
-        <h1 className="text-3xl font-bold m-5">Add a Ride</h1>
+        <h1 className="text-xl tablet:text-3xl font-bold m-5 ">Add a Ride</h1>
       </div>
-      <div className="px-5 sm:px-10">
+      <div className="px-2 tablet:px-5 ">
         <h5 className="text-20 sm:text-32 font-semibold">
           {/* {stepName[currentForm - 1]} */}
         </h5>
-        <div className="grid place-items-center mt-5 shadow-lg">
+        <div className="grid place-items-center mt-5 px-2 shadow-lg">
           <div className="flex justify-between my-8 w-[90%] items-center relative gap-2">
             {stepName.map((_, i) => (
               <React.Fragment key={i}>
+                <div className="flex gap-1 items-center relative">
                 <div
-                  className={`relative text-white z-10 h-5 w-5 sm:h-7 sm:w-7 text-[12px] sm:text-base font-semibold rounded-full grid place-items-center cursor-pointer ${
+                  className={`relative text-white z-0 h-5 w-5 sm:h-7 sm:w-7 text-[12px] sm:text-base font-semibold rounded-full grid place-items-center cursor-pointer ${
                     i < currentForm
                       ? "bg-primaryText text-primaryWhite"
                       : "bg-gray-500 border border-primaryBlack"
@@ -86,7 +86,13 @@ export const AddRidePage: React.FC = () => {
                 >
                   {i + 1}
                 </div>
-                <p className="text-gray-500 font-semibold truncate hidden desktop:block">{stepName[i]}</p>
+                <p className={`text-gray-500 font-semibold truncate absolute desktop:static text-[9px] tablet:text-sm desktop:text-base top-5 sm:top-7 -left-4 tablet:-left-8
+                ${
+                  i < currentForm
+                    ? " text-primaryText"
+                    : ""
+                }`}>{stepName[i]}</p>
+                </div>
                 {i < stepName.length - 1 && (
                   <div
                     className={`h-[1px] sm:h-[2px] flex-1 ${

@@ -7,15 +7,15 @@ import { FaFacebookF, FaHeart, FaInstagram, FaTwitter } from "react-icons/fa"
 const Footer = () => {
     return (
         <footer className=" bg-violet " >
-            <div className="w-11/12 mx-auto py-5 flex justify-between">
-                <div className="flex items-center text-sm ">
+            <div className="w-11/12 mx-auto py-5 tablet:gap-0 gap-5 flex justify-between flex-col-reverse tablet:flex-row items-center">
+                <div className="flex  items-center text-xs desktop:text-sm ">
                     <p className="text-gray-300 flex items-center gap-1">© All rights reserved. Made with<span className="text-red-900 text-xl">{" "}<FaHeart />{" "}</span>
                         by <Link className="hover:text-white font-bold" href={"#"} > {" "}Chasing Watts LLC</Link></p>
 
                 </div>
-                <div className="flex items-center gap-16">
+                <div className="flex items-center flex-col tablet:flex-row gap-1 tablet:gap-16">
                     <div className="ms-6">
-                        <ul className="text-gray-400 text-sm flex gap-5 py-4 cursor-pointer">
+                        <ul className="text-gray-400 text-sm flex gap-5  py-4 cursor-pointer">
                             <li className="hover:text-white">Privacy</li>
                             <li className="hover:text-white">Support</li>
                             <li className="hover:text-white">Contact</li>

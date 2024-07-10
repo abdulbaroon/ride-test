@@ -31,6 +31,7 @@ interface FormData {
     distance?: string;
     centerLatitude?: number;
     centerLongitude?: any;
+    rideType?: string;
     geoJSON?: {
         features?: any[];
     };
@@ -91,6 +92,7 @@ const Form3: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
     const [lat, setLat] = useState<number>(28.5355);
     const [lng, setLng] = useState<number>(77.3910);
     const [code, setCode] = useState("hellllo");
+    const [address, setAddress] = useState()
     const [city, setCity] = useState<string>("");
     const [state, setState] = useState<string>("");
     const [country, setCountry] = useState<string>("");
@@ -107,7 +109,17 @@ const Form3: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
     );
 
     const handleSubmits: SubmitHandler<FormData> = (data) => {
-        nextForm(data);
+        const payload = {
+            ...data,
+            note: code,
+            startAddress: address,
+            startCity: city,
+            startState: state,
+            startCountry: country,
+            startLat: lat,
+            startLng: lng,
+        }
+        nextForm(payload);
     };
 
     const loadGoogleMapsScript = useCallback(() => {
@@ -150,6 +162,7 @@ const Form3: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
             setCity(homeBaseCity);
             setCountry(homeBaseCountry);
             setState(homeBaseState);
+            setAddress(address)
             setValue("location", address);
         }
     }, [setValue]);
@@ -169,33 +182,32 @@ const Form3: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
 
     const handleProcedureContentChange = useCallback((content: string) => {
         setCode(content);
-        console.log(content);
     }, []);
 
     const mapMemo = useMemo(
-        () => <MapBox center={[lng, lat]} initialZoom={11} circle={10 * 10} className={"h-[43vh]"} />,
+        () => <MapBox center={[lng, lat]} initialZoom={11} circle={10 * 1} className={"h-[43vh]"} />,
         [lng, lat]
     );
 
     return (
         <div className="mt-2 mb-5">
             <form onSubmit={handleSubmit(handleSubmits)} className="">
-                <div className="w-full flex gap-5">
-                    <div className="w-1/2 space-y-5">
+                <div className="w-full flex flex-col tablet:flex-row gap-5">
+                    <div className="tablet:w-1/2 w-full space-y-5">
                         <div className="flex flex-col">
                             <label className="font-medium text-gray-600">Ride name</label>
                             <input
                                 type="text"
                                 placeholder="ride name"
                                 {...register("rideName", { required: "Ride name is required" })}
-                                className="border px-2 py-[6px]"
+                                className="border px-2 py-[6px] w-full"
                             />
                             {errors.rideName && (
                                 <p className="text-red-500 text-xs pt-1">{errors.rideName.message}</p>
                             )}
                         </div>
-                        <div className="flex gap-4">
-                            <div className="w-5/12 flex flex-col">
+                        <div className="flex gap-4 flex-col tablet:flex-row ">
+                            <div className="w-full tablet:w-1/2 flex flex-col">
                                 <label className="font-medium text-gray-600">Start date</label>
                                 <input
                                     className="border px-2 py-[6px]"
@@ -207,29 +219,31 @@ const Form3: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
                                     <p className="text-red-500 text-xs pt-1">{errors.startDate.message}</p>
                                 )}
                             </div>
-                            <div className="w-3/12 flex flex-col">
-                                <label className="font-medium text-gray-600">Start time</label>
-                                <input
-                                    className="border px-2 py-[6px]"
-                                    placeholder="Start time"
-                                    type="time"
-                                    {...register("startTime", { required: "Start time is required" })}
-                                />
-                                {errors.startTime && (
-                                    <p className="text-red-500 text-xs pt-1">{errors.startTime.message}</p>
-                                )}
-                            </div>
-                            <div className="w-3/12 flex flex-col">
-                                <label className="font-medium text-gray-600">End time</label>
-                                <input
-                                    className="border px-2 py-[6px]"
-                                    placeholder="End time"
-                                    type="time"
-                                    {...register("endTime", { required: "End time is required" })}
-                                />
-                                {errors.endTime && (
-                                    <p className="text-red-500 text-xs pt-1">{errors.endTime.message}</p>
-                                )}
+                            <div className="flex w-full tablet:w-1/2 gap-3 ">
+                                <div className="w-1/2 flex flex-col">
+                                    <label className="font-medium text-gray-600">Start time</label>
+                                    <input
+                                        className="border px-2 py-[6px]"
+                                        placeholder="Start time"
+                                        type="time"
+                                        {...register("startTime", { required: "Start time is required" })}
+                                    />
+                                    {errors.startTime && (
+                                        <p className="text-red-500 text-xs pt-1">{errors.startTime.message}</p>
+                                    )}
+                                </div>
+                                <div className="w-1/2 flex flex-col">
+                                    <label className="font-medium text-gray-600">End time</label>
+                                    <input
+                                        className="border px-2 py-[6px]"
+                                        placeholder="End time"
+                                        type="time"
+                                        {...register("endTime", { required: "End time is required" })}
+                                    />
+                                    {errors.endTime && (
+                                        <p className="text-red-500 text-xs pt-1">{errors.endTime.message}</p>
+                                    )}
+                                </div>
                             </div>
                         </div>
                         <div className="flex">
@@ -253,7 +267,7 @@ const Form3: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
                             <label className="font-medium text-gray-600">Ride Type </label>
                             <div className="flex flex-col w-full relative">
                                 <select
-                                    {...register("distance", { required: "Ride type is required" })}
+                                    {...register("rideType", { required: "Ride type is required" })}
                                     className="bg-white border px-2 py-[6px]"
                                 >
                                     <option value="" disabled selected>
@@ -269,7 +283,7 @@ const Form3: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
                             </div>
                         </div>
                     </div>
-                    <div className="w-1/2 mt-5">
+                    <div className="tablet:w-1/2 w-full mt-5">
                         <div>
                             {formData?.centerLatitude ? (
                                 <MapComponent
@@ -295,28 +309,11 @@ const Form3: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
                         onChange={handleProcedureContentChange}
                     />
                 </div>
-                <div className="flex justify-between mt-16">
-                    <button
-                        type="button"
-                        onClick={startOver}
-                        className="bg-gray-100 shadow-md text-gray-600 px-3 py-2 rounded-sm font-semibold"
-                    >
-                        START OVER
-                    </button>
-                    <div className="flex gap-3">
-                        <button
-                            type="button"
-                            onClick={prevForm}
-                            className="bg-gray-100 shadow-md text-gray-600 px-3 py-2 rounded-sm font-semibold"
-                        >
-                            PREVIOUS
-                        </button>
-                        <button
-                            type="submit"
-                            className="bg-primaryText text-white px-9 py-2 rounded-sm font-semibold"
-                        >
-                            NEXT
-                        </button>
+                <div className="flex justify-between mt-28 tablet:mt-20">
+                    <button type="button" onClick={startOver} className="text-sm tablet:text-base bg-gray-100 shadow-md text-gray-600 px-3 py-2 rounded-sm font-semibold h-fit">START OVER</button>
+                    <div className="flex gap-3 flex-col-reverse tablet:flex-row">
+                        <button type="button" onClick={prevForm} className="text-sm tablet:text-base bg-gray-100 shadow-md text-gray-600 px-3 py-2 rounded-sm font-semibold">PREVIOUS</button>
+                        <button type="submit" className="text-sm tablet:text-base bg-primaryText text-white px-9 py-2 rounded-sm font-semibold">NEXT</button>
                     </div>
                 </div>
             </form>

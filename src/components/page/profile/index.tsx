@@ -202,7 +202,6 @@ export const ProfilePage = () => {
                 }
                 setloading(true)
                 const response = await dispatch(updateProfile(updatePayload))
-                console.log(response, "")
                 setloading(false)
                 if (userprofile.rejected.match(response)) {
                     toast.error("failed to Update")
@@ -222,7 +221,6 @@ export const ProfilePage = () => {
         } catch {
             toast.error("something went wrong")
         }
-        console.log(payload, "sd");
     };
 
     const getBase64 = (file: File) =>

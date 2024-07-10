@@ -1,5 +1,6 @@
 "use client"
 import { api } from "@/shared/api";
+import { AddRidePayload } from "@/shared/types/addRide.types";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 interface AddRideState {
@@ -11,7 +12,7 @@ interface AddRideState {
   error: string | any;
 }
 
-const initialState:AddRideState = {       
+const initialState: AddRideState = {
   difficultyLevels: [],
   activityTypes: [],
   activityTags: [],
@@ -71,6 +72,35 @@ export const getHubList = createAsyncThunk(
     }
   }
 );
+
+export const genrateImage = createAsyncThunk(
+  "activitypicture/generate_dalle",
+  async (payload: {
+    prompt: string,
+    distance: number
+  }, { rejectWithValue }) => {
+    try {
+      const endpoint = `activitypicture/generate_dalle`;
+      const response = await api.post(endpoint, payload);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+)
+
+export const addRide = createAsyncThunk(
+  "activity/activity_add",
+  async (payload:unknown, { rejectWithValue }) => {
+    try {
+      const endpoint = `/activity/activity_add`;
+      const response = await api.post(endpoint, payload);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+)
 
 const addRideSlice = createSlice({
   name: "addRide",

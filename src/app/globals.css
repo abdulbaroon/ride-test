@@ -44,7 +44,10 @@ select option:not([value=""]) {
 .fileUploader {
   border: 2px dashed #ccc !important;
   height: 150px !important;
+  width: 100% !important;
   font-size: 18px !important;
+  max-width: none !important;
+  min-width: auto !important;
 }
 
 .fileUploader svg {
@@ -65,6 +68,17 @@ select option:not([value=""]) {
   margin-left: 10px !important;
   text-align: center !important;
 }
+@media screen and (max-width: 480px) {
+  .sc-fqkvVR {
+    font-size: 13px !important;
+    margin-left: 0px !important;
+  }
+  .fileUploader {
+    width: 100% !important;
+    min-width: auto !important;
+  }
+}
+
 .sc-eqUAAy{
   display: flex !important;
   flex-direction: column;
@@ -77,4 +91,13 @@ select option:not([value=""]) {
 
 .quill{
   height: 135px !important;
+}
+
+@layer components {
+  .optInput {
+    @apply text-19 sm:text-23 block w-8 sm:w-12 px-2 sm:px-4 py-1 border-primaryBlack border-2 outline-none focus:border-primaryRed rounded-md;
+  }
+  .remove-arrow {
+    @apply [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none;
+  }
 }

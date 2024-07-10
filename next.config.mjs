@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    output:"export"
+    output:"standalone",
+    images: {
+        domains: ['dalleproduse.blob.core.windows.net'],
+      },
 };
 
 export default nextConfig;
