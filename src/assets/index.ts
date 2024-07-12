@@ -1,4 +1,12 @@
 import accountLogo from "./CW-Icon-sm.png"
 import navLogo from "./cw-logo.png"
-import stravaIcon from "./icons/strava.svg" 
-export {accountLogo,navLogo,stravaIcon}
+import stravaIcon from "./icons/strava.svg"
+import arrowRight from "./arrowRight.png"
+import googleStore from "./googleStore.png"
+import appleStore from "./appleStore.png"
+import rideDetail from "./ride_details.png"
+import rideList from "./ride_list.png"
+import rideMap from "./ride_map.png"
+import featbg from "./featbg.jpeg"
+import logo from "./chasingwattLogo.png"
+export { logo ,featbg, accountLogo, navLogo, stravaIcon, arrowRight, googleStore, appleStore, rideDetail, rideList, rideMap }

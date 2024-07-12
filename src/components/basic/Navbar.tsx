@@ -1,18 +1,19 @@
-
 "use client"
 import { navLogo } from "@/assets"
-import { RootState } from "@/redux/store/store"
+import { refreshToken } from "@/redux/slices/authSlice"
+import { AppDispatch, RootState } from "@/redux/store/store"
 import { User } from "@/shared/types/account.types"
 import { getCookie } from "cookies-next"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { FaBell } from "react-icons/fa"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 
-const NavBar = () => {
-    const router = useRouter()
+ const Navbar = () => {
+  const router = useRouter()
     const [user, setUser] = useState<string>()
+    const dispatch = useDispatch<AppDispatch>()
     const userData = useSelector<RootState>(
         (state) => state.auth.user
     ) as User
@@ -22,20 +23,24 @@ const NavBar = () => {
             setUser(userCookie)
         }
     }, [userData])
-    return (
-        <header className=" bg-secondaryButton   " >
+    useEffect(()=>{
+      const response = dispatch(refreshToken())
+    },[])
+  return (
+    <header className=" bg-secondaryButton fixed top-0 w-full z-50" >
             <div className="w-11/12 mx-auto py-4 flex justify-between">
                 <div className="flex items-center ">
                     <div className="">
+                        <Link href={"/"}></Link>
                         <img src={navLogo.src} alt="logo" />
                     </div>
-                    <div className="ms-6">
-                        <div className="text-gray-400 font-semibold flex gap-5 py-4 cursor-pointer">
+                    <div className="ms-6 ">
+                        <div className="text-gray-400 font-semibold hidden tablet:flex gap-5 py-4 cursor-pointer">
                             {user ? <Link href={"#"} className=" hover:text-white ">Dashboard</Link> :
-                                <Link href={"#"} className="border-r pe-4 hover:text-white ">Register</Link>}
-                            {user ? <Link href={"#"} className="hover:text-white">Add Ride</Link>
-                                : <Link href={"#"} className="hover:text-white">Feature</Link>}
-                            <Link href={"#"} className="hover:text-white">Search</Link>
+                                <Link href={"/dashboard"} className="border-r pe-4 hover:text-white ">Register</Link>}
+                            {user ? <Link href={"/activities/add"} className="hover:text-white">Add Ride</Link>
+                                : <Link href={"/features"} className="hover:text-white">Feature</Link>}
+                            <Link href={"/activities/search"} className="hover:text-white">Search</Link>
                             <Link href={"#"} className="hover:text-white">Calender</Link>
                             {user && <Link href={"#"} className="hover:text-white">Hubs</Link>}
                             <Link href={"#"} className="hover:text-white">About Us</Link>
@@ -55,6 +60,6 @@ const NavBar = () => {
                 </div>
             </div>
         </header>
-    )
+  )
 }
-export default NavBar
+export default Navbar

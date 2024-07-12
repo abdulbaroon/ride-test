@@ -1,6 +1,6 @@
 "use client"
 import { api } from "@/shared/api";
-import { AddRidePayload } from "@/shared/types/addRide.types";
+import { AddRidePayload, SearchRide } from "@/shared/types/addRide.types";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 interface AddRideState {
@@ -8,6 +8,7 @@ interface AddRideState {
   activityTypes: [];
   activityTags: [];
   hubList: [];
+  searchRide:[]
   loading: boolean;
   error: string | any;
 }
@@ -17,6 +18,7 @@ const initialState: AddRideState = {
   activityTypes: [],
   activityTags: [],
   hubList: [],
+  searchRide:[],
   loading: false,
   error: null
 };
@@ -102,6 +104,19 @@ export const addRide = createAsyncThunk(
   }
 )
 
+export const searchRide = createAsyncThunk(
+  "activity/search",
+  async (payload:SearchRide, { rejectWithValue }) => {
+    try {
+      const endpoint = `/activity/search`;
+      const response = await api.post(endpoint, payload);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+)
+
 const addRideSlice = createSlice({
   name: "addRide",
   initialState,
@@ -153,6 +168,18 @@ const addRideSlice = createSlice({
         state.hubList = action.payload;
       })
       .addCase(getHubList.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(searchRide.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(searchRide.fulfilled, (state, action) => {
+        state.loading = false;
+        state.searchRide = action.payload;
+      })
+      .addCase(searchRide.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

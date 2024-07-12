@@ -162,8 +162,8 @@ const Form2: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
                         </div>
                         <div className="flex gap-0 tablet:gap-4 mt-3">
                             <div className="flex flex-col w-full relative">
-                                <select {...register("difficulty", { required: "Ride type is required" })} className={` bg-white border px-2 py-[6px] `}>
-                                    <option value="" disabled selected>Activity Type</option>
+                                <select {...register("difficulty", { required: "Difficulty type is required" })} className={` bg-white border px-2 py-[6px] `}>
+                                    <option value="" disabled selected>Difficulty Type</option>
                                     {difficultyLevel?.map((data) => (
                                         <option value={data.difficultyLevelID} key={data.difficultyLevelID}>{data.levelName}</option>
                                     ))}

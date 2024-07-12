@@ -16,12 +16,14 @@ const config: Config = {
         secondaryButton:"#244161",
         primaryDarkblue:"#003057",
         violet:"#1f1b2d",
-        lightViolet:"#282435"
+        lightViolet:"#282435",
+        lightGray:"#dee4eb",
+        darkred:"#f23c49"
       },
       screens: {
         desktop: "1180px",
         tablet: "774px",
-        mobile: "335px",
+        mobile: "420px",
       },
       fontSize: {
         ...rem(13),

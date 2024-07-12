@@ -111,3 +111,4 @@ export const AddRidePage: React.FC = () => {
     </section>
   );
 };
+12
