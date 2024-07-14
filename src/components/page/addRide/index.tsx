@@ -29,7 +29,7 @@ interface FormProps {
 }
 
 export const AddRidePage: React.FC = () => {
-  const [currentForm, setCurrentForm] = useState<number>(4);
+  const [currentForm, setCurrentForm] = useState<number>(1);
   const [formData, setFormData] = useState<FormData>({});
   const dispatch = useDispatch<AppDispatch>()
   useEffect(()=>{

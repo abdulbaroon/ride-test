@@ -116,13 +116,13 @@ export const SearchPage = () => {
             console.log()
             if (response.payload.length>0){
                 setRide(response.payload)
-                toast.success("One ride Found")
+                toast.success("We found 1 rides!")
             }else{
               toast.error("No rides found")
               setRide([])
             }
           } else if (searchRide.rejected.match(response)) {
-            toast.error("failed to register")
+            toast.error("failed to find ride")
           }
     };
 

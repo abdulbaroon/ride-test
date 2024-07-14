@@ -10,6 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@mapbox/mapbox-gl-draw": "^1.4.3",
     "@reduxjs/toolkit": "^2.2.5",
     "@tmcw/togeojson": "^5.8.1",
     "@types/google.maps": "^3.55.11",
@@ -17,7 +18,7 @@
     "axios": "^1.7.2",
     "cookies-next": "^4.2.1",
     "dayjs": "^1.11.11",
-    "mapbox-gl": "^3.4.0",
+    "mapbox-gl": "^3.5.1",
     "next": "14.2.4",
     "nextjs-toploader": "^1.6.12",
     "react": "^18",
@@ -36,6 +37,7 @@
     "tailwind-merge": "^2.3.0"
   },
   "devDependencies": {
+    "@types/mapbox__mapbox-gl-draw": "^1.4.6",
     "@types/mapbox-gl": "^3.1.0",
     "@types/node": "^20",
     "@types/react": "^18",
