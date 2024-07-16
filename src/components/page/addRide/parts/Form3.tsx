@@ -2,7 +2,9 @@
 import MapBox from "@/components/module/MapBox";
 import MapComponent from "@/components/module/MapComponent";
 import { RootState } from "@/redux/store/store";
+import { format } from "date-fns";
 import React, { useEffect, useMemo, useRef, useState, useCallback } from "react";
+import DatePicker from "react-datepicker";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { IoMdArrowDropdown } from "react-icons/io";
 import ReactQuill from "react-quill";
@@ -23,7 +25,7 @@ interface Form1Props {
 
 interface FormData {
     rideName?: string;
-    startDate?: string;
+    startDate?: string | null;
     startTime?: string;
     endTime?: string;
     location?: string;
@@ -91,12 +93,13 @@ const Form3: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
     const [file, setFile] = useState<File>();
     const [lat, setLat] = useState<number>(28.5355);
     const [lng, setLng] = useState<number>(77.3910);
-    const [code, setCode] = useState("hellllo");
+    const [code, setCode] = useState("");
     const [address, setAddress] = useState()
     const [city, setCity] = useState<string>("");
     const [state, setState] = useState<string>("");
     const [country, setCountry] = useState<string>("");
     const autocompleteRef = useRef<any>(null);
+    const [startDate, setStartDate] = useState<Date | null>(new Date());
     const {
         register,
         handleSubmit,
@@ -118,13 +121,14 @@ const Form3: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
             startCountry: country,
             startLat: lat,
             startLng: lng,
+            startDate: startDate ? format(startDate, 'yyyy-MM-dd') : null
         }
         nextForm(payload);
     };
 
     const loadGoogleMapsScript = useCallback(() => {
         const script = document.createElement("script");
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_API}&libraries=places`;
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_API}&libraries=places,geometry`;
         script.async = true;
         script.onload = () => {
             initAutocomplete();
@@ -136,7 +140,7 @@ const Form3: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
         const input = document.getElementById("autocomplete") as HTMLInputElement;
         if (input) {
             autocompleteRef.current = new window.google.maps.places.Autocomplete(input, {
-                types: ["address"],
+                types: ["establishment", "geocode"],
             });
             autocompleteRef.current.addListener("place_changed", handlePlaceSelect);
         }
@@ -183,9 +187,12 @@ const Form3: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
     const handleProcedureContentChange = useCallback((content: string) => {
         setCode(content);
     }, []);
-
+    const handelMarkerChnage =(cords:[number,number])=>{
+      setLng(cords[0])
+      setLat(cords[1])
+    }
     const mapMemo = useMemo(
-        () => <MapBox center={[lng, lat]} initialZoom={11} circle={10 * 1} className={"h-[43vh]"} />,
+        () => <MapBox center={[lng, lat]} initialZoom={11} circle={10 * 1} className={"h-[43vh]"} setMarkerPos={handelMarkerChnage} />,
         [lng, lat]
     );
 
@@ -198,8 +205,9 @@ const Form3: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
                             <label className="font-medium text-gray-600">Ride name</label>
                             <input
                                 type="text"
+                                defaultValue={formData?.rideName}
                                 placeholder="ride name"
-                                {...register("rideName", { required: "Ride name is required" })}
+                                {...register("rideName", { required: "Please enter a ride name." })}
                                 className="border px-2 py-[6px] w-full"
                             />
                             {errors.rideName && (
@@ -209,15 +217,13 @@ const Form3: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
                         <div className="flex gap-4 flex-col tablet:flex-row ">
                             <div className="w-full tablet:w-1/2 flex flex-col">
                                 <label className="font-medium text-gray-600">Start date</label>
-                                <input
-                                    className="border px-2 py-[6px]"
-                                    placeholder="Start date"
-                                    type="date"
-                                    {...register("startDate", { required: "Start date is required" })}
+                                <DatePicker
+                                    showIcon
+                                    selected={startDate}
+                                    onChange={(date) => setStartDate(date)}
+                                    className="custom-datepicker-input"
+                                    dateFormat="eee, MMMM d, yyyy"
                                 />
-                                {errors.startDate && (
-                                    <p className="text-red-500 text-xs pt-1">{errors.startDate.message}</p>
-                                )}
                             </div>
                             <div className="flex w-full tablet:w-1/2 gap-3 ">
                                 <div className="w-1/2 flex flex-col">
@@ -225,8 +231,9 @@ const Form3: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
                                     <input
                                         className="border px-2 py-[6px]"
                                         placeholder="Start time"
+                                        defaultValue={formData?.startTime}
                                         type="time"
-                                        {...register("startTime", { required: "Start time is required" })}
+                                        {...register("startTime", { required: "Please enter a start time." })}
                                     />
                                     {errors.startTime && (
                                         <p className="text-red-500 text-xs pt-1">{errors.startTime.message}</p>
@@ -237,8 +244,9 @@ const Form3: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
                                     <input
                                         className="border px-2 py-[6px]"
                                         placeholder="End time"
+                                        defaultValue={formData?.endTime}
                                         type="time"
-                                        {...register("endTime", { required: "End time is required" })}
+                                        {...register("endTime", { required: "Please enter a end time." })}
                                     />
                                     {errors.endTime && (
                                         <p className="text-red-500 text-xs pt-1">{errors.endTime.message}</p>
@@ -252,8 +260,9 @@ const Form3: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
                                     Start Location - search
                                 </label>
                                 <input
-                                    {...register("location", { required: "Home location is required" })}
+                                    {...register("location", { required: "Please select a start location." })}
                                     id="autocomplete"
+                                    defaultValue={formData?.location}
                                     className="bg-white border px-2 py-[6px]"
                                     placeholder="Search location"
                                     type="text"
@@ -267,6 +276,7 @@ const Form3: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
                             <label className="font-medium text-gray-600">Ride Type </label>
                             <div className="flex flex-col w-full relative">
                                 <select
+                                    defaultValue={formData?.rideType}
                                     {...register("rideType", { required: "Ride type is required" })}
                                     className="bg-white border px-2 py-[6px]"
                                 >
@@ -285,22 +295,14 @@ const Form3: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
                     </div>
                     <div className="tablet:w-1/2 w-full mt-5">
                         <div>
-                            {formData?.centerLatitude ? (
-                                <MapComponent
-                                    centerLatitude={formData.centerLatitude}
-                                    centerLongitude={formData.centerLongitude}
-                                    geoJSON={formData.geoJSON}
-                                    className=""
-                                />
-                            ) : (
+                            {(
                                 mapMemo
                             )}
                         </div>
                     </div>
                 </div>
-
                 <div className="my-5">
-                    <label className="font-medium text-gray-600">Note</label>
+                    <label className="font-medium text-gray-600">Notes</label>
                     <ReactQuill
                         theme="snow"
                         modules={modules}
@@ -310,10 +312,10 @@ const Form3: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
                     />
                 </div>
                 <div className="flex justify-between mt-28 tablet:mt-20">
-                    <button type="button" onClick={startOver} className="text-sm tablet:text-base bg-gray-100 shadow-md text-gray-600 px-3 py-2 rounded-sm font-semibold h-fit">START OVER</button>
+                    <button type="button" onClick={startOver} className="text-sm tablet:text-base bg-gray-100 shadow-md text-gray-600 px-3 py-2 rounded-md font-semibold h-fit">START OVER</button>
                     <div className="flex gap-3 flex-col-reverse tablet:flex-row">
-                        <button type="button" onClick={prevForm} className="text-sm tablet:text-base bg-gray-100 shadow-md text-gray-600 px-3 py-2 rounded-sm font-semibold">PREVIOUS</button>
-                        <button type="submit" className="text-sm tablet:text-base bg-primaryText text-white px-9 py-2 rounded-sm font-semibold">NEXT</button>
+                        <button type="button" onClick={prevForm} className="text-sm tablet:text-base bg-gray-100 shadow-md text-gray-600 px-3 py-2 rounded-md font-semibold">PREVIOUS</button>
+                        <button type="submit" className="text-sm tablet:text-base bg-primaryText text-white px-9 py-2 rounded-md font-semibold">NEXT</button>
                     </div>
                 </div>
             </form>

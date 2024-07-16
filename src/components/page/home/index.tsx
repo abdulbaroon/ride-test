@@ -111,7 +111,7 @@ export const HomePage = () => {
           <div className="w-full tablet:w-1/2">
             <div className="flex flex-col justify-center text-center tablet:text-start h-full gap-7">
               <h1 className="text-3xl font-bold text-gray-800">GET THE APP!</h1>
-              <p className="text-gray-500 text-lg">Download Chasing Watts and join the community of cycling enthusiasts. Don't stop your search for great group rides when you leave your computer with our iOS and Android app!</p>
+              <p className="text-gray-500 text-lg">Download Chasing Watts and join the community of cycling enthusiasts. Don&apos;t stop your search for great group rides when you leave your computer with our iOS and Android app!</p>
               <div className="flex gap-2 flex-col tablet:flex-row items-center tablet:items-start">
                 <div className="w-48 sm:w-44 desktop:w-48" ><img src={appleStore.src} alt="" /></div>
                 <div className="w-48 sm:w-44 desktop:w-48" ><img src={googleStore.src} alt="" /></div>
@@ -125,9 +125,9 @@ export const HomePage = () => {
           </div>
         </div>
         <div className="my-12">
-          <h1 className="text-center text-2xl tablet:text-4xl font-bold">Ready to ride? Let's go!</h1>
+          <h1 className="text-center text-2xl tablet:text-4xl font-bold">Ready to ride? Let&apos;s go!</h1>
           <div className="flex justify-center flex-col items-center tablet:items-center tablet:flex-row gap-2 mt-3">
-            <button className="bg-primaryText rounded-lg py-2 px-7 w-fit text-white border  font-bold">Join In! It's FREE.</button>
+            <button className="bg-primaryText rounded-lg py-2 px-7 w-fit text-white border  font-bold">Join In! It&apos;s FREE.</button>
             <button className="bg-secondaryButton rounded-lg py-2 w-fit px-7 text-white border border-white font-bold">Already Member? Login.</button>
           </div>
         </div>

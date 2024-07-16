@@ -3,7 +3,7 @@ import { AppDispatch, RootState } from "@/redux/store/store";
 import { ChangeEvent, useState } from "react";
 import { FileUploader } from "react-drag-drop-files";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { IoMdArrowDropdown } from "react-icons/io";
+import { IoMdArrowDropdown, IoMdClose } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import Modal from 'react-modal';
 import { genrateImage } from "@/redux/slices/addRideSlice";
@@ -13,7 +13,13 @@ import { IoCloseSharp } from "react-icons/io5";
 import { User } from "@/shared/types/account.types";
 import { saveRide } from "../feature/rideFeature";
 import Select, { IndicatorSeparatorProps } from 'react-select'
+import Creatable from 'react-select/creatable';
 import Image from "next/image";
+import { components } from 'react-select';
+import { IoMdAdd } from "react-icons/io";
+import { GoPlusCircle } from "react-icons/go";
+import { ImGlass } from "react-icons/im";
+import Success from "./Success";
 
 const customStyles = {
     content: {
@@ -31,6 +37,7 @@ interface Form1Props {
     formData?: FormData;
     startOver: () => void;
     prevForm?: () => void;
+    setSuccess?: () => void;
 }
 
 interface FormData {
@@ -59,20 +66,31 @@ const IndicatorSeparator = ({
     return <span style={indicatorSeparatorStyle} {...innerProps} />;
 };
 
-const Form4: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }) => {
+
+const CustomOption = (props: any) => {
+    return (
+        <components.Option {...props}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+                {props.data.__isNew__ && <GoPlusCircle style={{ marginRight: 4 }} />}
+                {props.children}
+            </div>
+        </components.Option>
+    );
+};
+const Form4: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm, setSuccess }) => {
     const [modalIsOpen, setIsOpen] = useState<boolean>(false);
     const [dallEInput, setDallEInput] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
+    const [finalLoading, setFinalLoading] = useState<boolean>()
     const [aiImage, setAiImage] = useState<string | null>(null);
-    const [image, setImage] = useState<File>()
-    const [waiver, setWaiver] = useState<File>()
-    const [select, setSelect] = useState<String[]>()
+    const [image, setImage] = useState<File | null>()
+    const [waiver, setWaiver] = useState<File | null>()
+    const [select, setSelect] = useState<string[]>([])
     const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
     const dispatch = useDispatch<AppDispatch>();
     const activityTags = useSelector<RootState, string[]>((state) => state.addRide.activityTags);
     const hubList = useSelector<RootState, HubList[]>((state) => state.addRide.hubList);
     const formattedActivityTags = activityTags.map(tag => ({ label: tag, value: tag }));
-    console.log(activityTags, "#@")
     const userData = useSelector<RootState>((state) => state.auth.user) as User
     const handleSubmits: SubmitHandler<FormData> = async (data) => {
         const payload = {
@@ -86,17 +104,17 @@ const Form4: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
             },
             user: userData
         }
-        console.log(payload, "SD")
         const onSuccess = (response: any) => {
-            console.log('Ride saved successfully', response);
+            toast.success('Ride saved successfully');
+            setSuccess?.()
         };
 
         const onError = (error: any) => {
-            console.error('Error saving ride', error);
+            toast.error('Error while saving ride');
         };
-
+        setFinalLoading(true)
         await saveRide(dispatch, onSuccess, onError, payload);
-
+        setFinalLoading(false)
     };
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -130,9 +148,9 @@ const Form4: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
     }
     const handleImage = (file: File) => {
         setImage(file)
+        console.log(file, "file")
     }
     const handleSelect = (selectedOptions: any) => {
-        console.log(selectedOptions);
         const tags = selectedOptions?.map((item: any) => item.label)
         setSelect(tags)
     };
@@ -151,7 +169,7 @@ const Form4: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
 
     return (
         <div className="mt-2 mb-5">
-            <form onSubmit={handleSubmit(handleSubmits)} className="">
+            {<form onSubmit={handleSubmit(handleSubmits)} className="">
                 <div>
                     <div className="flex gap-7 mt-5 flex-col tablet:flex-row">
                         {renderCheckbox("Community", "Can’t lead the ride, select this option set as a community ride.", "isCommunity")}
@@ -166,9 +184,9 @@ const Form4: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
 
                             <label className="font-medium text-gray-600">Activity Tags</label>
                             <div className="flex flex-col relative mt-1">
-                                <Select
+                                <Creatable
                                     closeMenuOnSelect={false}
-                                    components={{ IndicatorSeparator }}
+                                    components={{ IndicatorSeparator, Option: CustomOption }}
                                     isMulti
                                     options={formattedActivityTags}
                                     onChange={handleSelect}
@@ -182,7 +200,7 @@ const Form4: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
                             <label className="font-medium text-gray-600">Hub List</label>
                             <div className="flex flex-col relative mt-1">
                                 <select
-                                    {...register("hubList", { required: "Hub list is required" })}
+                                    {...register("hubList")}
                                     className="bg-white border px-2 py-[6px]"
                                 >
                                     <option value="" disabled selected>
@@ -217,7 +235,7 @@ const Form4: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
                         <div className="w-full tablet:w-1/2">
                             <div className="flex flex-col">
                                 <label className="font-medium text-gray-600">Need an image? Let us generate one!</label>
-                                <button type="button" className="bg-primaryText text-white px-9 py-2 rounded-sm font-semibold mt-1" onClick={handleOpenModal}>
+                                <button type="button" className="bg-primaryText text-white px-9 py-2 rounded-md font-semibold mt-1" onClick={handleOpenModal}>
                                     {aiImage ? "Preview Image" : "Generate AI Image"}
                                 </button>
                             </div>
@@ -232,14 +250,38 @@ const Form4: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
                         </div>
                     </div>
                 </div>
+                <div className="flex gap-6">
+                    {waiver && (
+                        <div className="mt-3">
+                            <label className="font-medium text-gray-600 ">Selected Waiver PDF:</label>
+                            <div className="mt-1 relative">
+                                <embed src={URL.createObjectURL(waiver)} type="application/pdf" width="400px" height="225px" />
+                                <IoMdClose className="text-black rounded-full bg-[#ffffff30] text-xl top-3 right-6 absolute cursor-pointer" onClick={() => setWaiver(null)} />
+                            </div>
+                        </div>
+                    )}
+                    {image && (
+                        <div className="mt-3  overflow-hidden ">
+                            <label className="font-medium text-gray-600">Selected Ride Image:</label>
+                            <div className="mt-1 relative w-[400px] h-[250px]">
+                                <img src={URL.createObjectURL(image)} alt="Selected Ride Image" className=" " />
+                                <IoMdClose className="text-black rounded-full bg-[#ffffff30] backdrop-blur-sm  text-xl top-3 right-3 absolute cursor-pointer" onClick={() => setImage(null)} />
+                            </div>
+                        </div>
+                    )}
+
+                </div>
                 <div className="flex justify-between mt-6 ">
-                    <button type="button" onClick={startOver} className="text-sm tablet:text-base bg-gray-100 shadow-md text-gray-600 px-3 py-2 rounded-sm font-semibold h-fit">START OVER</button>
+                    <button type="button" onClick={startOver} className="text-sm tablet:text-base bg-gray-100 shadow-md text-gray-600 px-3 py-2 rounded-md font-semibold h-fit">START OVER</button>
                     <div className="flex gap-3 flex-col-reverse tablet:flex-row">
-                        <button type="button" onClick={prevForm} className="text-sm tablet:text-base bg-gray-100 shadow-md text-gray-600 px-3 py-2 rounded-sm font-semibold">PREVIOUS</button>
-                        <button type="submit" className="text-sm tablet:text-base bg-primaryText text-white px-9 py-2 rounded-sm font-semibold">FINISH</button>
+                        <button type="button" onClick={prevForm} className="text-sm tablet:text-base bg-gray-100 shadow-md text-gray-600 px-3 py-2 rounded-md font-semibold">PREVIOUS</button>
+                        <button type="submit" className="text-sm tablet:text-base bg-primaryText text-white px-9 py-2 rounded-md font-semibold w-32">
+                            {finalLoading ? <CgSpinner className='mx-auto animate-spin w-6 h-6' /> : "FINISH"}
+                        </button>
                     </div>
                 </div>
             </form>
+            }
             <Modal
                 isOpen={modalIsOpen}
                 style={customStyles}
@@ -256,7 +298,7 @@ const Form4: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
                                 value={dallEInput}
                                 onChange={handleChange}
                             />
-                            <button type="submit" disabled={loading} className="bg-primaryText text-white px-3 tablet:px-9  py-1 rounded-sm font-semibold text-xs tablet:text-base" onClick={handleGenerate}>
+                            <button type="submit" disabled={loading} className="bg-primaryText text-white px-3 tablet:px-9  py-1 rounded-md font-semibold text-xs tablet:text-base" onClick={handleGenerate}>
                                 {loading ? <CgSpinner className='mx-auto animate-spin w-6 h-6' /> : "Generate"}
                             </button>
                         </div>
@@ -269,7 +311,7 @@ const Form4: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
                         )}
                     </div>
                     <div className="flex justify-end">
-                        <button type="submit" disabled={loading} className="bg-primaryText text-white  px-3 tablet:px-9 py-2 tablet:py-2 text-xs tablet:text-base rounded-sm font-semibold" onClick={handleCloseModal}>
+                        <button type="submit" disabled={loading} className="bg-primaryText text-white  px-3 tablet:px-9 py-2 tablet:py-2 text-xs tablet:text-base rounded-md font-semibold" onClick={handleCloseModal}>
                             Add Image
                         </button>
                     </div>

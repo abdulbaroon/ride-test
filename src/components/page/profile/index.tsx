@@ -38,7 +38,7 @@ export const ProfilePage = () => {
     const [state, setState] = useState<string>("")
     const [country, setCountry] = useState<string>("")
     const [success, setSuccess] = useState<boolean>(false)
-
+    useState
     const autocompleteRef = useRef<any>(null);
     const userData = useSelector<RootState>(
         (state) => state.auth.user
@@ -283,7 +283,7 @@ export const ProfilePage = () => {
     return (
         <section className="w-full py-10 ">
             {!success ?
-                <div className='flex flex-col desktop:flex-row w-11/12  mx-auto gap-5'>
+                <div className='flex flex-col desktop:flex-row w-11/12  mx-auto gap-5 mt-[90px]'>
                     <div className="w-full desktop:w-3/4 border bg-white rounded-2xl shadow-lg py-10 px-10">
                         <h1 className=" w-full font-bold border-b text-4xl">Profile Settings</h1>
                         <div className="w-full flex justify-center flex-col items-center">
@@ -416,7 +416,8 @@ export const ProfilePage = () => {
                     <button type="button" onClick={() => router.push("#")} className='bg-primaryButton py-[9px] w-9/12 tablet:w-8/12 px-6 font-bold text-white rounded-md mt-3'>
                         LET&apos;S RIDE
                     </button>
-                </div>}
+                </div>
+                }
         </section>
     );
 };

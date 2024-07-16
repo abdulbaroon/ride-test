@@ -166,7 +166,7 @@ const useGpxToGeoJson = () => {
         });
 
         // Display toast message
-        toast.success('Route Imported! Your route has been imported!');
+        // toast.success('Route Imported! Your route has been imported!');
       } catch (error: any) {
         updateState({
           error: true,

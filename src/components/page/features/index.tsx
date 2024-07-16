@@ -19,7 +19,7 @@ const tableArray = ["Date/Time based events",
 ]
 export const FeaturesPage = () => {
     return (
-        <div className="mt-[88px] min-h-screen"
+        <div className="mt-[90px] min-h-screen"
             style={{
                 backgroundImage: `url(${featbg.src})`,
                 backgroundPosition: "0% 40%",
@@ -96,9 +96,9 @@ export const FeaturesPage = () => {
                     <div className='bg-secondaryButton rounded-xl flex  mx-auto px-[8%] '>
                         <div className='w-1/2 py-10'>
                             <h1 className='text-3xl mt-1 font-semibold text-white'>Join Chasing Watts today.</h1>
-                            <p className='text-2xl text-white mt-7 font-bold w-11/12'>Be a part of the cycling community and let's ride!</p>
+                            <p className='text-2xl text-white mt-7 font-bold w-11/12'>Be a part of the cycling community and let&apos;s ride!</p>
                             <div className="flex  gap-2 mt-5">
-                                <button className="bg-darkred rounded-lg py-3 px-5 w-fit text-white  font-bold">Sign up - it's free</button>
+                                <button className="bg-darkred rounded-lg py-3 px-5 w-fit text-white  font-bold">Sign up - it&apos;s free</button>
                                 <button className="bg-primaryButton rounded-lg py-3 w-fit px-5 text-white font-bold">Already Member? Login.</button>
                             </div>
                         </div>

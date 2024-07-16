@@ -3,10 +3,12 @@ import React, { useEffect, useState } from "react";
 import Form1 from "./parts/Form1";
 import Form2 from "./parts/Form2";
 import Form3 from "./parts/Form3";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getActivityTag, getActivityType, getDifficultyLevel, getHubList } from "@/redux/slices/addRideSlice";
-import { AppDispatch } from "@/redux/store/store";
+import { AppDispatch, RootState } from "@/redux/store/store";
 import Form4 from "./parts/Form4";
+import Success from "./parts/Success";
+import { User } from "@/shared/types/account.types";
 
 const stepName = [
   "Have a Route?",
@@ -31,8 +33,13 @@ interface FormProps {
 export const AddRidePage: React.FC = () => {
   const [currentForm, setCurrentForm] = useState<number>(1);
   const [formData, setFormData] = useState<FormData>({});
+  const [success,setSuccess]=useState<boolean>(false)
+  const userData = useSelector<RootState>((state) => state.auth.user) as User
   const dispatch = useDispatch<AppDispatch>()
   useEffect(()=>{
+    const hubpayload ={
+      id:userData?.id 
+    }
     dispatch(getDifficultyLevel())
     dispatch(getActivityType())
     dispatch(getActivityTag())
@@ -43,6 +50,7 @@ export const AddRidePage: React.FC = () => {
     if (currentForm < stepName.length) {
       setCurrentForm(currentForm + 1);
     }
+    
   };
 
   const prevForm = () => {
@@ -53,18 +61,22 @@ export const AddRidePage: React.FC = () => {
 
   const startOver = () => {
     setCurrentForm(1);
+    setFormData({})
   };
-
+  
 
   const resultBox: { [key: number]: JSX.Element } = {
     1: <Form1 nextForm={nextForm} formData={formData} startOver={startOver}   />,
     2: <Form2 nextForm={nextForm} formData={formData} startOver={startOver} prevForm={prevForm}  />,
     3: <Form3 nextForm={nextForm} formData={formData} startOver={startOver} prevForm={prevForm}  />,
-    4: <Form4 nextForm={nextForm} formData={formData} startOver={startOver} prevForm={prevForm}  />,
+    4: <Form4 nextForm={nextForm} formData={formData} startOver={startOver} prevForm={prevForm} setSuccess={()=>setSuccess(true)}  />,
   };
 
   return (
-    <section className="bg-white w-[95%]  mx-auto my-10 py-2 rounded-md">
+    <section className=" min-h-screen">
+      {success?
+      <Success/>
+      :<div className="bg-white w-[95%]  mx-auto my-10 py-2 rounded-md mt-28">
       <div className="border-b">
         <h1 className="text-xl tablet:text-3xl font-bold m-5 ">Add a Ride</h1>
       </div>
@@ -108,6 +120,7 @@ export const AddRidePage: React.FC = () => {
         </div>
         <div className="mt-10">{resultBox[currentForm]}</div>
       </div>
+      </div>}
     </section>
   );
 };

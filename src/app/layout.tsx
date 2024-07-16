@@ -4,10 +4,9 @@ import "./globals.css"
 import ReduxProvider from "@/shared/providers/ReduxProvider";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import NavBar from "@/components/basic/Navbar";
-import Footer from "@/components/basic/Footer";
-import NextTopLoader from "nextjs-toploader";
 import 'react-quill/dist/quill.snow.css';
+import "react-datepicker/dist/react-datepicker.css";
+import NextTopLoader from "nextjs-toploader";
 import CustomLayout from "@/layout/CustomLayout";
 
 const inter = Inter({ subsets: ["latin"] });

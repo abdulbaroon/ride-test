@@ -1,7 +1,7 @@
 import { useDispatch } from 'react-redux';
 import dayjs from 'dayjs';
 import { RouteData } from '@/shared/types/addRide.types';
-import { readFileAsBase64 } from '@/shared/util/format.util';
+import {  readFileAsBase64 } from '@/shared/util/format.util';
 import { api } from '@/shared/api';
 import { uploadedFile } from '@/redux/slices/authSlice';
 import { addRide } from '@/redux/slices/addRideSlice';
@@ -29,7 +29,7 @@ const restructureRideData = (payload: Payload) => {
     return {
         activity: {
             activityID: routeData?.activityID,
-            activityTypeID: routeData?.rideType,
+            activityTypeID: Number(routeData?.rideType),
             userID,
             activityName: routeData?.rideName,
             startName: routeData?.startName || '',
@@ -57,8 +57,8 @@ const restructureRideData = (payload: Payload) => {
             isPromoted: routeData?.isPromoted || false,
             isGroup: routeData?.isGroup || false,
             hasWaiver: routeData?.HasWaiver || false,
-            parentActivityID: routeData?.parentActivityID || 0,
-            teamID: routeData?.teamID || 0,
+            parentActivityID: Number(routeData?.parentActivityID) || 0,
+            teamID: Number(routeData?.teamID) || 0,
             isDeleted: routeData?.isDeleted || false,
         },
         activityRoute: [
@@ -67,7 +67,7 @@ const restructureRideData = (payload: Payload) => {
                     routeData?.rideName?.replace('/', '_').replace(' ', '_'),
                 mapSourceID: Number(routeData?.mapSourceID),
                 isPrimary: true,
-                difficultyLevelID: routeData?.difficulty,
+                difficultyLevelID: Number(routeData?.difficulty),
                 distance: Number(routeData?.distance),
                 speed: Number(routeData?.avgSpeed),
                 routeNumber: routeData?.routeNumber ?? null,
@@ -132,7 +132,7 @@ export const saveRide = async (
             });
         }
 
-        if (activityID && routeData?.geoJSON) {
+        if (activityID && routeData?.geoJSON.features) {
             const geoJSONString = JSON.stringify(routeData.geoJSON);
             const geoBinary = Buffer.from(geoJSONString).toString('base64');
             fileUploadModelBinary.push({
@@ -141,8 +141,6 @@ export const saveRide = async (
                 uploadedFile: geoBinary,
             });
         }
-        
-
         if (activityID && routeData?.gpxFilePath) {
             const gpxBinary = await readFileAsBase64(routeData?.gpxFilePath);
             fileUploadModelBinary.push({
@@ -165,8 +163,8 @@ export const saveRide = async (
 
         const activityConsolidatedPayload = {
             Activity: activity,
-            FileUploads: mapSourceID === 4 ? null : fileupload.payload || null ,
-            ActivityRoute: activityRoute,
+            FileUploads: fileupload.payload || null ,
+            AcivityRoute: activityRoute,
             ActivityTags: activityTags,
             DalleUrl: dalleUrl,
         };

@@ -56,7 +56,7 @@ export const RegisterPage = () => {
     };
 
     return (
-        <div className='min-h-screen w-full flex justify-center items-center bg-[#f5f4f8] '>
+        <div className='min-h-screen w-full flex justify-center items-center bg-[#f5f4f8] mt-[90px]'>
             <div className='w-full desktop:w-1/2 mx-auto bg-white border rounded-xl flex items-center flex-col tablet:flex-row'>
                 <div className='w-full tablet:w-1/2 p-6 tablet:p-12 tablet:border-r '>
                     <div>

@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { IoAlert } from "react-icons/io5";
 
@@ -22,14 +22,18 @@ interface FormData {
 }
 
 const Form1: React.FC<Form1Props> = ({ nextForm, formData, startOver }) => {
+
     const {
         register,
         handleSubmit,
         watch,
         control,
+        setValue,
         formState: { errors },
     } = useForm<FormData>();
-
+    useEffect(()=>{
+        setValue("routeType",formData?.routeType||"")
+    },[])
     const handleSubmits: SubmitHandler<FormData> = (data) => {
         nextForm(data);
     };
@@ -66,9 +70,9 @@ const Form1: React.FC<Form1Props> = ({ nextForm, formData, startOver }) => {
                     </p>
                 </div>
                 <div className="flex justify-between mt-5">
-                    <button type="button" onClick={startOver} className="bg-gray-100 shadow-md text-gray-600 px-3 py-2 rounded-sm font-semibold text-sm tablet:text-base">START OVER</button>
+                    <button type="button" onClick={startOver} className="bg-gray-100 shadow-md text-gray-600 px-3 py-2 rounded-md font-semibold text-sm tablet:text-base">START OVER</button>
                     <div className="flex gap-3">
-                        <button type="submit" className="bg-primaryText text-white px-9 py-2 rounded-sm font-semibold text-sm tablet:text-base">NEXT</button>
+                        <button type="submit" className="bg-primaryText text-white px-9 py-2 rounded-md font-semibold text-sm tablet:text-base">NEXT</button>
                     </div>
                 </div>
             </form>

@@ -147,7 +147,9 @@ const authSlice = createSlice({
       state.error = null;
     },
     logout(state) {
-      // state.user = null;
+      state.user = {
+        id:null
+      };
       state.token = null;
     },
   },

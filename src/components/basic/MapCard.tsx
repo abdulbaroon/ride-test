@@ -5,7 +5,13 @@ import { IoLocationOutline } from 'react-icons/io5';
 import { LiaRoadSolid } from 'react-icons/lia';
 import { RiUserSettingsLine } from 'react-icons/ri';
 
-const MapCard = ({data}) => {
+interface ActivityData {
+    activityName: string;
+    startAddress: string;
+    activityPictures: Array<{ picturePath: string }>;
+}
+
+const MapCard = ({data}: { data: ActivityData | any}) => {
     console.log(data,"sd")
     return (
         <div className="w-9/12 bg-white border border-gray-200 rounded-lg shadow-lg">

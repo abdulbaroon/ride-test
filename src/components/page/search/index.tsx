@@ -127,7 +127,7 @@ export const SearchPage = () => {
     };
 
     return (
-        <div className="mt-[90px] w-11/12 mx-auto flex gap-10 p-4">
+        <div className="mt-[90px] w-11/12 mx-auto flex gap-10 p-4 ">
             <div className="w-4/12 bg-white rounded-2xl shadow-lg">
                 <h1 className="text-2xl font-bold p-4 border-b">Search Criteria</h1>
                 <form onSubmit={handleSubmit(handleSubmits)} className="">

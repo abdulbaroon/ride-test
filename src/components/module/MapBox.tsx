@@ -11,6 +11,7 @@ interface MapBoxProps {
   initialZoom?: number;
   circle?: number;
   className?: string;
+  setMarkerPos?:(cords:[number,number])=>void;
 }
 
 const MapBox: React.FC<MapBoxProps> = ({
@@ -18,10 +19,12 @@ const MapBox: React.FC<MapBoxProps> = ({
   initialZoom = 2,
   circle = 1000,
   className,
+  setMarkerPos,
 }) => {
   const [mapStyle, setMapStyle] = useState<string>(
     "mapbox://styles/mapbox/streets-v11"
   );
+  const [markerPosition, setMarkerPosition] = useState<[number, number] | null>(null);
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const markerRef = useRef<mapboxgl.Marker | null>(null);
@@ -84,6 +87,19 @@ const MapBox: React.FC<MapBoxProps> = ({
             "fill-opacity": 0.3,
           },
         });
+
+        newMap.on("click", (e) => {
+          const { lng, lat } = e.lngLat;
+          setMarkerPosition([lng, lat]);
+          if (markerRef.current) {
+            markerRef.current.setLngLat([lng, lat]);
+          } else {
+            markerRef.current = new mapboxgl.Marker({ color: "#FF0000" })
+              .setLngLat([lng, lat])
+              .addTo(newMap);
+          }
+        });
+
       });
 
       return () => {
@@ -116,6 +132,12 @@ const MapBox: React.FC<MapBoxProps> = ({
       );
     }
   }, [circle, center]);
+
+  useEffect(()=>{
+    if(markerPosition){
+      setMarkerPos?.(markerPosition)
+    }
+  },[markerPosition])
 
   return (
     <section className="bg-darkBlack">
