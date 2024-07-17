@@ -36,6 +36,10 @@
       "wdth" 100;
     background-color: #f5f4f8;
   }
+  .input-error {
+    border-color: red;
+  }
+  
   select{
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -116,7 +120,7 @@ select option:not([value=""]) {
 }
 
 .custom-datepicker-input {
-  padding: 10px;
+  padding: 5px 10px ;
   width: 100% !important;
   border: 1px solid #DFDfDf95;
   border-radius: 1px;

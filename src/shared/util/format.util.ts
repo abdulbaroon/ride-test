@@ -16,7 +16,6 @@ export const extractRouteId = (url: string) => {
         xhr.onload = function () {
             const reader = new FileReader();
             reader.onloadend = function () {
-                // Assuming the result is a Data URL, split it and take the base64 part
                 const base64Part = reader?.result ? (reader.result as string).split(',')[1] : '';
                 resolve(base64Part);
             };
@@ -53,28 +52,48 @@ export const extractRouteId = (url: string) => {
 //   });
 // }
 
-export const handleConvertToBase64 = async (file: File): Promise<string | null> => {
-  try {
-    if (file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const base64String = e.target?.result as string;
+// export const handleConvertToBase64 = async (file: File): Promise<string | null> => {
+//   try {
+//     if (file) {
+//       return new Promise((resolve, reject) => {
+//         const reader = new FileReader();
+//         reader.onload = (e) => {
+//           const base64String = e.target?.result as string;
+//           resolve(base64String);
+//         };
+//         reader.onerror = (err) => {
+//           reject(err);
+//         };
+//         reader.readAsDataURL(file);
+//       });
+//     } else {
+//       throw new Error('Please select a file.');
+//     }
+//   } catch (err) {
+//     console.error(err);
+//     throw err; // Propagate the error to the caller
+//   }
+// };
+
+
+export function fileToBase64(file:File) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    
+    reader.onload = () => {
+      if (typeof reader.result === 'string') {
+          const base64String = reader.result.split(',')[1];
           resolve(base64String);
-        };
-        reader.onerror = (err) => {
-          reject(err);
-        };
-        reader.readAsDataURL(file);
-      });
-    } else {
-      throw new Error('Please select a file.');
-    }
-  } catch (err) {
-    console.error(err);
-    throw err; // Propagate the error to the caller
-  }
-};
+      } else {
+          reject(new Error("Reader result is not a string"));
+      }
+  };
+    
+    reader.onerror = error => reject(error);
+    
+    reader.readAsDataURL(file);
+  });
+}
 
 
 

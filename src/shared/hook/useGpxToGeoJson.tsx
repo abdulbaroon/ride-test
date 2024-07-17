@@ -109,8 +109,9 @@ const useGpxToGeoJson = () => {
           const gpxContent = e.target?.result as string;
           const { centerLatitude, centerLongitude, geoJSON, routeDistance } = await gpxToGeojson({ gpxContent });
           const features = geoJSON?.features?.[0];
-          const filePath = `/${features?.properties?.name.replace('/', '_').trimEnd()}.gpx`;
-          
+          const blob = new Blob([gpxContent], { type: 'application/gpx+xml' });
+          const fileURL = URL.createObjectURL(blob);
+          console.log(gpxContent,"gpx")
           updateState({
             centerLatitude,
             centerLongitude,
@@ -118,7 +119,7 @@ const useGpxToGeoJson = () => {
             routeDistance,
             loading: false,
             isRouteTest: true,
-            gpxFilePath: filePath,
+            gpxFilePath: fileURL,
           });
         };
         reader.readAsText(file);
@@ -149,7 +150,9 @@ const useGpxToGeoJson = () => {
         const { centerLatitude, centerLongitude, geoJSON, routeDistance } = gpxToGeojson({
           gpxContent: response.data,
         });
-        
+        const blob = new Blob([response.data], { type: 'application/gpx+xml' });
+        const fileURL = URL.createObjectURL(blob);
+        console.log(fileURL,"res")
         const features = geoJSON?.features?.[0];
         const filePath = `/${features?.properties?.name.replace('/', '_').trimEnd()}.gpx`;
         
@@ -157,7 +160,7 @@ const useGpxToGeoJson = () => {
           centerLongitude,
           centerLatitude,
           geoJSON,
-          gpxFilePath: filePath,
+          gpxFilePath: fileURL,
           routeDistance,
           isRouteTest: true,
           loading: false,

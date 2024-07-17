@@ -1,7 +1,5 @@
-import { useDispatch } from 'react-redux';
-import dayjs from 'dayjs';
 import { RouteData } from '@/shared/types/addRide.types';
-import {  readFileAsBase64 } from '@/shared/util/format.util';
+import {  fileToBase64, readFileAsBase64 } from '@/shared/util/format.util';
 import { api } from '@/shared/api';
 import { uploadedFile } from '@/redux/slices/authSlice';
 import { addRide } from '@/redux/slices/addRideSlice';
@@ -36,8 +34,8 @@ const restructureRideData = (payload: Payload) => {
             createdBy: routeData?.createdBy || userID,
             startW3W: routeData?.startW3W || null,
             activityDate: routeData?.startDate,
-            activityStartTime: routeData?.startTime+":00",
-            activityEndTime: routeData?.endTime+":00",
+            activityStartTime: routeData?.startTime,
+            activityEndTime: routeData?.endTime,
             createdDate: routeData?.createdDate || currentDate,
             modifiedBy: userID,
             modifiedDate: currentDate,
@@ -114,7 +112,7 @@ export const saveRide = async (
         }
 
         if (activityID && routeData?.document) {
-            const pdfBinary = await readFileAsBase64(routeData?.document);
+            const pdfBinary = await fileToBase64(routeData?.document) as string;
             routeData.HasWaiver = true;
             fileUploadModelBinary.push({
                 activityID,
@@ -124,7 +122,7 @@ export const saveRide = async (
         }
 
         if (activityID && routeData?.image) {
-            const imageBinary = await readFileAsBase64(routeData?.image);
+            const imageBinary = await fileToBase64(routeData?.image) as string;
             fileUploadModelBinary.push({
                 activityID,
                 fileUploadTypeID: 1,
@@ -132,23 +130,42 @@ export const saveRide = async (
             });
         }
 
-        if (activityID && routeData?.geoJSON.features) {
-            const geoJSONString = JSON.stringify(routeData.geoJSON);
-            const geoBinary = Buffer.from(geoJSONString).toString('base64');
-            fileUploadModelBinary.push({
-                activityID,
+        if (activityID && routeData?.geoJSON?.features) {
+            try {
+              const jsonString = JSON.stringify(routeData.geoJSON, null, 2);
+              const geoBinary = btoa(jsonString); 
+              fileUploadModelBinary?.push({
+                activityID: activityID,
                 fileUploadTypeID: 4,
                 uploadedFile: geoBinary,
-            });
-        }
-        if (activityID && routeData?.gpxFilePath) {
-            const gpxBinary = await readFileAsBase64(routeData?.gpxFilePath);
-            fileUploadModelBinary.push({
-                activityID,
+              });
+            } catch (error) {
+              console.error(error);
+            }
+          }
+
+          if (activityID && routeData?.gpxFilePath) {
+            try {
+              const response = await fetch(decodeURI(routeData.gpxFilePath));
+              if (!response.ok) {
+                throw new Error(`Failed to load GPX file: ${response.statusText}`);
+              }
+              const arrayBuffer = await response.arrayBuffer();
+              console.log(arrayBuffer,"Sd");
+              
+              const uint8Array = new Uint8Array(arrayBuffer);
+              const base64String = uint8Array.reduce((data, byte) => data + String.fromCharCode(byte), '');
+              
+              fileUploadModelBinary?.push({
+                activityID: activityID,
                 fileUploadTypeID: 3,
-                uploadedFile: gpxBinary,
-            });
-        }
+                uploadedFile: btoa(base64String),
+              });
+            } catch (error) {
+              console.error(error);
+            }
+          }
+          
 
         if (fileUploadModelBinary.length > 0) {
             const filePayload = { fileUploadModelBinary };
@@ -170,7 +187,7 @@ export const saveRide = async (
         };
 
         const response = await dispatch(addRide(activityConsolidatedPayload));
-        onSuccess(response.data);
+        onSuccess(response.payload);
     } catch (error:any) {
         onError(error.message || '');
         console.log(error)

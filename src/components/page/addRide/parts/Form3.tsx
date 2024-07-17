@@ -2,7 +2,7 @@
 import MapBox from "@/components/module/MapBox";
 import MapComponent from "@/components/module/MapComponent";
 import { RootState } from "@/redux/store/store";
-import { format } from "date-fns";
+import { addDays, format, setHours, setMinutes } from "date-fns";
 import React, { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import DatePicker from "react-datepicker";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -26,8 +26,8 @@ interface Form1Props {
 interface FormData {
     rideName?: string;
     startDate?: string | null;
-    startTime?: string;
-    endTime?: string;
+    startTime?: string | null;
+    endTime?: string | null;
     location?: string;
     routeType?: string;
     distance?: string;
@@ -99,7 +99,9 @@ const Form3: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
     const [state, setState] = useState<string>("");
     const [country, setCountry] = useState<string>("");
     const autocompleteRef = useRef<any>(null);
-    const [startDate, setStartDate] = useState<Date | null>(new Date());
+    const [startDate, setStartDate] = useState<Date | null>(addDays(new Date(), 1));
+    const [startTime, setStartTime] = useState<Date | null>(setHours(setMinutes(new Date(), 30), 7));
+    const [endTime, setEndTime] = useState<Date | null>(setHours(setMinutes(new Date(), 30), 11));
     const {
         register,
         handleSubmit,
@@ -121,7 +123,9 @@ const Form3: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
             startCountry: country,
             startLat: lat,
             startLng: lng,
-            startDate: startDate ? format(startDate, 'yyyy-MM-dd') : null
+            startDate: startDate ,
+            startTime:startTime? format(startTime,'hh:mm:ss'):null,
+            endTime:endTime? format(endTime,'hh:mm:ss'):null,
         }
         nextForm(payload);
     };
@@ -187,9 +191,9 @@ const Form3: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
     const handleProcedureContentChange = useCallback((content: string) => {
         setCode(content);
     }, []);
-    const handelMarkerChnage =(cords:[number,number])=>{
-      setLng(cords[0])
-      setLat(cords[1])
+    const handelMarkerChnage = (cords: [number, number]) => {
+        setLng(cords[0])
+        setLat(cords[1])
     }
     const mapMemo = useMemo(
         () => <MapBox center={[lng, lat]} initialZoom={11} circle={10 * 1} className={"h-[43vh]"} setMarkerPos={handelMarkerChnage} />,
@@ -208,7 +212,7 @@ const Form3: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
                                 defaultValue={formData?.rideName}
                                 placeholder="ride name"
                                 {...register("rideName", { required: "Please enter a ride name." })}
-                                className="border px-2 py-[6px] w-full"
+                                className={`border px-2 py-[6px] w-full ${errors.rideName ? "input-error" : ""}`}
                             />
                             {errors.rideName && (
                                 <p className="text-red-500 text-xs pt-1">{errors.rideName.message}</p>
@@ -228,25 +232,28 @@ const Form3: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
                             <div className="flex w-full tablet:w-1/2 gap-3 ">
                                 <div className="w-1/2 flex flex-col">
                                     <label className="font-medium text-gray-600">Start time</label>
-                                    <input
-                                        className="border px-2 py-[6px]"
-                                        placeholder="Start time"
-                                        defaultValue={formData?.startTime}
-                                        type="time"
-                                        {...register("startTime", { required: "Please enter a start time." })}
+                                    <DatePicker
+                                        selected={startTime}
+                                        onChange={(date) => setStartTime(date)}
+                                        className="custom-datepicker-input"
+                                        showTimeSelect
+                                        showTimeSelectOnly
+                                        timeIntervals={15}
+                                        timeCaption="Time"
+                                        dateFormat="h:mm aa"
                                     />
-                                    {errors.startTime && (
-                                        <p className="text-red-500 text-xs pt-1">{errors.startTime.message}</p>
-                                    )}
                                 </div>
                                 <div className="w-1/2 flex flex-col">
                                     <label className="font-medium text-gray-600">End time</label>
-                                    <input
-                                        className="border px-2 py-[6px]"
-                                        placeholder="End time"
-                                        defaultValue={formData?.endTime}
-                                        type="time"
-                                        {...register("endTime", { required: "Please enter a end time." })}
+                                    <DatePicker
+                                        selected={endTime}
+                                        onChange={(date) => setEndTime(date)}
+                                        className="custom-datepicker-input"
+                                        showTimeSelect
+                                        showTimeSelectOnly
+                                        timeIntervals={15}
+                                        timeCaption="Time"
+                                        dateFormat="h:mm aa"
                                     />
                                     {errors.endTime && (
                                         <p className="text-red-500 text-xs pt-1">{errors.endTime.message}</p>
@@ -263,7 +270,7 @@ const Form3: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
                                     {...register("location", { required: "Please select a start location." })}
                                     id="autocomplete"
                                     defaultValue={formData?.location}
-                                    className="bg-white border px-2 py-[6px]"
+                                    className={`bg-white border px-2 py-[6px] ${errors.location ? "input-error" : ""}`}
                                     placeholder="Search location"
                                     type="text"
                                 />
@@ -277,10 +284,10 @@ const Form3: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
                             <div className="flex flex-col w-full relative">
                                 <select
                                     defaultValue={formData?.rideType}
-                                    {...register("rideType", { required: "Ride type is required" })}
-                                    className="bg-white border px-2 py-[6px]"
+                                    {...register("rideType", { required: "Please select a Ride Type" })}
+                                    className={`bg-white border px-2 py-[6px] ${errors.rideType ? "input-error" : ""}`}
                                 >
-                                    <option value="" disabled selected>
+                                    <option value="" disabled selected className={`${true ? "text-black" : "text-gray-500"}`}>
                                         Ride Type
                                     </option>
                                     {activityType.map((data) => (
@@ -290,6 +297,9 @@ const Form3: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
                                     ))}
                                 </select>
                                 <IoMdArrowDropdown className="w-5 h-auto absolute right-3 top-[11px]" />
+                                {errors.rideType && (
+                                    <p className="text-red-500 text-xs pt-1">{errors.rideType.message}</p>
+                                )}
                             </div>
                         </div>
                     </div>

@@ -35,8 +35,8 @@ interface FormData {
   avgSpeed?: string;
   isGroup?: boolean;
   geoJSON?: any;
-  gpxFile?: File
-  routeName?: string
+  gpxFile?: File;
+  routeName?: string;
 }
 
 interface FormHeading {
@@ -97,21 +97,22 @@ const Form2: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
   } = useForm<FormData>();
 
   const url = watch("url") as string;
-
+  const difficulty = watch("difficulty");
+  
   useEffect(() => {
-    const link = url || formData?.url
+    const link = url || formData?.url;
     if (link) {
       handleDownloadUrl(link);
     } else {
-      console.error('URL does not match the expected format.');
+      console.error("URL does not match the expected format.");
     }
   }, [url, formData?.url]);
 
-  useEffect(()=>{
-    if(formData?.gpxFile){
+  useEffect(() => {
+    if (formData?.gpxFile) {
       handlePickDocument(formData?.gpxFile);
     }
-  },[formData?.gpxFile])
+  }, [formData?.gpxFile]);
 
   const handleSubmits: SubmitHandler<FormData> = async (data) => {
     if (formData?.routeType === "gpx" && !gpxFile && !formData?.gpxFile) {
@@ -133,7 +134,7 @@ const Form2: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
       geoJSON,
       gpxFile,
       gpxFilePath,
-    } as any
+    } as any;
     nextForm(form2Data);
   };
 
@@ -143,7 +144,7 @@ const Form2: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
     setGpxFile(file);
     handlePickDocument(file);
   };
-  
+
   return (
     <div className="mt-2 mb-5">
       <form onSubmit={handleSubmit(handleSubmits)} className="">
@@ -183,7 +184,7 @@ const Form2: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
                   </div>
                 ) : (
                   <div className="space-y-3 pt-6">
-                    <div className="flex flex-col relative w-full ">
+                    <div className="flex flex-col relative w-full">
                       <label className="font-medium text-gray-600">
                         Public {formData?.routeType === "strava" ? "Strava" : "RWGPS"} route link
                       </label>
@@ -192,14 +193,16 @@ const Form2: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
                         defaultValue={formData?.url}
                         placeholder={"https://www.strava.com/routes/your-route-id"}
                         {...register("url", { required: "Please enter a valid URL." })}
-                        className="border px-2 py-2"
+                        className={`border px-2 py-2 ${errors.url ? "input-error" : ""}`}
                       />
                       {errors.url && (
                         <p className="text-xs mt-1 text-red-600">
                           {errors.url.message}
                         </p>
                       )}
-                      {loading && <CgSpinner className="absolute top-8 right-3 tablet:-right-8 mx-auto animate-spin w-6 h-6 " />}
+                      {loading && (
+                        <CgSpinner className="absolute top-8 right-3 tablet:-right-8 mx-auto animate-spin w-6 h-6" />
+                      )}
                     </div>
                   </div>
                 )}
@@ -208,26 +211,28 @@ const Form2: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
             {(geoJSON?.features || formData?.geoJSON?.features || formData?.routeType === "noroute") && (
               <div>
                 <div className="w-full mt-4">
-                 {formData?.routeName||features?.properties?.name?.trimEnd()&& <div className="flex flex-col  w-full">
-                    <label className="font-medium text-gray-600 text-sm">Route Name</label>
-                    <input
-                      type="text"
-                      placeholder={""}
-                      disabled
-                      defaultValue={formData?.routeName || features?.properties?.name?.trimEnd()}
-                      {...register("routeName")}
-                      className="border px-2 py-[6px] mt-1 remove-arrow"
-                    />
-                  </div>}
+                  {(formData?.routeName || features?.properties?.name?.trimEnd()) && (
+                    <div className="flex flex-col w-full">
+                      <label className="font-medium text-gray-600 text-sm">Route Name</label>
+                      <input
+                        type="text"
+                        placeholder={""}
+                        disabled
+                        defaultValue={formData?.routeName || features?.properties?.name?.trimEnd()}
+                        {...register("routeName")}
+                        className="border px-2 py-[6px] mt-1 remove-arrow"
+                      />
+                    </div>
+                  )}
                   <div className="flex gap-2 tablet:gap-4 flex-col tablet:flex-row mt-3">
                     <div className="flex flex-col tablet:w-1/2 w-full">
                       <label className="font-medium text-gray-600 text-sm">Distance (miles)</label>
                       <input
                         type="number"
                         placeholder={"Distance"}
-                        defaultValue={formData?.distance}
+                        defaultValue={formData?.distance || routeDistance}
                         {...register("distance", { required: "Please enter the distance." })}
-                        className="border px-2 py-[6px] mt-1 remove-arrow"
+                        className={`border px-2 py-[6px] mt-1 remove-arrow ${errors.distance ? "input-error" : ""}`}
                       />
                       {errors.distance && (
                         <p className="text-xs mt-1 text-red-600">
@@ -242,7 +247,7 @@ const Form2: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
                         placeholder={"Avg speed"}
                         defaultValue={formData?.avgSpeed}
                         {...register("avgSpeed", { required: "Please enter the average speed." })}
-                        className="border px-2 py-[6px] mt-1 remove-arrow"
+                        className={`border px-2 py-[6px] mt-1 remove-arrow ${errors.avgSpeed ? "input-error" : ""}`}
                       />
                       {errors.avgSpeed && (
                         <p className="text-xs mt-1 text-red-600">
@@ -254,12 +259,12 @@ const Form2: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
                   <div className="flex gap-0 tablet:gap-4 mt-3">
                     <div className="flex flex-col w-full relative">
                       <select
-                        defaultValue={formData?.difficulty}
+                        defaultValue={formData?.difficulty || ""}
                         {...register("difficulty", { required: "Please select a difficulty level." })}
-                        className="bg-white border px-2 py-[6px]"
+                        className={`bg-white border px-2 py-[6px] ${difficulty ? "text-black" : "text-gray-400"} ${errors.difficulty ? "input-error" : ""}`}
                       >
                         <option value="" disabled>
-                          Difficulty Type
+                          Select difficulty level
                         </option>
                         {difficultyLevel?.map((data) => (
                           <option value={data.difficultyLevelID} key={data.difficultyLevelID}>
@@ -287,7 +292,7 @@ const Form2: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
             )}
           </div>
           <div className="w-1/2 mt-16">
-            {(geoJSON?.features) && (
+            {geoJSON?.features && (
               <MapComponent
                 centerLatitude={centerLatitude}
                 centerLongitude={centerLongitude}
