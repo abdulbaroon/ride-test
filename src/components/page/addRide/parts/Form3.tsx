@@ -5,6 +5,7 @@ import { RootState } from "@/redux/store/store";
 import { addDays, format, setHours, setMinutes } from "date-fns";
 import React, { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import DatePicker from "react-datepicker";
+import { setTime } from "react-datepicker/dist/date_utils";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { IoMdArrowDropdown } from "react-icons/io";
 import ReactQuill from "react-quill";
@@ -25,9 +26,11 @@ interface Form1Props {
 
 interface FormData {
     rideName?: string;
-    startDate?: string | null;
-    startTime?: string | null;
-    endTime?: string | null;
+    startDate?: Date|null ;
+    startTime?: Date|null ;
+    startLat?: number
+    startLng?: number;
+    endTime?: Date|null ;
     location?: string;
     routeType?: string;
     distance?: string;
@@ -112,7 +115,23 @@ const Form3: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
     const activityType = useSelector<RootState, ActivityType[]>(
         (state) => state.addRide.activityTypes
     );
-
+  useEffect(()=>{
+    if(formData?.startDate){
+        setStartDate(formData?.startDate)
+    }
+    if(formData?.startTime){
+       setStartTime(formData?.startTime)
+    }
+    if(formData?.endTime){
+        setEndTime(formData?.endTime)
+     }
+     if(formData?.startLat){
+        setLat(formData?.startLat)
+     }
+     if(formData?.startLng){
+        setLat(formData?.startLng)
+     }
+  },[])
     const handleSubmits: SubmitHandler<FormData> = (data) => {
         const payload = {
             ...data,
@@ -124,8 +143,8 @@ const Form3: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
             startLat: lat,
             startLng: lng,
             startDate: startDate ,
-            startTime:startTime? format(startTime,'hh:mm:ss'):null,
-            endTime:endTime? format(endTime,'hh:mm:ss'):null,
+            startTime:startTime,
+            endTime:endTime,
         }
         nextForm(payload);
     };

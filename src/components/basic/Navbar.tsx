@@ -45,8 +45,8 @@ import { useDispatch, useSelector } from "react-redux"
                     </div>
                     <div className="ms-6 ">
                         <div className="text-gray-400 font-semibold hidden tablet:flex gap-5 py-4 cursor-pointer">
-                            {user ? <Link href={"#"} className=" hover:text-white ">Dashboard</Link> :
-                                <Link href={"/dashboard"} className="border-r pe-4 hover:text-white ">Register</Link>}
+                            {user ? <Link href={"/dashboard"} className=" hover:text-white ">Dashboard</Link> :
+                                <Link href={"#"} className="border-r pe-4 hover:text-white ">Register</Link>}
                             {user ? <Link href={"/ride/add"} className="hover:text-white">Add Ride</Link>
                                 : <Link href={"/features"} className="hover:text-white">Feature</Link>}
                             <Link href={"/ride/search"} className="hover:text-white">Search</Link>

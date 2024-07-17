@@ -1,8 +1,9 @@
 import { RouteData } from '@/shared/types/addRide.types';
-import {  fileToBase64, readFileAsBase64 } from '@/shared/util/format.util';
+import { fileToBase64, readFileAsBase64 } from '@/shared/util/format.util';
 import { api } from '@/shared/api';
 import { uploadedFile } from '@/redux/slices/authSlice';
 import { addRide } from '@/redux/slices/addRideSlice';
+import { format } from 'date-fns';
 
 interface UserProfile {
     userID: string;
@@ -33,16 +34,16 @@ const restructureRideData = (payload: Payload) => {
             startName: routeData?.startName || '',
             createdBy: routeData?.createdBy || userID,
             startW3W: routeData?.startW3W || null,
-            activityDate: routeData?.startDate,
-            activityStartTime: routeData?.startTime,
-            activityEndTime: routeData?.endTime,
+            activityDate: routeData?.startDate ? format(routeData?.startDate, 'yyyy-MM-dd') : null,
+            activityStartTime: routeData?.startTime ? format(routeData?.startTime, 'hh:mm:ss') : null,
+            activityEndTime: routeData?.endTime ? format(routeData?.endTime, 'hh:mm:ss') : null,
             createdDate: routeData?.createdDate || currentDate,
             modifiedBy: userID,
             modifiedDate: currentDate,
             isCommunity: routeData?.isCommunity || false,
             isDrop: routeData?.isDrop || false,
             isPrivate: routeData?.isPrivate || false,
-            isLightsRequired: routeData?.isLights || false, 
+            isLightsRequired: routeData?.isLights || false,
             startAddress: routeData?.startAddress,
             startCity: routeData?.startCity,
             startState: routeData?.startState,
@@ -87,7 +88,7 @@ const getMapSourceID = (url: string | null | undefined): { mapSourceID: number }
     } else if (url?.endsWith('.gpx') || url?.endsWith('.jpx')) {
         return { mapSourceID: 5 };
     } else {
-        return { mapSourceID: 4 }; 
+        return { mapSourceID: 4 };
     }
 }
 
@@ -132,40 +133,40 @@ export const saveRide = async (
 
         if (activityID && routeData?.geoJSON?.features) {
             try {
-              const jsonString = JSON.stringify(routeData.geoJSON, null, 2);
-              const geoBinary = btoa(jsonString); 
-              fileUploadModelBinary?.push({
-                activityID: activityID,
-                fileUploadTypeID: 4,
-                uploadedFile: geoBinary,
-              });
+                const jsonString = JSON.stringify(routeData.geoJSON, null, 2);
+                const geoBinary = btoa(jsonString);
+                fileUploadModelBinary?.push({
+                    activityID: activityID,
+                    fileUploadTypeID: 4,
+                    uploadedFile: geoBinary,
+                });
             } catch (error) {
-              console.error(error);
+                console.error(error);
             }
-          }
+        }
 
-          if (activityID && routeData?.gpxFilePath) {
+        if (activityID && routeData?.gpxFilePath) {
             try {
-              const response = await fetch(decodeURI(routeData.gpxFilePath));
-              if (!response.ok) {
-                throw new Error(`Failed to load GPX file: ${response.statusText}`);
-              }
-              const arrayBuffer = await response.arrayBuffer();
-              console.log(arrayBuffer,"Sd");
-              
-              const uint8Array = new Uint8Array(arrayBuffer);
-              const base64String = uint8Array.reduce((data, byte) => data + String.fromCharCode(byte), '');
-              
-              fileUploadModelBinary?.push({
-                activityID: activityID,
-                fileUploadTypeID: 3,
-                uploadedFile: btoa(base64String),
-              });
+                const response = await fetch(decodeURI(routeData.gpxFilePath));
+                if (!response.ok) {
+                    throw new Error(`Failed to load GPX file: ${response.statusText}`);
+                }
+                const arrayBuffer = await response.arrayBuffer();
+                console.log(arrayBuffer, "Sd");
+
+                const uint8Array = new Uint8Array(arrayBuffer);
+                const base64String = uint8Array.reduce((data, byte) => data + String.fromCharCode(byte), '');
+
+                fileUploadModelBinary?.push({
+                    activityID: activityID,
+                    fileUploadTypeID: 3,
+                    uploadedFile: btoa(base64String),
+                });
             } catch (error) {
-              console.error(error);
+                console.error(error);
             }
-          }
-          
+        }
+
 
         if (fileUploadModelBinary.length > 0) {
             const filePayload = { fileUploadModelBinary };
@@ -175,12 +176,12 @@ export const saveRide = async (
 
         const { activity, activityRoute, activityTags, dalleUrl } = restructureRideData({
             routeData: { activityID, mapSourceID, ...routeData },
-            user,      
+            user,
         });
 
         const activityConsolidatedPayload = {
             Activity: activity,
-            FileUploads: fileupload.payload || null ,
+            FileUploads: fileupload?.payload ? fileupload?.payload : null,
             AcivityRoute: activityRoute,
             ActivityTags: activityTags,
             DalleUrl: dalleUrl,
@@ -188,8 +189,8 @@ export const saveRide = async (
 
         const response = await dispatch(addRide(activityConsolidatedPayload));
         onSuccess(response.payload);
-    } catch (error:any) {
+    } catch (error: any) {
         onError(error.message || '');
-        console.log(error)
+        console.error(error)
     }
 }
