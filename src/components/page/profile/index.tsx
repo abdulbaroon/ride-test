@@ -12,6 +12,7 @@ import { IoMdArrowDropdown } from "react-icons/io";
 import { BsFillCheckCircleFill } from "react-icons/bs";
 import { CgSpinner } from 'react-icons/cg';
 import ProfileSideData from '@/components/module/ProfileSideData';
+import { IMAGE_URl } from '@/constant/appConfig';
 
 interface ComponentType {
     types: string[];
@@ -38,7 +39,6 @@ export const ProfilePage = () => {
     const [state, setState] = useState<string>("")
     const [country, setCountry] = useState<string>("")
     const [success, setSuccess] = useState<boolean>(false)
-    useState
     const autocompleteRef = useRef<any>(null);
     const userData = useSelector<RootState>(
         (state) => state.auth.user
@@ -55,7 +55,8 @@ export const ProfilePage = () => {
     const ride = watch("rideStartRadius");
     const gender = watch("gender")
     const type = watch("rideType")
-    
+    const unit = watch("unitOfMeasure")
+
     useEffect(() => {
         const loadGoogleMapsScript = () => {
             const script = document.createElement("script");
@@ -78,40 +79,37 @@ export const ProfilePage = () => {
         };
     }, []);
 
-
-
-
-
-    useEffect(() => {
-        const profile = async () => {
-            if (userData.id) {
-                const response = await dispatch(getProfile(userData.id));
-                if (getProfile.fulfilled.match(response)) {
-                    const profileData = response.payload;
-                    setValue("firstName", profileData.firstName);
-                    setValue("lastName", profileData.lastName);
-                    setValue("gender", profileData.userGenderModel.userGenderID.toString());
-                    setValue("homeLocation", profileData.homeLocation);
-                    setValue("rideStartRadius", profileData.defaultRadius);
-                    setValue("unitOfMeasure", profileData.unitOfMeasureID);
-                    setValue("rideType", profileData.activityTypeModel.activityTypeID.toString());
-                    setValue("contactName", profileData.iceContact);
-                    setValue("phoneNumber", profileData.icePhone);
-                    setValue("isPrivate", profileData.private);
-                    setlat(profileData.homeBaseLat);
-                    setlng(profileData.homeBaseLng);
-                    setCity(profileData.homeBaseCity)
-                    setState(profileData.homeBaseState)
-                    setCountry(profileData.homeBaseCountry)
-                    const formattedAddress = `${profileData.homeBaseCity}, ${profileData.homeBaseState}, ${profileData.homeBaseCountry}`;
-                    setValue("homeLocation", formattedAddress);
-                    const input = document.getElementById("autocomplete") as HTMLInputElement;
-                    if (input) {
-                        input.value = formattedAddress;
-                    }
+    const profile = async () => {
+        if (userData.id) {
+            const response = await dispatch(getProfile(userData.id));
+            if (getProfile.fulfilled.match(response)) {
+                const profileData = response.payload;
+                setValue("firstName", profileData.firstName);
+                setValue("lastName", profileData.lastName);
+                setValue("gender", profileData.userGenderModel.userGenderID.toString());
+                setValue("homeLocation", profileData.homeLocation);
+                setValue("rideStartRadius", profileData.defaultRadius);
+                setValue("unitOfMeasure", profileData.unitOfMeasureID === 1 ? true : false);
+                setValue("rideType", profileData.activityTypeModel.activityTypeID.toString());
+                setValue("contactName", profileData.iceContact);
+                setValue("phoneNumber", profileData.icePhone);
+                setValue("isPrivate", profileData.private);
+                setlat(profileData.homeBaseLat);
+                setlng(profileData.homeBaseLng);
+                setCity(profileData.homeBaseCity)
+                setState(profileData.homeBaseState)
+                setCountry(profileData.homeBaseCountry)
+                const formattedAddress = `${profileData.homeBaseCity}, ${profileData.homeBaseState}, ${profileData.homeBaseCountry}`;
+                setValue("homeLocation", formattedAddress);
+                const input = document.getElementById("autocomplete") as HTMLInputElement;
+                if (input) {
+                    input.value = formattedAddress;
                 }
             }
-        };
+        }
+    };
+
+    useEffect(() => {
         profile();
     }, [userData, dispatch, setValue])
 
@@ -207,6 +205,7 @@ export const ProfilePage = () => {
                     toast.error("failed to Update")
                 } else {
                     toast.success("Your profile has been saved! Create or find a ride! Let's ride.")
+                    profile()
                 }
             } else {
                 setloading(true)
@@ -250,7 +249,8 @@ export const ProfilePage = () => {
                 if (base64file) {
                     const response = await dispatch(uploadedFile(payload))
                     if (uploadedFile.fulfilled.match(response)) {
-                        isImageUrl(base64String as string);
+                        console.log(IMAGE_URl+response.payload[0].filePath,"-----path")
+                        isImageUrl(IMAGE_URl+response.payload[0].filePath);
                         toast.success("file upload successfully")
                     } else if (uploadedFile.rejected.match(response)) {
                         toast.error("failed to upload file")
@@ -277,6 +277,19 @@ export const ProfilePage = () => {
 
     useEffect(() => {
         isImageUrl(imageURL);
+        // const fetchAndProcessImage = async () => {
+        //     try {
+        //         const response = await fetch(imageURL,{
+        //             next: { revalidate: 5 },
+        //           });
+        //         const data = await response.json(); 
+        //         console.log(response)
+        //     } catch (error) {
+        //         console.error("Error fetching image data:", error);
+        //     }
+        // };
+    
+        // fetchAndProcessImage();
     }, [imageURL]);
 
     const mapMemo = useMemo(() => <MapBox center={[lng, lat]} initialZoom={11} circle={ride * 10} />, [lng, lat, ride]);
@@ -289,7 +302,7 @@ export const ProfilePage = () => {
                         <div className="w-full flex justify-center flex-col items-center">
                             <label className=' relative flex justify-center flex-row cursor-pointer' htmlFor="fileInput">
                                 <div className="relative w-36 h-36 overflow-hidden bg-gray-100 rounded-full mt-3 border">
-                                    <img src={imageSrc} alt="img" className='h-full w-full' />
+                                    <img src={`${imageSrc}?lastmod=${Date.now()}`} alt="img" className='h-full w-full' />
                                 </div>
                             </label>
                             <label htmlFor='fileInput' className='bg-primaryButton w-fit py-1 mt-3 px-6 font-bold text-white rounded-lg '>
@@ -360,7 +373,7 @@ export const ProfilePage = () => {
                                     </div>
                                 </div>
                                 <div className='w-full tablet:w-1/2  mt-4 rounded-xl'>
-                                    {mapMemo}
+                                    <MapBox center={[lng, lat]} initialZoom={11} circle={ride * 10} />
                                 </div>
                             </div>
                             <div className='flex flex-col tablet:flex-row gap-3 mt-6'>
@@ -401,7 +414,7 @@ export const ProfilePage = () => {
                             </div>
                         </form>
                     </div>
-                    <ProfileSideData name={`${getValues("firstName")} ${getValues("lastName")}`}/>
+                    <ProfileSideData name={`${getValues("firstName")} ${getValues("lastName")}`} />
                 </div>
                 :
                 <div className='flex flex-col justify-center items-center gap-1 w-full tablet:w-7/12 desktop:w-5/12 mx-auto mt-10'>
@@ -417,7 +430,7 @@ export const ProfilePage = () => {
                         LET&apos;S RIDE
                     </button>
                 </div>
-                }
+            }
         </section>
     );
 };

@@ -15,7 +15,7 @@ import { IndicatorSeparatorProps } from 'react-select';
 import { IMAGE_URl } from '@/constant/appConfig';
 
 
-const customStyles:any = {
+const customStyles = {
   content: {
     top: '50%',
     left: '50%',

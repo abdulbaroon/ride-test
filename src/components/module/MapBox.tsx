@@ -17,7 +17,7 @@ interface MapBoxProps {
 const MapBox: React.FC<MapBoxProps> = ({
   center = [0, 0],
   initialZoom = 2,
-  circle = 1000,
+  circle = 10,
   className,
   setMarkerPos,
 }) => {
