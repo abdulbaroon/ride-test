@@ -39,6 +39,7 @@ export const ProfilePage = () => {
     const [state, setState] = useState<string>("")
     const [country, setCountry] = useState<string>("")
     const [success, setSuccess] = useState<boolean>(false)
+    const [unique,setUnique]=useState(Date.now())
     const autocompleteRef = useRef<any>(null);
     const userData = useSelector<RootState>(
         (state) => state.auth.user
@@ -250,6 +251,7 @@ export const ProfilePage = () => {
                     const response = await dispatch(uploadedFile(payload))
                     if (uploadedFile.fulfilled.match(response)) {
                         console.log(IMAGE_URl+response.payload[0].filePath,"-----path")
+                        setUnique(Date.now()+1)
                         isImageUrl(IMAGE_URl+response.payload[0].filePath);
                         toast.success("file upload successfully")
                     } else if (uploadedFile.rejected.match(response)) {
@@ -277,19 +279,7 @@ export const ProfilePage = () => {
 
     useEffect(() => {
         isImageUrl(imageURL);
-        // const fetchAndProcessImage = async () => {
-        //     try {
-        //         const response = await fetch(imageURL,{
-        //             next: { revalidate: 5 },
-        //           });
-        //         const data = await response.json(); 
-        //         console.log(response)
-        //     } catch (error) {
-        //         console.error("Error fetching image data:", error);
-        //     }
-        // };
-    
-        // fetchAndProcessImage();
+
     }, [imageURL]);
 
     const mapMemo = useMemo(() => <MapBox center={[lng, lat]} initialZoom={11} circle={ride * 10} />, [lng, lat, ride]);
@@ -302,7 +292,7 @@ export const ProfilePage = () => {
                         <div className="w-full flex justify-center flex-col items-center">
                             <label className=' relative flex justify-center flex-row cursor-pointer' htmlFor="fileInput">
                                 <div className="relative w-36 h-36 overflow-hidden bg-gray-100 rounded-full mt-3 border">
-                                    <img src={`${imageSrc}?lastmod=${Date.now()}`} alt="img" className='h-full w-full' />
+                                    <img src={`${imageSrc}?lastmod=${unique}`} alt="img" className='h-full w-full' />
                                 </div>
                             </label>
                             <label htmlFor='fileInput' className='bg-primaryButton w-fit py-1 mt-3 px-6 font-bold text-white rounded-lg '>
