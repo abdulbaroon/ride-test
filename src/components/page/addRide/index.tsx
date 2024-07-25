@@ -33,7 +33,7 @@ interface FormProps {
 export const AddRidePage: React.FC = () => {
   const [currentForm, setCurrentForm] = useState<number>(1);
   const [formData, setFormData] = useState<FormData>({});
-  const [success,setSuccess]=useState<boolean>(false)
+  const [success,setSuccess]=useState<number>()
   const userData = useSelector<RootState>((state) => state.auth.user) as User
   const dispatch = useDispatch<AppDispatch>()
   useEffect(()=>{
@@ -57,25 +57,26 @@ export const AddRidePage: React.FC = () => {
     if (currentForm > 1) {
       setCurrentForm(currentForm - 1);
     }
+    if(currentForm===2){
+    setFormData({})
+    }
   };
-
   const startOver = () => {
     setCurrentForm(1);
     setFormData({})
   };
-  
 
   const resultBox: { [key: number]: JSX.Element } = {
     1: <Form1 nextForm={nextForm} formData={formData} startOver={startOver}   />,
     2: <Form2 nextForm={nextForm} formData={formData} startOver={startOver} prevForm={prevForm}  />,
     3: <Form3 nextForm={nextForm} formData={formData} startOver={startOver} prevForm={prevForm}  />,
-    4: <Form4 nextForm={nextForm} formData={formData} startOver={startOver} prevForm={prevForm} setSuccess={()=>setSuccess(true)}  />,
+    4: <Form4 nextForm={nextForm} formData={formData} startOver={startOver} prevForm={prevForm} setSuccess={(id:number)=>setSuccess(id)}  />,
   };
 
   return (
     <section className=" min-h-screen">
       {success?
-      <Success/>
+      <Success id={success}/>
       :<div className="bg-white w-[95%]  mx-auto my-10 py-2 rounded-md mt-28">
       <div className="border-b">
         <h1 className="text-xl tablet:text-3xl font-bold m-5 ">Add a Ride</h1>

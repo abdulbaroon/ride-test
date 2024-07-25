@@ -37,7 +37,7 @@ interface Form1Props {
     formData?: FormData;
     startOver: () => void;
     prevForm?: () => void;
-    setSuccess?: () => void;
+    setSuccess?: (id:number) => void;
 }
 
 interface FormData {
@@ -105,8 +105,9 @@ const Form4: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm, 
             user: userData
         }
         const onSuccess = (response: any) => {
+            console.log(response.payload.activityID,"sucess")
             toast.success('Ride saved successfully');
-            setSuccess?.()
+            setSuccess?.(response.payload.activityID)
         };
 
         const onError = (error: any) => {
@@ -148,7 +149,6 @@ const Form4: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm, 
     }
     const handleImage = (file: File) => {
         setImage(file)
-        console.log(file, "file")
     }
     const handleSelect = (selectedOptions: any) => {
         const tags = selectedOptions?.map((item: any) => item.label)

@@ -32,9 +32,7 @@
     font-optical-sizing: auto;
     font-weight: 400;
     font-style: normal;
-    font-variation-settings:
-      "wdth" 100;
-    background-color: #f5f4f8;
+    background-color: #f5f4f8 !important;
   }
   .input-error {
     border-color: red;

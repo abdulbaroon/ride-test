@@ -45,7 +45,7 @@ export const ProfilePage = () => {
     ) as User
     let imageURL = ""
     if (userData.id) {
-        imageURL = `${process.env.NEXT_PUBLIC_IMAGE_URl}/useravatar/pfimg_${userData?.id}.png`
+        imageURL = `${process.env.NEXT_PUBLIC_IMAGE_URL}/useravatar/pfimg_${userData?.id}.png`
     }
     const dispatch = useDispatch<AppDispatch>()
     const router = useRouter()

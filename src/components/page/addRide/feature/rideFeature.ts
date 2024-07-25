@@ -20,7 +20,7 @@ interface FileUploadModel {
     uploadedFile: string;
 }
 
-const restructureRideData = (payload: Payload) => {
+export const restructureRideData = (payload: Payload) => {
     const { user, routeData } = payload;
     const { userID } = user?.userProfile ?? {};
     const currentDate = new Date();
@@ -78,7 +78,7 @@ const restructureRideData = (payload: Payload) => {
     };
 }
 
-const getMapSourceID = (url: string | null | undefined): { mapSourceID: number } => {
+export const getMapSourceID = (url: string | null | undefined): { mapSourceID: number } => {
     if (url?.includes('ridewithgps.com')) {
         return { mapSourceID: 1 };
     } else if (url?.includes('strava.com')) {
@@ -97,7 +97,7 @@ export const saveRide = async (
     onSuccess: (response: any) => void,
     onError: (error: any) => void,
     payload: any
-) => {
+) => { 
     try {
         const fileUploadModelBinary: Array<FileUploadModel> = [];
         let activityID: number | null = null;
@@ -147,12 +147,12 @@ export const saveRide = async (
 
         if (activityID && routeData?.gpxFilePath) {
             try {
-                const response = await fetch(decodeURI(routeData.gpxFilePath));
+                let trimmedPathname = routeData?.gpxFilePath?.replace(/\.gpx$/, '');
+                const response = await fetch(decodeURI(trimmedPathname));
                 if (!response.ok) {
                     throw new Error(`Failed to load GPX file: ${response.statusText}`);
                 }
                 const arrayBuffer = await response.arrayBuffer();
-                console.log(arrayBuffer, "Sd");
 
                 const uint8Array = new Uint8Array(arrayBuffer);
                 const base64String = uint8Array.reduce((data, byte) => data + String.fromCharCode(byte), '');
@@ -188,7 +188,9 @@ export const saveRide = async (
         };
 
         const response = await dispatch(addRide(activityConsolidatedPayload));
-        onSuccess(response.payload);
+        if(addRide.fulfilled.match(response)){
+            onSuccess(response);
+        }
     } catch (error: any) {
         onError(error.message || '');
         console.error(error)

@@ -7,5 +7,9 @@ export function middleware(request:NextRequest) {
   }
 }
 export const config = {
-  matcher: ["/activities/add", "/account/profile","/dashboard"],
+  matcher: [
+    "/ride/:path*",
+    "/account/profile",
+    "/dashboard"
+  ],
 };

@@ -12,7 +12,6 @@ interface ActivityData {
 }
 
 const MapCard = ({data}: { data: ActivityData | any}) => {
-    console.log(data,"sd")
     return (
         <div className="w-9/12 bg-white border border-gray-200 rounded-lg shadow-lg">
             <a href="#">

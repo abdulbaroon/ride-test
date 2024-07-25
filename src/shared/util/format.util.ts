@@ -77,10 +77,10 @@ export const extractRouteId = (url: string) => {
 
 
 export function fileToBase64(file:File) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {  
     const reader = new FileReader();
     
-    reader.onload = () => {
+    reader.onload = () => {      
       if (typeof reader.result === 'string') {
           const base64String = reader.result.split(',')[1];
           resolve(base64String);

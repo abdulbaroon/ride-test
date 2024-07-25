@@ -110,8 +110,7 @@ const useGpxToGeoJson = () => {
           const { centerLatitude, centerLongitude, geoJSON, routeDistance } = await gpxToGeojson({ gpxContent });
           const features = geoJSON?.features?.[0];
           const blob = new Blob([gpxContent], { type: 'application/gpx+xml' });
-          const fileURL = URL.createObjectURL(blob);
-          console.log(gpxContent,"gpx")
+          const fileURL = URL.createObjectURL(blob)+".gpx"
           updateState({
             centerLatitude,
             centerLongitude,
@@ -152,7 +151,6 @@ const useGpxToGeoJson = () => {
         });
         const blob = new Blob([response.data], { type: 'application/gpx+xml' });
         const fileURL = URL.createObjectURL(blob);
-        console.log(fileURL,"res")
         const features = geoJSON?.features?.[0];
         const filePath = `/${features?.properties?.name.replace('/', '_').trimEnd()}.gpx`;
         
@@ -258,9 +256,9 @@ const useGpxToGeoJson = () => {
       console.log(err);
     }
   };
-  console.log(initialState,"sadf")
   return {
     handlePickDocument,
+    gpxState:initialState,
     ...initialState,
     updateState,
     features: initialState.geoJSON?.features?.[0] || {},
@@ -268,6 +266,7 @@ const useGpxToGeoJson = () => {
     handleDownloadGPXFile,
     fetchAndOpenUrl,
     getBoundingBox,
+    gpxToGeojson
   };
 };
 

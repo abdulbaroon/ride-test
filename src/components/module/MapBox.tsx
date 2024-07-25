@@ -11,7 +11,7 @@ interface MapBoxProps {
   initialZoom?: number;
   circle?: number;
   className?: string;
-  setMarkerPos?:(cords:[number,number])=>void;
+  setMarkerPos?: (cords: [number, number]) => void;
 }
 
 const MapBox: React.FC<MapBoxProps> = ({
@@ -28,6 +28,14 @@ const MapBox: React.FC<MapBoxProps> = ({
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const markerRef = useRef<mapboxgl.Marker | null>(null);
+
+  const isValidCoordinates = (coords: [number, number]) =>
+    Array.isArray(coords) &&
+    coords.length === 2 &&
+    typeof coords[0] === "number" &&
+    typeof coords[1] === "number" &&
+    !isNaN(coords[0]) &&
+    !isNaN(coords[1]);
 
   const createCircleFeature = (center: [number, number], radius: number) => {
     const steps = 64;
@@ -90,16 +98,20 @@ const MapBox: React.FC<MapBoxProps> = ({
 
         newMap.on("click", (e) => {
           const { lng, lat } = e.lngLat;
-          setMarkerPosition([lng, lat]);
-          if (markerRef.current) {
-            markerRef.current.setLngLat([lng, lat]);
-          } else {
-            markerRef.current = new mapboxgl.Marker({ color: "#FF0000" })
-              .setLngLat([lng, lat])
-              .addTo(newMap);
+          if (isValidCoordinates([lng, lat])) {
+            setMarkerPosition([lng, lat]);
+            if (markerRef.current) {
+              markerRef.current.setLngLat([lng, lat]);
+            } else {
+              markerRef.current = new mapboxgl.Marker({ color: "#FF0000" })
+                .setLngLat([lng, lat])
+                .addTo(newMap);
+            }
           }
         });
 
+        // Trigger resize to ensure the map canvas fills the container
+        newMap.resize();
       });
 
       return () => {
@@ -121,28 +133,42 @@ const MapBox: React.FC<MapBoxProps> = ({
           .addTo(map);
       }
       map.setCenter(center);
+      map.resize(); // Ensure the map resizes properly when the center changes
     }
   }, [center]);
 
   useEffect(() => {
-    if (mapRef.current && mapRef.current.isStyleLoaded() && mapRef.current.getSource("circle")) {
+    if (
+      mapRef.current &&
+      mapRef.current.isStyleLoaded() &&
+      mapRef.current.getSource("circle")
+    ) {
       const map = mapRef.current;
       (map.getSource("circle") as mapboxgl.GeoJSONSource).setData(
         createCircleFeature(center, circle) as any
       );
+      map.resize(); // Ensure the map resizes properly when the circle changes
     }
   }, [circle, center]);
 
-  useEffect(()=>{
-    if(markerPosition){
-      setMarkerPos?.(markerPosition)
+  useEffect(() => {
+    if (markerPosition) {
+      setMarkerPos?.(markerPosition);
     }
-  },[markerPosition])
+  }, [markerPosition]);
 
   return (
     <section className="bg-darkBlack">
-      <div className={twMerge("h-[30vh] w-full rounded-xl overflow-hidden", className)}>
-        <div ref={mapContainerRef} className="w-full h-full" />
+      <div
+        className={twMerge(
+          "h-[30vh] w-full rounded-xl overflow-hidden relative",
+          className
+        )}
+      >
+        <div
+          ref={mapContainerRef}
+          className="w-full h-full top-0 bottom-0 absolute"
+        />
       </div>
     </section>
   );

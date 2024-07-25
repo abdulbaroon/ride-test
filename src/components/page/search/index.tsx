@@ -110,10 +110,8 @@ export const SearchPage = () => {
             minDistance: Number(data.minDistance),
             maxDistance: Number(data.maxDistance),
         };
-        console.log(payload);
         const response = await dispatch(searchRide(payload))
         if (searchRide.fulfilled.match(response)) {
-            console.log()
             if (response.payload.length>0){
                 setRide(response.payload)
                 toast.success("We found 1 rides!")

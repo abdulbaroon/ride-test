@@ -1,6 +1,7 @@
 "use client"
 import { api } from "@/shared/api";
 import { AddRidePayload, SearchRide } from "@/shared/types/addRide.types";
+import { CalendarQueryParams } from "@/shared/types/calendet.types";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 interface AddRideState {
@@ -8,7 +9,8 @@ interface AddRideState {
   activityTypes: [];
   activityTags: [];
   hubList: [];
-  searchRide:[]
+  searchRide:[];
+  calenderData:[];
   loading: boolean;
   error: string | any;
 }
@@ -19,6 +21,7 @@ const initialState: AddRideState = {
   activityTags: [],
   hubList: [],
   searchRide:[],
+  calenderData:[],
   loading: false,
   error: null
 };
@@ -117,6 +120,31 @@ export const searchRide = createAsyncThunk(
   }
 )
 
+export const getRide = createAsyncThunk(
+  "/activity/",
+  async (id:number, { rejectWithValue }) => {
+    try {
+      const endpoint = `/activity/${id}`;
+      const response = await api.get(endpoint);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+)
+
+export const editRideApi = createAsyncThunk(
+  "activity/activity_edit",
+  async (payload:unknown, { rejectWithValue }) => {
+    try {
+      const endpoint = `/activity/activity_edit`;
+      const response = await api.post(endpoint,payload);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+)
 const addRideSlice = createSlice({
   name: "addRide",
   initialState,
@@ -182,8 +210,9 @@ const addRideSlice = createSlice({
       .addCase(searchRide.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
   }
 });
+
 
 export default addRideSlice.reducer;

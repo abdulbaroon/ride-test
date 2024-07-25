@@ -84,3 +84,17 @@ export interface SearchRide {
   minDistance: number;
   maxDistance: number;
 }
+
+export interface DifficultyLevel {
+  difficultyLevelID: number;
+  levelName: string;
+  levelDescription: string;
+  levelColor: string;
+  levelIcon: string;
+}
+export interface ActivityType {
+  activityTypeID: number;
+  activityTypeName: string;
+  activityTypeIcon: string;
+  activityTypeColor: string;
+}
