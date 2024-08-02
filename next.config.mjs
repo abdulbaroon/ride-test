@@ -5,7 +5,10 @@ const nextConfig = {
             "dalleproduse.blob.core.windows.net",
             "dev.chasingwatts.com",
             "localhost:3000",
+            "chasingwatts.com"
         ],
+        minimumCacheTTL: 0,
+        unoptimized:true,
     },
 };
 

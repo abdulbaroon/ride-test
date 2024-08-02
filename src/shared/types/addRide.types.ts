@@ -76,13 +76,13 @@ export interface SearchRide {
   startLat: number;
   startLng: number;
   radius: number;
-  activityName: string | undefined;
-  startDate: string | undefined;
-  endDate: string | undefined;
-  activityTypeID: number;
-  difficultyLevelID: number;
-  minDistance: number;
-  maxDistance: number;
+  activityName: string | null;
+  startDate: string | null;
+  endDate: string | null;
+  activityTypeID: number | null;
+  difficultyLevelID: number | null;
+  minDistance: number | null;
+  maxDistance: number | null;
 }
 
 export interface DifficultyLevel {

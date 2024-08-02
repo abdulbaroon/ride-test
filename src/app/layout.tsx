@@ -7,6 +7,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import 'react-quill/dist/quill.snow.css';
 import "react-datepicker/dist/react-datepicker.css";
 import '@progress/kendo-theme-default/dist/all.css';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import NextTopLoader from "nextjs-toploader";
 import CustomLayout from "@/layout/CustomLayout";
 import Chakra from "@/shared/providers/Chakra";

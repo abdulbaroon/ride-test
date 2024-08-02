@@ -30,7 +30,7 @@ const Navbar = () => {
     }, [])
     return (
         <header className=" bg-secondaryButton fixed top-0 w-full z-50" >
-            <div className="w-11/12 mx-auto py-4 flex justify-between">
+            <div className="w-11/12 mx-auto py-4 flex justify-between !max-w-[1320px]">
                 <div className="flex items-center ">
                     <div className="">
                         <Link href={"/"}>
@@ -44,7 +44,7 @@ const Navbar = () => {
                             {user ? <Link href={"/ride/add"} className="hover:text-white">Add Ride</Link>
                                 : <Link href={"/features"} className="hover:text-white">Feature</Link>}
                             <Link href={"/ride/search"} className="hover:text-white">Search</Link>
-                            <Link href={"ride/calender"} className="hover:text-white">Calender</Link>
+                            <Link href={"/ride/calender"} className="hover:text-white">Calender</Link>
                             {user && <Link href={"#"} className="hover:text-white">Hubs</Link>}
                             <Link href={"#"} className="hover:text-white">About Us</Link>
                         </div>

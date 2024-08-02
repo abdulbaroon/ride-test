@@ -114,6 +114,13 @@ const Form2: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm }
     }
   }, [formData?.gpxFile]);
 
+  useEffect(()=>{
+    if(features){
+      setValue("routeName",features?.properties?.name?.trimEnd())
+      setValue("distance",routeDistance)
+    }
+  },[features,routeDistance])
+
   const handleSubmits: SubmitHandler<FormData> = async (data) => {
     if (formData?.routeType === "gpx" && !gpxFile && !formData?.gpxFile) {
       setError("gpxFile", {

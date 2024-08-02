@@ -33,7 +33,15 @@
     font-weight: 400;
     font-style: normal;
     background-color: #f5f4f8 !important;
+    min-height: 100vh !important;
+    display: flex !important;
+    flex-direction: column !important;
   }
+  
+  footer {
+    margin-top: auto !important;
+  }
+  
   .input-error {
     border-color: red;
   }
@@ -140,4 +148,16 @@ select option:not([value=""]) {
 .custom-day--selected {
   background-color: #4CAF50;
   color: white;
+}
+/* calender */
+.k-scheduler-timecolumn{
+  min-width:147px !important;
+  flex: none !important;
+  /* width: 30% !important; */
+}
+
+/* mapbox close button */
+.mapboxgl-popup-close-button{
+  font-size: 20px !important;
+  right: 3px !important;
 }

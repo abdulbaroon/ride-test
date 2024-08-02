@@ -9,8 +9,6 @@ export function formatDate(inputDate: string) {
     }
 }
 
-
-
 export function parseTime(timeString: string) {
     if (timeString) {
         
@@ -23,3 +21,10 @@ export function parseTime(timeString: string) {
         return formattedDateTime;
     }
 }
+
+export const getTimeToDate = (specificTime: any, date?: any) => {
+    return dayjs(date)
+      .set('hour', parseInt(specificTime?.split(':')[0]))
+      .set('minute', parseInt(specificTime?.split(':')[1]))
+      .set('second', parseInt(specificTime?.split(':')[2]))
+  }

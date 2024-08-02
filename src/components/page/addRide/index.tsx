@@ -74,10 +74,11 @@ export const AddRidePage: React.FC = () => {
   };
 
   return (
-    <section className=" min-h-screen">
+    <section className="">
       {success?
       <Success id={success}/>
-      :<div className="bg-white w-[95%]  mx-auto my-10 py-2 rounded-md mt-28">
+      :
+      <div className="bg-white w-[95%] !max-w-[1320px] mx-auto my-10 py-2 rounded-md mt-28">
       <div className="border-b">
         <h1 className="text-xl tablet:text-3xl font-bold m-5 ">Add a Ride</h1>
       </div>

@@ -269,6 +269,15 @@ const Form4: React.FC<Form1Props> = ({ nextForm, formData, startOver, prevForm, 
                             </div>
                         </div>
                     )}
+                    {aiImage && (
+                        <div className="mt-3  overflow-hidden ">
+                            <label className="font-medium text-gray-600">Selected AI Image:</label>
+                            <div className="mt-1 relative w-[400px] h-[250px]">
+                                <img src={aiImage} alt="Selected Ride Image" className=" " />
+                                <IoMdClose className="text-black rounded-full bg-[#ffffff30] backdrop-blur-sm  text-xl top-3 right-3 absolute cursor-pointer" onClick={() => setAiImage(null)} />
+                            </div>
+                        </div>
+                    )}
 
                 </div>
                 <div className="flex justify-between mt-6 ">

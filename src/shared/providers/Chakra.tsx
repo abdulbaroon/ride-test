@@ -13,4 +13,4 @@ const Chakra: React.FC<ChakraProviderProps> = ({ children }) => {
   );
 };
 
-export default Chakra;
+export default Chakra;  

@@ -88,6 +88,12 @@ const AdditionalOptions: React.FC<AdditionalOptionsProps> = ({ register, errors,
       setWaiver(pdf)
       setAiImage(data?.dalleUrl)
     }
+    setData({
+      document: waiver,
+      image: image,
+      dalleUrl: aiImage,
+      tags: select,
+    })
   }, [data])
   const handleGenerate = async () => {
     const payload = {
@@ -267,6 +273,15 @@ const AdditionalOptions: React.FC<AdditionalOptionsProps> = ({ register, errors,
             </div>
           </div>
         )}
+         {aiImage && (
+                        <div className="mt-3  overflow-hidden ">
+                            <label className="font-medium text-gray-600">Selected AI Image:</label>
+                            <div className="mt-1 relative w-[400px] h-[250px]">
+                                <img src={aiImage} alt="Selected Ride Image" className=" " />
+                                <IoMdClose className="text-black rounded-full bg-[#ffffff30] backdrop-blur-sm  text-xl top-3 right-3 absolute cursor-pointer" onClick={() => setAiImage(null)} />
+                            </div>
+                        </div>
+                    )}
       </div>
       <Modal isOpen={modalIsOpen} style={customStyles} contentLabel="Generate AI Image">
         <div className="w-[300px] tablet:w-[500px]  relative">

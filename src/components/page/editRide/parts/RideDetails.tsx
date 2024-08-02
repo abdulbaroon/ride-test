@@ -30,7 +30,7 @@ const RideDetails: React.FC<RideDetailsProps> = ({ register, errors, setValue, d
     const [endTime, setEndTime] = useState<Date | null | any>(setHours(setMinutes(new Date(), 30), 11));
     const [lat, setLat] = useState<number>(28.5355);
     const [lng, setLng] = useState<number>(77.3910);
-    const [code, setCode] = useState("");
+    const [code, setCode] = useState("Lets ride and be respectful to each other!");
     const [address, setAddress] = useState()
     const [city, setCity] = useState<string>("");
     const [state, setState] = useState<string>("");
@@ -50,11 +50,8 @@ const RideDetails: React.FC<RideDetailsProps> = ({ register, errors, setValue, d
         setCity(data.startCity)
         setCountry(data.startCountry)
         setCode(data.activityNotes)
-    }, [data])
-
-    useEffect(() => {
         setData({
-            note: code,
+            note: (code === "<p><br></p>")?null:code,
             startCity: city,
             startState: state,
             startCountry: country,
@@ -64,6 +61,21 @@ const RideDetails: React.FC<RideDetailsProps> = ({ register, errors, setValue, d
             startTime: startTime,
             endTime: endTime,
             activityNotes: code,
+
+        });
+    }, [data])
+
+    useEffect(() => {
+        setData({
+            note: (code === "<p><br></p>")?null:code,
+            startCity: city,
+            startState: state,
+            startCountry: country,
+            startLat: lat,
+            startLng: lng,
+            startDate: startDate,
+            startTime: startTime,
+            endTime: endTime,
 
         });
     }, [code, address, city, state, country, lat, lng, startDate, startTime, endTime]);
@@ -134,7 +146,9 @@ const RideDetails: React.FC<RideDetailsProps> = ({ register, errors, setValue, d
         () => <MapBox center={[lng, lat]} initialZoom={11} circle={10 * 1} className={"h-[43vh] w-[90%]"} setMarkerPos={handelMarkerChnage} />,
         [lng, lat]
     );
-
+    const handleProcedureContentChange = useCallback((content: string) => {
+        setCode(content);
+    }, []);
     return (
         <div className='shadow-xl rounded-xl p-5'>
             <div className="mt-2 mb-14">
@@ -241,7 +255,10 @@ const RideDetails: React.FC<RideDetailsProps> = ({ register, errors, setValue, d
                 </div>
                 <div className="my-5">
                     <label className="font-medium text-gray-600">Notes</label>
-                    <ReactQuill theme="snow" />
+                    <ReactQuill 
+                    theme="snow" 
+                    value={code} 
+                    onChange={handleProcedureContentChange}/>
                 </div>
             </div>
         </div>

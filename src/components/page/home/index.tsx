@@ -8,10 +8,10 @@ import { createElement } from "react"
 
 export const HomePage = () => {
   return (
-    <div className="min-h-screen mt-[90px] ">
+    <div className=" mt-[90px] ">
 
       <div className="bg-white">
-        <div className="w-11/12 mx-auto min-h-[90vh] flex flex-col-reverse tablet:flex-row gap-3 justify-center items-center">
+        <div className="w-11/12 !max-w-[1320px] mx-auto  flex flex-col-reverse tablet:flex-row gap-3 justify-center items-center">
           <div className="w-full tablet:w-3/5 flex flex-col justify-center items-start tablet:items-end  h-full gap-7">
             <div className="desktop:w-9/12 tablet:w-11/12 w-full">
               <div className="text-gray-500 text-xl font-normal flex flex-col gap-6 ">
@@ -42,7 +42,7 @@ export const HomePage = () => {
       </div>
 
       <div>
-        <div className="w-11/12 mx-auto py-10">
+        <div className="w-11/12 mx-auto !max-w-[1320px] py-10">
           <h1 className="font-bold text-3xl">How it works</h1>
           <div className="grid sm:grid-cols-2 desktop:grid-cols-4  gap-6  ">
             {steps?.map((step, i) => (
@@ -60,8 +60,8 @@ export const HomePage = () => {
       </div>
 
       <div>
-        <div className="bg-violet min-h-screen ">
-          <div className="w-11/12 mx-auto py-20 text-wrap">
+        <div className="bg-violet  ">
+          <div className="w-11/12 mx-auto !max-w-[1320px] py-20 text-wrap">
             <h1 className="text-5xl text-white font-bold text-center">Welcome to Chasing Watts.</h1>
             <div className="flex flex-col tablet:flex-row justify-center mt-14 gap-5 w-full">
               <div className=" mt-5 w-full tablet:w-1/2 desktop:w-5/12 flex  tablet:items-end flex-col ">
@@ -107,7 +107,7 @@ export const HomePage = () => {
       </div>
 
       <div>
-        <div className="w-11/12 mx-auto bg-lightGray rounded-xl my-10 py-10 min-h-[40vh] flex flex-col tablet:flex-row px-2 tablet:px-10 desktop:px-32">
+        <div className="w-11/12 mx-auto !max-w-[1320px] bg-lightGray rounded-xl my-10 py-10 min-h-[40vh] flex flex-col tablet:flex-row px-2 tablet:px-10 desktop:px-32">
           <div className="w-full tablet:w-1/2">
             <div className="flex flex-col justify-center text-center tablet:text-start h-full gap-7">
               <h1 className="text-3xl font-bold text-gray-800">GET THE APP!</h1>

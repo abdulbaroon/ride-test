@@ -10,6 +10,7 @@ interface MapBoxProps {
   center?: [number, number];
   initialZoom?: number;
   circle?: number;
+  outsideClick?: boolean;
   className?: string;
   setMarkerPos?: (cords: [number, number]) => void;
 }
@@ -19,10 +20,11 @@ const MapBox: React.FC<MapBoxProps> = ({
   initialZoom = 2,
   circle = 10,
   className,
+  outsideClick = true,
   setMarkerPos,
 }) => {
   const [mapStyle, setMapStyle] = useState<string>(
-    "mapbox://styles/mapbox/streets-v11"
+    "mapbox://styles/mapbox/streets-v12"
   );
   const [markerPosition, setMarkerPosition] = useState<[number, number] | null>(null);
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
@@ -59,6 +61,23 @@ const MapBox: React.FC<MapBoxProps> = ({
     };
   };
 
+  const fitCircleInView = (center: [number, number], radius: number) => {
+    if (mapRef.current) {
+      const bounds = new mapboxgl.LngLatBounds();
+      const circleFeature = createCircleFeature(center, radius);
+
+      circleFeature.geometry.coordinates[0].forEach((coord) => {
+        bounds.extend(coord as [number, number]);
+      });
+
+      mapRef.current.fitBounds(bounds, {
+        padding: { top: 20, right: 20, bottom: 20, left: 20 },
+        maxZoom: 15,
+        duration: 1000,
+      });
+    }
+  };
+
   useEffect(() => {
     if (mapContainerRef.current && !mapRef.current) {
       const newMap = new mapboxgl.Map({
@@ -68,6 +87,7 @@ const MapBox: React.FC<MapBoxProps> = ({
         zoom: initialZoom,
         boxZoom: true,
         dragPan: true,
+        projection: "globe",
       });
 
       newMap.on("load", () => {
@@ -96,21 +116,21 @@ const MapBox: React.FC<MapBoxProps> = ({
           },
         });
 
-        newMap.on("click", (e) => {
-          const { lng, lat } = e.lngLat;
-          if (isValidCoordinates([lng, lat])) {
-            setMarkerPosition([lng, lat]);
-            if (markerRef.current) {
-              markerRef.current.setLngLat([lng, lat]);
-            } else {
-              markerRef.current = new mapboxgl.Marker({ color: "#FF0000" })
-                .setLngLat([lng, lat])
-                .addTo(newMap);
+        if (outsideClick) {
+          newMap.on("click", (e) => {
+            const { lng, lat } = e.lngLat;
+            if (isValidCoordinates([lng, lat])) {
+              setMarkerPosition([lng, lat]);
+              if (markerRef.current) {
+                markerRef.current.setLngLat([lng, lat]);
+              } else {
+                markerRef.current = new mapboxgl.Marker({ color: "#FF0000" })
+                  .setLngLat([lng, lat])
+                  .addTo(newMap);
+              }
             }
-          }
-        });
-
-        // Trigger resize to ensure the map canvas fills the container
+          });
+        }
         newMap.resize();
       });
 
@@ -132,8 +152,7 @@ const MapBox: React.FC<MapBoxProps> = ({
           .setLngLat(center)
           .addTo(map);
       }
-      map.setCenter(center);
-      map.resize(); // Ensure the map resizes properly when the center changes
+      map.flyTo({ center, essential: true, zoom: initialZoom, duration: 3000 });
     }
   }, [center]);
 
@@ -147,7 +166,7 @@ const MapBox: React.FC<MapBoxProps> = ({
       (map.getSource("circle") as mapboxgl.GeoJSONSource).setData(
         createCircleFeature(center, circle) as any
       );
-      map.resize(); // Ensure the map resizes properly when the circle changes
+      fitCircleInView(center, circle);
     }
   }, [circle, center]);
 

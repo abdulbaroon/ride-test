@@ -61,7 +61,7 @@ export const getActivityTag = createAsyncThunk(
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response.data);
-    }
+    } 
   }
 );
 

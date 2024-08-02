@@ -19,7 +19,7 @@ const tableArray = ["Date/Time based events",
 ]
 export const FeaturesPage = () => {
     return (
-        <div className="mt-[90px] min-h-screen"
+        <div className="mt-[90px]  !max-w-[1400px] mx-auto"
             style={{
                 backgroundImage: `url(${featbg.src})`,
                 backgroundPosition: "0% 40%",

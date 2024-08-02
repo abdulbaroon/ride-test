@@ -5,23 +5,25 @@ import { persistStore, persistReducer } from "redux-persist";
 import authReducer from "../slices/authSlice";
 import addRideReducer from "../slices/addRideSlice";
 import calendarReducer from "../slices/calendarSlice";
+import dashboardReducer from "../slices/dashboardSlice"
 
 const persistConfig = {
     key: "root",
     storage,
-    whitelist: ["auth", "addRide", "calendar"],
+    whitelist: ["auth", "addRide", "calendar","dashboard"],
 };
 
 const rootReducer = combineReducers({
     auth: authReducer,
     addRide: addRideReducer,
     calendar: calendarReducer,
+    dashboard:dashboardReducer
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
-    reducer: persistedReducer,
+    reducer: persistedReducer,    
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
             serializableCheck: {

@@ -10,12 +10,14 @@ interface AuthState {
   token: string | null;
   loading: boolean;
   error: string | null;
+  profileData:{}
 }
 
 const initialState: AuthState = {
   user: {
     id:null
   },
+  profileData:{},
   token: null,
   loading: false,
   error: null,
@@ -182,6 +184,9 @@ const authSlice = createSlice({
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string | null;
+      })
+      .addCase(getProfile.fulfilled, (state, action) => {
+        state.profileData = action.payload;
       });
   },
 });

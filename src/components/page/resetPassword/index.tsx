@@ -52,7 +52,7 @@ export const ResetPasswordPage = () => {
   };
 
   return (
-    <div className='min-h-screen w-full flex justify-center items-center bg-[#f5f4f8] mt-[90px]'>
+    <div className=' w-full flex justify-center items-center bg-[#f5f4f8] mt-[90px]'>
       <div className='w-full desktop:w-1/2 mx-auto bg-white border rounded-xl flex items-center flex-col tablet:flex-row'>
         <div className='w-full tablet:w-1/2 p-6 tablet:p-12  flex justify-center items-center'>
           <div>
@@ -69,7 +69,6 @@ export const ResetPasswordPage = () => {
                 {errors.reset_code && <p className='text-red-500 text-xs '>Reset code is required</p>}
               </div>
             </div>
-            <label className='text-gray-500'>New password</label>
             <div className='relative'>
               <div className='mb-6'>
                 <input {...register("password", { required: true, minLength: 6 })} type={showPassword ? "text" : "password"} className='w-full py-[10px] px-4 border rounded-lg mt-2 ' placeholder='Enter Password' />
@@ -106,7 +105,6 @@ export const ResetPasswordPage = () => {
           </form>
         </div>
       </div>
-
     </div>
   );
 }

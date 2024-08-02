@@ -17,8 +17,8 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import { extractRouteId } from '@/shared/util/format.util';
 import { User } from '@/shared/types/account.types';
-import { editRide } from './feature/editRide';
 import { CgSpinner } from 'react-icons/cg';
+import { editRide } from './feature/editRide';
 
 interface FormData {
   routeType?: string;
@@ -226,7 +226,7 @@ export const EditRide = ({ id }: { id: number }) => {
   }
   return (
     <section className='bg-[#f5f4f8] h-full'>
-      <div className='min-h-screen pt-28 w-11/12 mx-auto'>
+      <div className=' pt-28 w-11/12 mx-auto !max-w-[1320px]'>
         <div>
           <form onSubmit={handleSubmit(handleSubmits)}>
             <Accordion defaultIndex={[0]} allowMultiple className='border bg-white rounded-xl'>

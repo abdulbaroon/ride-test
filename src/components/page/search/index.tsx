@@ -1,5 +1,5 @@
 "use client";
-import { forwardRef, useCallback, useState } from "react";
+import { forwardRef, useCallback, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { usePlacesWidget } from "react-google-autocomplete";
 import { IoMdArrowDropdown } from "react-icons/io";
@@ -9,6 +9,7 @@ import { searchRide } from "@/redux/slices/addRideSlice";
 import { ImSearch } from "react-icons/im";
 import MapCard from "@/components/basic/MapCard";
 import { toast } from "react-toastify";
+import { User } from "@/shared/types/account.types";
 
 interface FormData {
     rideName?: string;
@@ -18,7 +19,7 @@ interface FormData {
     rideType?: string;
     difficulty?: string;
     minDistance?: string;
-    maxDistance?: string
+    maxDistance?: number
 }
 
 interface ComponentType {
@@ -56,7 +57,8 @@ export const SearchPage = () => {
     const difficultyLevel = useSelector<RootState, DifficultyLevel[]>(
         (state) => state.addRide.difficultyLevels
     );
-
+    
+    const user = useSelector <RootState>((state)=>state.auth.user) as User
     const {
         register,
         handleSubmit,
@@ -64,6 +66,11 @@ export const SearchPage = () => {
         formState: { errors },
     } = useForm<FormData>();
 
+    useEffect(()=>{
+        if(user.userProfile?.defaultRadius){
+            setValue("maxDistance",user.userProfile?.defaultRadius)
+        }
+    },[user])
     const handlePlaceSelect = useCallback((place: google.maps.places.PlaceResult): void => {
         if (place && place.geometry && place.geometry.location) {
             const address = place.formatted_address;
@@ -92,23 +99,23 @@ export const SearchPage = () => {
         apiKey: process.env.NEXT_PUBLIC_GOOGLE_API || "",
         onPlaceSelected: handlePlaceSelect,
         options: {
-            types: ["address"],
+            types: ["establishment", "geocode"],
         },
     });
 
     const handleSubmits: SubmitHandler<FormData> = async (data) => {
         const payload = {
-            userID: 1,
+            userID: user.id || 1,
             startLat: lat,
             startLng: lng,
-            radius: Number(data.maxDistance),
-            activityName: data.rideName,
-            startDate: data.startTime,
-            endDate: data.endTime,
-            activityTypeID: Number(data.rideType),
-            difficultyLevelID: Number(data.difficulty),
-            minDistance: Number(data.minDistance),
-            maxDistance: Number(data.maxDistance),
+            radius: Number(data.maxDistance) || Number(user.userProfile?.defaultRadius),
+            activityName: data.rideName || null,
+            startDate: data.startTime || null,
+            endDate: data.endTime || null,
+            activityTypeID: Number(data.rideType) || null,
+            difficultyLevelID: Number(data.difficulty) || null,
+            minDistance: Number(data.minDistance) || null,
+            maxDistance: Number(data.maxDistance) || null,
         };
         const response = await dispatch(searchRide(payload))
         if (searchRide.fulfilled.match(response)) {
@@ -125,8 +132,8 @@ export const SearchPage = () => {
     };
 
     return (
-        <div className="mt-[90px] w-11/12 mx-auto flex gap-10 p-4 ">
-            <div className="w-4/12 bg-white rounded-2xl shadow-lg">
+        <div className="mt-[90px] w-11/12 mx-auto  flex gap-10 p-4 !max-w-[1320px]">
+            <div className="w-4/12 bg-white rounded-2xl shadow-lg h-fit">
                 <h1 className="text-2xl font-bold p-4 border-b">Search Criteria</h1>
                 <form onSubmit={handleSubmit(handleSubmits)} className="">
                     <div className="w-11/12 mx-auto my-6 space-y-3">
@@ -147,7 +154,7 @@ export const SearchPage = () => {
                             <input
                                 type="number"
                                 placeholder=""
-                                {...register("maxDistance")}
+                                {...register("maxDistance",{required:"Please enter a ride radius"})}
                                 className="border px-2 py-[6px] w-full rounded-lg remove-arrow"
                             />
                             {errors.maxDistance && (
@@ -159,7 +166,7 @@ export const SearchPage = () => {
                             <input
                                 type="text"
                                 className="border px-2 py-[6px] w-full rounded-lg"
-                                {...register("location")}
+                                {...register("location",{required:"Please search and select a location"})}
                                 ref={autocompleteRef as any}
                             />
                             {errors.location && (

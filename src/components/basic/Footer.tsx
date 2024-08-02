@@ -6,8 +6,8 @@ import { FaFacebookF, FaHeart, FaInstagram, FaTwitter } from "react-icons/fa"
 
 const Footer = () => {
     return (
-        <footer className=" bg-violet " >
-            <div className="w-11/12 mx-auto py-5 tablet:gap-0 gap-5 flex justify-between flex-col-reverse tablet:flex-row items-center">
+        <footer className=" bg-violet mt-auto" >
+            <div className="w-11/12 !max-w-[1320px] mx-auto py-5 tablet:gap-0 gap-5 flex justify-between flex-col-reverse tablet:flex-row items-center">
                 <div className="flex  items-center text-xs desktop:text-sm ">
                     <p className="text-gray-300 flex items-center gap-1">© All rights reserved. Made with<span className="text-red-900 text-xl">{" "}<FaHeart />{" "}</span>
                         by <Link className="hover:text-white font-bold" href={"#"} > {" "}Chasing Watts LLC</Link></p>

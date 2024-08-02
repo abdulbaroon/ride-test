@@ -33,8 +33,8 @@ interface ProfileFormValues {
 export const ProfilePage = () => {
     const [loading, setloading] = useState(false)
     const [imageSrc, setImageSrc] = useState<string>("https://chasingwatts.com/pfImages/pfImg_35373.png");
-    const [lat, setlat] = useState<number>(28.5355)
-    const [lng, setlng] = useState<number>(77.3910)
+    const [lat, setlat] = useState<number>(29.7769089)
+    const [lng, setlng] = useState<number>(-95.3724372)
     const [city, setCity] = useState<string>("")
     const [state, setState] = useState<string>("")
     const [country, setCountry] = useState<string>("")
@@ -109,7 +109,13 @@ export const ProfilePage = () => {
             }
         }
     };
-
+    useEffect(()=>{
+        if(userData.userProfile){
+            setlat(userData.userProfile.homeBaseLat)
+            setlng(userData.userProfile.homeBaseLng)
+        }
+    },[userData])
+    
     useEffect(() => {
         profile();
     }, [userData, dispatch, setValue])
@@ -282,12 +288,12 @@ export const ProfilePage = () => {
 
     }, [imageURL]);
 
-    const mapMemo = useMemo(() => <MapBox center={[lng, lat]} initialZoom={11} circle={ride * 10} />, [lng, lat, ride]);
+    const mapMemo = useMemo(() => <MapBox center={[lng, lat]} initialZoom={11} circle={ride * 1600} />, [lng, lat, ride]);
     return (
         <section className="w-full py-10 ">
             {!success ?
-                <div className='flex flex-col desktop:flex-row w-11/12  mx-auto gap-5 mt-[90px]'>
-                    <div className="w-full desktop:w-3/4 border bg-white rounded-2xl shadow-lg py-10 px-10">
+                <div className='flex flex-col desktop:flex-row w-11/12  mx-auto !max-w-[1320px] gap-5 mt-[90px]'>
+                    <div className="w-full desktop:w-3/4 border bg-white rounded-xl shadow-lg py-10 px-10">
                         <h1 className=" w-full font-bold border-b text-4xl">Profile Settings</h1>
                         <div className="w-full flex justify-center flex-col items-center">
                             <label className=' relative flex justify-center flex-row cursor-pointer' htmlFor="fileInput">
@@ -363,7 +369,7 @@ export const ProfilePage = () => {
                                     </div>
                                 </div>
                                 <div className='w-full tablet:w-1/2  mt-4 rounded-xl'>
-                                    <MapBox center={[lng, lat]} initialZoom={11} circle={ride * 10} />
+                                    <MapBox center={[lng, lat]} initialZoom={11} circle={ride * (unit?1000:1600)} outsideClick={false} />
                                 </div>
                             </div>
                             <div className='flex flex-col tablet:flex-row gap-3 mt-6'>

@@ -1,14 +1,29 @@
-import { burder, coffee, beerMug, snooze } from '@/assets';
-import React from 'react';
-import { BsLightningCharge, BsLightningChargeFill } from 'react-icons/bs';
-import { FaRegMap } from 'react-icons/fa';
-import { GiPathDistance } from 'react-icons/gi';
-import { HiOutlineHome } from 'react-icons/hi';
-import { IoMdCalendar } from 'react-icons/io';
-import { LiaFilterSolid, LiaStreetViewSolid } from 'react-icons/lia';
-import { MdOutlineDirectionsBike, MdOutlineShareLocation } from 'react-icons/md';
-import { PiPersonSimpleBike } from 'react-icons/pi';
+"use client"
+import { burder, coffee, beerMug, snooze, rideDetail, rideList } from '@/assets';
+import React, { useEffect, useState } from 'react';
+import { MdOutlineDirectionsBike } from 'react-icons/md';
+import UserProfile from './parts/UserProfile';
+import Greeting from './parts/Greeting';
 import { TbFilter, TbFilterX } from 'react-icons/tb';
+import { FaRegMap } from 'react-icons/fa';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/redux/store/store';
+import { User } from '@/shared/types/account.types';
+import { getFriendCount, getHotRideList, getLeaderBoard, getMyRideList, getPointDetails, getPointLevels, getRideList, getUserStats } from '@/redux/slices/dashboardSlice';
+import { FormattedRide, FormattedRideData, Item, RideItem } from '@/shared/types/dashboard.types';
+import { formatRideList } from '@/shared/util/format.util';
+import RideCard from './parts/RideCard';
+import { addDays, format } from 'date-fns';
+import DateFilterButton from './parts/DateFilterButton';
+import QuickFilter from './parts/QuickFilter';
+import { Button, Tooltip, useDisclosure } from '@chakra-ui/react';
+import NewsCard from './parts/NewsCard';
+import HotRideCard from './parts/HotRideCard';
+import MyRideModal from './parts/MyRideModal';
+import { getProfile } from '@/redux/slices/authSlice';
+import LeaderBoardList from './parts/LeaderBoardList';
+import FriendCard from './parts/FriendCard';
+import MapModal from './parts/MapModal';
 
 const getTimeOfDayIconAndGreeting = () => {
   const now = new Date();
@@ -35,107 +50,198 @@ const getTimeOfDayIconAndGreeting = () => {
 
   return { icon, greeting };
 };
+interface FilterInputs {
+  radius: number
+  rideType: number
+  rideName: string
+}
+export const DashboardPage: React.FC = () => {
+  const [rideListArray, setRideListArray] = useState<FormattedRide[] | []>([])
+  const [rideArray, setRideArray] = useState<RideItem[] | []>([])
+  const [hotRideArray, setHotRideArray] = useState<FormattedRide[] | []>([])
+  const [openFilter, setOpenFilter] = useState(false)
+  const [filter, setfilter] = useState<boolean>(false)
+  const userData = useSelector<RootState>((state) => state.auth.user) as User
+  const dispatch = useDispatch<AppDispatch>()
+  const hotRidedata = useSelector<RootState, Item[]>((state) => state.dashboard.hotRideList)
+  const myRidedata = useSelector<RootState, Item[]>((state) => state.dashboard.myRideList)
+  const pointDetails = useSelector<RootState,any>((state) => state.dashboard.pointDetails)
+  const userStats = useSelector<RootState,any>((state) => state.dashboard.userStats)
+  const ridedata = useSelector<RootState, Item[]>((state) => state.dashboard.rideList)
+  const profile = useSelector<RootState,any>((state) => state.auth.profileData)
+ 
 
-export const DashboardPage = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { isOpen:isMapModal, onOpen:onMapOpen, onClose:onMapClose } = useDisclosure()
+
   const { icon, greeting } = getTimeOfDayIconAndGreeting();
+  
+  const user = {
+    name: profile?.firstName + " " + profile?.lastName,
+    username: profile?.firstName,
+    level: pointDetails?.levelName ?? "decawatt",
+    location: `${profile?.homeBaseCity},${profile?.homeBaseState}`,
+    radius: `${profile?.defaultRadius} mi`,
+    ridesJoined:userStats?.userRideCount|| 0,
+    distance: userStats?.userDistance|| 0,
+    joules:  pointDetails?.joulePointTotal ?? 0+' pts',
+    joinedDate: format(userData.userProfile?.createdDate ?? new Date(), "MMM yyyy"),
+  };
+
+  useEffect(() => {
+    if (ridedata) {
+      setRideArray(ridedata);
+      const formattedRide = ridedata.map((data) => formatRideList(data));
+      setRideListArray(formattedRide);
+    }
+
+    if (hotRidedata) {
+      const formattedHotRide = hotRidedata.map((data) => formatRideList(data));
+      setHotRideArray(formattedHotRide);
+    }
+  }, [ridedata, hotRidedata]);
+
+  const handleApi = async () => {
+    if (userData.userProfile?.defaultRadius && userData.id) {
+      const params = {
+        id: userData.id,
+        feedType: "Feed",
+        radius: userData.userProfile?.defaultRadius
+      }
+      await dispatch(getRideList(params))
+      dispatch(getPointDetails(userData.id))
+      dispatch(getUserStats(userData.id))
+      dispatch(getPointLevels())
+      dispatch(getProfile(userData.id))
+      dispatch(getLeaderBoard(0))
+      dispatch(getFriendCount({id:userData?.id,radius:profile?.defaultRadius}))
+    }
+  }
+
+  const handleHotRideApi = async () => {
+    if (userData.userProfile?.defaultRadius && userData.id) {
+      const params = {
+        id: userData.id,
+        feedType: "Hot",
+        radius: userData.userProfile?.defaultRadius
+      }
+      await dispatch(getHotRideList(params))
+    }
+  }
+
+  const handleMyRideApi = async () => {
+    if (userData.userProfile?.defaultRadius && userData.id) {
+      const params = {
+        id: userData.id,
+        feedType: "me",
+        radius: userData.userProfile?.defaultRadius
+      }
+      await dispatch(getMyRideList(params))
+    }
+  }
+
+
+  const handelFilterData = (data: RideItem[]) => {
+    if (data) {
+      const formatRide = data?.map((data) => formatRideList(data))
+      setRideListArray(formatRide)
+      setfilter(true)
+    }
+    else {
+      setRideListArray([])
+    }
+  }
+
+  const handelFilterInput = (data: FilterInputs) => {
+    const rdata: RideItem[] = ridedata.filter((item: RideItem) => {
+      const matchesName = data.rideName ? item?.activityName.includes(data.rideName) : true;
+      const matchesRadius = data.radius ? data.radius > (item?.activityRoutes?.[0]?.distance ?? Infinity) : true;
+      const matchesType = data.rideType ? Number(data.rideType) === item?.activityTypeID : true;
+      return matchesName && matchesRadius && matchesType;
+    });
+    setRideArray(rdata)
+    const formatRide = rdata?.map((data) => formatRideList(data))
+    setRideListArray(formatRide)
+  }
+  const handelClearFilter = () => {
+    setRideArray(ridedata);
+    const formattedRide = ridedata.map((data) => formatRideList(data));
+    setRideListArray(formattedRide);
+    setfilter(false)
+  }
+
+  useEffect(() => {
+    handleApi()
+    handleHotRideApi()
+    handleMyRideApi()
+  }, [])
 
   return (
-    <div className='min-h-screen mt-28'>
-      <div className='w-11/12 mx-auto flex gap-5 '>
-        <div className="w-[25%] shadow-lg rounded-lg bg-white  gap-3 overflow-hidden border">
-          <div className='border-b px-4 py-3 flex items-center gap-2 bg-gray-200'>
-            <div className='relative w-12 h-12 border overflow-hidden bg-gray-100 rounded-full  '>
-              <svg
-                className='absolute w-14 h-14 text-gray-400 -left-1'
-                fill='currentColor'
-                viewBox='0 0 20 20'
-                xmlns='http://www.w3.org/2000/svg'>
-                <path
-                  fillRule='evenodd'
-                  d='M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z'
-                  clipRule='evenodd'></path>
-              </svg>
+    <div className=" mt-28 mb-6 ">
+      <div className="w-11/12 mx-auto flex gap-5 !max-w-[1320px]">
+        <UserProfile {...user} />
+        <div className='w-[75%]'>
+
+          <div className="w-full min-h-10 h-fit border rounded-lg shadow-lg bg-white p-5 flex justify-between items-start">
+            <div>
+              <Greeting rides={ridedata.length} icon={icon} greeting={greeting} name={userData.userProfile?.firstName + " " + userData.userProfile?.lastName} />
+              <button
+                onClick={onOpen}
+                className="mt-5 ms-2 rounded-md flex justify-center items-center bg-primaryButton text-white gap-1 text-sm py-2 px-4">
+                <MdOutlineDirectionsBike />
+                My Rides
+                <span className="bg-primaryText px-2 rounded-md">{myRidedata?.length}</span>
+              </button>
             </div>
-            <div >
-              <p className='text-primaryButton font-semibold'>Dev Ashish</p>
-              <p className='text-sm font-semibold leading-3'>Ashish</p>
+            <div className="flex gap-2">
+              <Tooltip hasArrow label='Clear Filter' placement='top' bg='black'>
+                <button
+                  onClick={handelClearFilter}
+                  className="text-2xl text-white bg-yellow-500 p-2 rounded-md  h-fit "><TbFilterX /></button>
+              </Tooltip>
+              <Tooltip hasArrow label='Filter' placement='top' bg='black'>
+                <button
+                  onClick={() => setOpenFilter(true)}
+                  className="text-2xl text-white bg-primaryText  p-2 rounded-md h-fit "><TbFilter /></button>
+              </Tooltip>
+              <button 
+              onClick={onMapOpen}
+              className="flex justify-center items-center px-3 py-2 bg-primaryDarkblue rounded-md text-white gap-1"><FaRegMap /> Map</button>
             </div>
           </div>
-          
-          <div className='border-b px-4 py-3 flex justify-between'>
-            <div className='flex items-center gap-5'>
-              <BsLightningChargeFill className='text-darkred text-xl' />
-              <p> Level</p>
-            </div>
-            <p className='font-bold text-primaryButton'>microwatt</p>
-          </div>
-          <div className='border-b px-4 py-3 flex justify-between'>
-            <div className='flex items-center gap-4'>
-              <HiOutlineHome className='text-xl' />
-              <p> Home</p>
-            </div>
-            <p className='font-medium text-primaryText'>Noida,UP</p>
-          </div>
-          <div className='border-b px-4 py-3 flex justify-between'>
-            <div className='flex items-center gap-5'>
-              <LiaStreetViewSolid className='text-xl' />
-              <p>  Radius</p>
-            </div>
-            <p className='font-medium text-primaryButton'>50 mi</p>
-          </div>
-          <div className='border-b px-4 py-3 flex justify-between'>
-            <div className='flex items-center gap-5'>
-              <PiPersonSimpleBike className='text-xl' />
-              <p>  Rides Joined</p>
-            </div>
-            <p className='font-medium'>0</p>
-          </div>
-          <div className='border-b px-4 py-3 flex justify-between'>
-            <div className='flex items-center gap-5'>
-              <GiPathDistance className='text-xl' />
-              <p> Distance</p>
-            </div>
-            <p className='font-medium'>0</p>
-          </div>
-          <div className='border-b px-4 py-3 flex justify-between'>
-            <div className='flex items-center gap-5'>
-              <BsLightningCharge className='text-xl' />
-              <p className=' text-primaryButton'>Joules</p>
-            </div>
-            <p className='font-medium text-primaryButton'>10 pts</p>
-          </div>
-          <div className=' px-4 py-3 flex justify-between'>
-            <div className='flex items-center gap-5'>
-              <IoMdCalendar className='text-xl' />
-              <p>  Joined</p>
-            </div>
-            <p className='font-medium'>Jun 2024</p>
-          </div>
-          
-        </div>
-        <div className='w-[75%] min-h-10 h-fit border rounded-lg shadow-lg bg-white p-5 flex justify-between items-start'>
+
           <div>
-            <div className='flex items-center gap-3'>
-              <img src={icon.src} alt={`${greeting}`} className='w-20' />
-              <div>
-                <p className='text-3xl font-bold'>{greeting}{" "}<span className='text-primaryButton '>John D</span></p>
-                <p>There are no upcoming rides in your area!</p>
-              </div>
-            </div>
-            <button
-              className='mt-5 ms-2 rounded-md flex justify-center items-center bg-primaryButton text-white gap-1 text-sm py-2 px-4'>
-              <MdOutlineDirectionsBike />
-              My Rides
-              <span className='bg-primaryText px-2 rounded-md'>1</span>
-            </button>
+            {openFilter && <QuickFilter closeFilter={() => setOpenFilter(false)} handelFilterData={handelFilterInput} />}
           </div>
-          <div className='flex gap-2 '>
-            <button className='text-2xl'><TbFilter /></button>
-            <button className='text-2xl'><TbFilterX /></button>
-            <button className='flex justify-center items-center px-3 py-2 bg-primaryDarkblue rounded-lg text-white gap-1'><FaRegMap /> map</button>
+
+          <div>
+            <DateFilterButton ridedata={rideArray} handelFilterData={handelFilterData} filter={filter} />
+          </div>
+
+          <div className='text-xl flex gap-5'>
+            <div className='w-[65%] mt-6 space-y-7'>
+
+              <div>
+                <p className='font-bold ms-1'>Hot Ride</p>
+                <HotRideCard data={hotRideArray} />
+              </div>
+
+              <div>
+                <p className='font-bold ms-1'>Upcoming Ride </p>
+                {rideListArray?.map((data) => <RideCard data={data} key={data.activityID} userData={userData} handleLike={handleApi} />)}
+              </div>
+
+            </div>
+            <div className='w-[35%] mt-6 space-y-7 '>
+              <NewsCard />
+              <LeaderBoardList />
+              <FriendCard/>
+            </div>
           </div>
         </div>
       </div>
+      <MapModal isOpen={isMapModal} onClose={onMapClose} />
+      <MyRideModal isOpen={isOpen} onClose={onClose} />
     </div>
   );
 };

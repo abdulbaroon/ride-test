@@ -14,15 +14,15 @@ import '@progress/kendo-date-math/tz/America/Los_Angeles';
 
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux/store/store';
-import { format, subMonths } from 'date-fns';
+import { addMonths, format, subMonths } from 'date-fns';
 import useCalendarEvents from '@/shared/hook/useCalenderEvent';
 import  { CalendarProfileItem } from './parts/CustomEventItem';
 import { getCalendarRides } from '@/redux/slices/calendarSlice';
 
-export const Calender = () => {
+export const Calender = () => {                     
   const timezones = React.useMemo(() => timezoneNames(), []);
-  const [view, setView] = React.useState('day');
-  const [date, setDate] = React.useState(subMonths(new Date(), 1));
+  const [view, setView] = React.useState('agenda');
+  const [date, setDate] = React.useState(new Date());
   const [timezone, setTimezone] = React.useState('Etc/UTC');
   const [orientation, setOrientation] = React.useState<"horizontal" | "vertical">('vertical');
   const dispatch = useDispatch<AppDispatch>();
@@ -33,20 +33,24 @@ export const Calender = () => {
       const params = {
         id: 63,
         radius: 50,
-        startDate: format(subMonths(new Date(), 1), "yyyy-MM-dd"),
-        endDate: format(new Date(), "yyyy-MM-dd")
+        startDate: format(date, "yyyy-MM-dd"),
+        endDate: format(addMonths(date,1) , "yyyy-MM-dd")
       };
       await dispatch(getCalendarRides(params));
     })();
-  }, [dispatch]);
+  }, [dispatch,date]);
 
   const handleViewChange = React.useCallback(
-    (event: SchedulerViewChangeEvent) => { setView(event.value); },
+    (event: SchedulerViewChangeEvent) => { 
+      setView(event.value);
+     },
     [setView]
   );
 
   const handleDateChange = React.useCallback(
-    (event: SchedulerDateChangeEvent) => { setDate(event.value); },
+    (event: SchedulerDateChangeEvent) => { setDate(event.value); 
+    console.log(event.value)
+     },
     [setDate]
   );
 
@@ -56,7 +60,7 @@ export const Calender = () => {
   );
 
   return (
-    <div className='w-11/12 mx-auto'>
+    <div className='w-11/12 mx-auto !max-w-[1320px]'>
       <div className="example-config mt-32">
         <div className="row">
           <div className="col">
@@ -74,12 +78,14 @@ export const Calender = () => {
           timezone={timezone}
           modelFields={customModelFields}
           item={CalendarProfileItem}
+          
+          
         >
           <TimelineView />
           <DayView />
           <WeekView />
           <MonthView />
-          <AgendaView />
+          <AgendaView   />
         </Scheduler>
       </div>
     </div>
