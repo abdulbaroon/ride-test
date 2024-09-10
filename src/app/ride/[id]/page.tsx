@@ -4,41 +4,50 @@ import type { Metadata, ResolvingMetadata } from "next";
 import { api } from "@/shared/api";
 import { formatRideData } from "@/shared/util/format.util";
 
+interface RideResponse {
+  rideName: string;
+  rideNotes: string;
+  image?: string;
+}
+
 interface PageProps {
   params: {
     id: number;
   };
 }
-// const fetchRide= async (id:any)=>{
-//   try {
-//     const endpoint = `/activity/${id}`;
-//     const response = await api.get(endpoint);
-//     return response.data as any;
-//   } catch (error: any) {
-//    console.log("errir")
-//   }
-// }
+
 export async function generateMetadata(
   { params }: PageProps,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  // read route params
   const id = params.id;
-
   const endpoint = `/activity/${id}`;
-  const rideResponse = await api.get(endpoint).then((res) => res.data);
-  const formattedRide = rideResponse ? formatRideData(rideResponse) : null;
-  console.log(formattedRide, "end");
 
+  // Fetching ride details
+  let rideResponse: any | null = null;
+  try {
+    rideResponse = await api.get(endpoint).then((res) => res.data);
+  } catch (error) {
+    console.error("Error fetching ride data:", error);
+    return {
+      title: "Ride Not Found",
+      description: "Unable to fetch ride details.",
+    };
+  }
+
+  const formattedRide = rideResponse ? formatRideData(rideResponse) : null;
   const previousImages = (await parent).openGraph?.images || [];
 
   return {
-    title: formattedRide?.rideName,
-    description:formattedRide?.rideNotes,
+    title: formattedRide?.rideName || "Ride Details",
+    description: formattedRide?.rideNotes || "Details of the ride.",
     openGraph: {
-      title: formattedRide?.rideName,
-      description: formattedRide?.rideNotes,
-      images: [formattedRide?.image as any, ...previousImages],
+      title: formattedRide?.rideName || "Ride Details",
+      description: formattedRide?.rideNotes || "Details of the ride.",
+      images: [
+        formattedRide?.image || "https://dev.chasingwatts.com/ridepictures/ridepicture_32497_981.png" as any,  // Fallback if image is not available
+        ...previousImages,
+      ],
     },
   };
 }
