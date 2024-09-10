@@ -1,10 +1,10 @@
 import { addDays, setHours } from 'date-fns';
 import { AiOutlineShop } from 'react-icons/ai';
-import { BsFillTriangleFill, BsLightningCharge } from 'react-icons/bs';
+import { BsFillTriangleFill, BsLightningCharge, BsStrava } from 'react-icons/bs';
 import { CiCalendar, CiSquareAlert } from 'react-icons/ci';
 import { FaApple, FaRegMap } from 'react-icons/fa';
 import { FaArrowDownUpAcrossLine } from 'react-icons/fa6';
-import { FiFileText, FiLock, FiShare2 } from 'react-icons/fi';
+import { FiFileText, FiLock, FiShare2, FiUsers } from 'react-icons/fi';
 import { GiPathDistance } from 'react-icons/gi';
 import { GoPeople } from 'react-icons/go';
 import { GrMapLocation } from 'react-icons/gr';
@@ -14,53 +14,63 @@ import { LuBadge, LuBellRing } from 'react-icons/lu';
 import { MdLogout } from 'react-icons/md';
 import { PiPersonSimpleBikeLight } from 'react-icons/pi';
 import { RiDeleteBinLine, RiTeamLine } from 'react-icons/ri';
-import { TbSettingsBolt, TbSettingsPin } from 'react-icons/tb';
+import { TbSettingsBolt, TbSettingsPin, TbUserCog } from 'react-icons/tb';
 
 export const profileData = [
     {
+        link:"/friend/33",
         name: "My Ride Profile",
         icon: PiPersonSimpleBikeLight
     },
     {
+        link:"#",
         name: "My Teams",
         icon: RiTeamLine
     },
     {
+        link:"/points",
         name: "My Joules",
         icon: BsLightningCharge
     },
 
     {
+        link:"/rwgpsconnect",
         name: "Ride w GPS Connect",
         icon: GrMapLocation
     },
 
     {
+        link:"/stravaconnect",
         name: "Strava Connect",
         icon: FaArrowDownUpAcrossLine
     },
 
     {
+        link:"/garminconnect",
         name: "Garmin Connect",
         icon: BsFillTriangleFill
     },
 
     {
+        link:"/notification",
         name: "Manage Notifications",
         icon: CiSquareAlert
     },
 
     {
+        link:"#",
         name: "Badge Board",
         icon: LuBadge
     },
 
     {
+        link:"#",
         name: "Reset Password",
         icon: IoKeyOutline
     },
 
     {
+        link:"#",
         name: "Delete Account",
         icon: RiDeleteBinLine
     },
@@ -71,6 +81,79 @@ export const profileData = [
     },
 ]
 
+export const sideBarData = [
+    {
+        link:"/account/profile",
+        name: "Profile",
+        icon: TbUserCog
+    },
+    {
+        link:"/friend/33",
+        name: "My Ride Profile",
+        icon: PiPersonSimpleBikeLight
+    },
+    {
+        link:"#",
+        name: "My Teams",
+        icon: RiTeamLine
+    },
+    {
+        link:"/points",
+        name: "My Joules",
+        icon: BsLightningCharge,
+        border:true
+    },
+
+    {
+        link:"/rwgpsconnect",
+        name: "Ride w GPS Connect",
+        icon: GrMapLocation
+    },
+
+    {
+        link:"/stravaconnect",
+        name: "Strava Connect",
+        icon: BsStrava
+    },
+
+    {
+        link:"/garminconnect",
+        name: "Garmin Connect",
+        icon: BsFillTriangleFill,
+        border:true
+    },
+
+    {
+        link:"#",
+        name: "Friends",
+        icon: FiUsers
+    },
+
+    {
+        link:"#",
+        name: "Badge Board",
+        border:true,
+        icon: LuBadge
+    },
+
+    {
+        link:"/notification",
+        name: "Manage Notifications",
+        icon: CiSquareAlert
+    },
+    {
+        link:"/account/resetPassword",
+        name: "Reset Password",
+        border:true,
+        icon: IoKeyOutline
+    },
+    {
+        name: "Sign Out",
+        icon: MdLogout,
+        // border:true
+    }
+    
+]
 export const toolbarModule = {
     toolbar: [
         [{ size: ["small", false, "large", "huge"] }],
@@ -204,8 +287,53 @@ export const featureCard = [
     }
 ]
 
-
-
+export const notificationSetting = [
+    {
+      title: "When a friend connection/request is made?",
+      forEmail: "connectionRequestFollowEmail",
+      forApp: "connectionRequestFollowApp",
+    },
+    {
+      title: "When new rides are added in your area?",
+      forEmail: "newRideEmail",
+      forApp: "newRideApp",
+    },
+    {
+      title: "When invited to a ride?",
+      forEmail: "activityInviteEmail",
+      forApp: "activityInviteApp",
+    },
+    {
+      title: "When a ride has been updated?",
+      forEmail: "activityUpdateEmail",
+      forApp: "activityUpdateApp",
+    },
+    {
+      title: "When a ride chat is added?",
+      forEmail: "activityDiscussionEmail",
+      forApp: "activityDiscussionApp",
+    },
+    {
+      title: "When a ride roster is updated?",
+      forEmail: "activityRosterEmail",
+      forApp: "activityRosterApp",
+    },
+    {
+      title: "Reminder for upcoming roster rides?",
+      forEmail: "activityReminderEmail",
+      forApp: "activityReminderApp",
+    },
+    {
+      title: "Notes from the Chasing Watts Administrator?",
+      forEmail: "adminNoteEmail",
+      forApp: "adminNoteApp",
+    },
+    {
+      title: "Chasing Watts Newsletter?",
+      forEmail: "newsletterEmail",
+      forApp: "newsletterApp",
+    },
+  ];
 
 
 

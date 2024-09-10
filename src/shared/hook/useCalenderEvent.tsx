@@ -13,42 +13,64 @@ interface CalendarEvent {
     activityTypeColor: string;
 }
 const useCalendarEvents = () => {
-    const calenderData = useSelector<RootState,CalendarEvent[]>(
-        (state) => state.calendar.rides  
+    const calenderData = useSelector<RootState, CalendarEvent[] | any>(
+        (state) => state.calendar.rides
     );
+    const eventData = calenderData.map((data: any) => {
+        const startDate = `${format(data.activityDate, "yyyy-MM-dd")}T${
+            data.activityStartTime
+        }.000Z`;
+        const endDate = `${format(data.activityDate, "yyyy-MM-dd")}T${
+            data.activityEndTime
+        }.000Z`;
+        const mapImage =
+            data?.activityPictures?.find((pic: any) => pic.isMap)
+                ?.picturePath || "";
 
-    const eventData = calenderData.map((data) => {
-        const startDate = `${format(data.activityDate, "yyyy-MM-dd")}T${data.activityStartTime}.000Z`;
-        const endDate = `${format(data.activityDate, "yyyy-MM-dd")}T${data.activityEndTime}.000Z`;
+        // return {
+        //     TaskID: data?.activityID,
+        //     OwnerID: data.userID,
+        //     Title: data?.activityName,
+        //     Description: data?.activityNotes,
+        //     StartTimezone: null,
+        //     Start: startDate,
+        //     End: endDate,
+        //     Color: data.activityTypeColor,
+        //     EndTimezone: null,
+        //     RecurrenceRule: null,
+        //     RecurrenceID: null,
+        //     RecurrenceException: null,
+        //     isAllDay: false
+        // };
 
         return {
-            TaskID: data?.activityID,
-            OwnerID: data.userID,
-            Title: data?.activityName,
-            Description: data?.activityNotes,
-            StartTimezone: null,
-            Start: startDate,
-            End: endDate,
+            Date: data.activityDate,
             Type: data.activityTypeName,
-            Color: data.activityTypeColor, 
-            EndTimezone: null,
-            RecurrenceRule: null,
-            RecurrenceID: null,
-            RecurrenceException: null,
-            isAllDay: false
+            Id: data?.activityID,
+            Subject: data?.activityName,
+            Description: data?.activityNotes,
+            StartTime: startDate,
+            EndTime: endDate,
+            // StartTimezone: "Europe/Moscow",
+            // EndTimezone:" Europe/Moscow",
+            City: data?.startCity,
+            state: data?.startState,
+            CategoryColor: data.activityTypeColor,
+            GroupId: 1,
+            MapUrl: mapImage,
         };
     });
 
     const customModelFields = {
-        id: 'TaskID',
-        title: 'Title',
-        description: 'Description',
-        start: 'Start',
-        end: 'End',
-        recurrenceRule: 'RecurrenceRule',
-        recurrenceId: 'RecurrenceID',
-        recurrenceExceptions: 'RecurrenceException',
-        color: 'Color'
+        id: "TaskID",
+        title: "Title",
+        description: "Description",
+        start: "Start",
+        end: "End",
+        recurrenceRule: "RecurrenceRule",
+        recurrenceId: "RecurrenceID",
+        recurrenceExceptions: "RecurrenceException",
+        color: "Color",
     };
 
     const currentYear = new Date().getFullYear();
@@ -59,19 +81,18 @@ const useCalendarEvents = () => {
         return date;
     };
 
-    const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
+    const randomInt = (min: number, max: number) =>
+        Math.floor(Math.random() * (max - min + 1)) + min;
 
-    const sampleDataWithCustomSchema = eventData?.map(dataItem => ({
+    const sampleDataWithCustomSchema = eventData?.map((dataItem: any) => ({
         ...dataItem,
-        Start: parseAdjust(dataItem.Start),
-        End: parseAdjust(dataItem.End),
-        PersonIDs: randomInt(1, 2),
-        RoomID: randomInt(1, 2)
+        StartTime: parseAdjust(dataItem.StartTime),
+        EndTime: parseAdjust(dataItem.EndTime),
     }));
 
     return {
         customModelFields,
-        sampleDataWithCustomSchema
+        sampleDataWithCustomSchema,
     };
 };
 

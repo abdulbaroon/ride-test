@@ -1,0 +1,20 @@
+{
+    "applinks": {
+        "apps": [],
+        "details": [
+            {
+                "appID": "X22WPM5VG6.com.ChasingWattsStage",
+                "paths": [
+                    "/rwgpsconnect",
+                    "/garminconnect",
+                    "/stravaconnect",
+                    "/notifications",
+                    "/ride/*",
+                    "/account/login",
+                    "/account/forgot",
+                    "/account/resetpassword"
+                ]
+            }
+        ]
+    }
+}

@@ -3,6 +3,7 @@ import { getMapSourceID, restructureRideData } from '../../addRide/feature/rideF
 import { isEmpty, isObject, isString } from 'lodash';
 import { uploadedFile } from '@/redux/slices/authSlice';
 import { editRideApi } from '@/redux/slices/addRideSlice';
+import { toast } from 'react-toastify';
 
 const getMapSource = (tabid: number, url: string) => {
   if (tabid === 1) {
@@ -137,6 +138,7 @@ export const editRide = async (
       onSuccess(response.payload || {});
   }
   } catch (error:any) {
+    toast.error("Error while saving ride");
     console.error('Error in editRide', error);
     onError(error.message || '');
   }

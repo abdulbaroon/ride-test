@@ -17,6 +17,7 @@ type TState = {
   errorMessage: string;
   gpxFilePath: string;
   routeDistance: string;
+  gpxFile: any
 };
 
 const useGpxToGeoJson = () => {
@@ -31,6 +32,7 @@ const useGpxToGeoJson = () => {
     url: '',
     error: false,
     errorMessage: '',
+    gpxFile:null
   });
 
   const updateState = (newState: Partial<TState>) => {
@@ -164,6 +166,7 @@ const useGpxToGeoJson = () => {
           loading: false,
           error: false,
           errorMessage: '',
+          gpxFile:response.data
         });
 
         // Display toast message
@@ -223,7 +226,6 @@ const useGpxToGeoJson = () => {
           if (onSuccess) onSuccess();
         } else {
           updateState({ loading: false });
-          console.log('Please select a GPX file.');
         }
       } catch (err) {
         updateState({ loading: false });

@@ -29,7 +29,7 @@ const MyRideModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void
                                             <img src={data.mapImage} className='w-full h-full' alt="null" />
                                         </div>
                                         <div className="text-sm text-gray-600 border-b w-80">
-                                            <Link href={`ride/getride/${data.activityID}`}>
+                                            <Link href={`ride/${data.activityID}`}>
                                                 <p className='uppercase font-semibold text-primaryText'>{data.rideName}</p>
                                             </Link>
 
@@ -43,7 +43,7 @@ const MyRideModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void
                                 )) :
                                     <div className='text-gray-600'>
                                         <p>Hey! Doesn&apos;t look like you&apos;ve joined any upcoming rides!</p>
-                                        <Link className='text-primaryText' href={"/ride/search"}>Search for a ride!
+                                        <Link className='text-primaryText' href={"/ride"}>Search for a ride!
                                         </Link>
                                     </div>
                                 }

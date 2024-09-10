@@ -1,93 +1,143 @@
-"use client"
-import * as React from 'react';
-import { timezoneNames } from '@progress/kendo-date-math';
-import { DropDownList, DropDownListChangeEvent } from '@progress/kendo-react-dropdowns';
-import { Scheduler, TimelineView, DayView, WeekView, MonthView, AgendaView, SchedulerViewChangeEvent, SchedulerDateChangeEvent } from '@progress/kendo-react-scheduler';
+"use client";
 
-import '@progress/kendo-date-math/tz/Etc/UTC';
-import '@progress/kendo-date-math/tz/Europe/Sofia';
-import '@progress/kendo-date-math/tz/Europe/Madrid';
-import '@progress/kendo-date-math/tz/Asia/Dubai';
-import '@progress/kendo-date-math/tz/Asia/Tokyo';
-import '@progress/kendo-date-math/tz/America/New_York';
-import '@progress/kendo-date-math/tz/America/Los_Angeles';
+import * as React from "react";
+import "../../../../node_modules/@syncfusion/ej2-base/styles/material.css";
+import "../../../../node_modules/@syncfusion/ej2-buttons/styles/material.css";
+import "../../../../node_modules/@syncfusion/ej2-calendars/styles/material.css";
+import "../../../../node_modules/@syncfusion/ej2-dropdowns/styles/material.css";
+import "../../../../node_modules/@syncfusion/ej2-inputs/styles/material.css";
+import "../../../../node_modules/@syncfusion/ej2-lists/styles/material.css";
+import "../../../../node_modules/@syncfusion/ej2-navigations/styles/material.css";
+import "../../../../node_modules/@syncfusion/ej2-popups/styles/material.css";
+import "../../../../node_modules/@syncfusion/ej2-splitbuttons/styles/material.css";
+import "../../../../node_modules/@syncfusion/ej2-react-schedule/styles/material.css";
 
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '@/redux/store/store';
-import { addMonths, format, subMonths } from 'date-fns';
-import useCalendarEvents from '@/shared/hook/useCalenderEvent';
-import  { CalendarProfileItem } from './parts/CustomEventItem';
-import { getCalendarRides } from '@/redux/slices/calendarSlice';
+import {
+  ScheduleComponent,
+  MonthAgenda,
+  Inject,
+  ViewsDirective,
+  ViewDirective,
+  EventClickArgs,
+  NavigatingEventArgs,
+} from "@syncfusion/ej2-react-schedule";
 
-export const Calender = () => {                     
-  const timezones = React.useMemo(() => timezoneNames(), []);
-  const [view, setView] = React.useState('agenda');
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/redux/store/store";
+import { addMonths, format } from "date-fns";
+import useCalendarEvents from "@/shared/hook/useCalenderEvent";
+import { getCalendarRides } from "@/redux/slices/calendarSlice";
+import { useRouter } from "next/navigation";
+import dayjs from "dayjs";
+import { IMAGE_URl } from "@/constant/appConfig";
+
+export const Calender: React.FC = () => {
   const [date, setDate] = React.useState(new Date());
-  const [timezone, setTimezone] = React.useState('Etc/UTC');
-  const [orientation, setOrientation] = React.useState<"horizontal" | "vertical">('vertical');
   const dispatch = useDispatch<AppDispatch>();
-  const { customModelFields, sampleDataWithCustomSchema } = useCalendarEvents();
+  const { sampleDataWithCustomSchema } = useCalendarEvents();
+  const scheduleObj = React.useRef<any>(null);
+  const { push } = useRouter();
 
-  React.useEffect(() => {
-    (async () => {
-      const params = {
-        id: 63,
-        radius: 50,
-        startDate: format(date, "yyyy-MM-dd"),
-        endDate: format(addMonths(date,1) , "yyyy-MM-dd")
-      };
-      await dispatch(getCalendarRides(params));
-    })();
-  }, [dispatch,date]);
-
-  const handleViewChange = React.useCallback(
-    (event: SchedulerViewChangeEvent) => { 
-      setView(event.value);
-     },
-    [setView]
-  );
-
-  const handleDateChange = React.useCallback(
-    (event: SchedulerDateChangeEvent) => { setDate(event.value); 
-    console.log(event.value)
-     },
-    [setDate]
-  );
-
-  const handleTimezoneChange = React.useCallback(
-    (event: DropDownListChangeEvent) => { setTimezone(event.target.value); },
-    [setTimezone]
-  );
-
-  return (
-    <div className='w-11/12 mx-auto !max-w-[1320px]'>
-      <div className="example-config mt-32">
-        <div className="row">
-          <div className="col">
-          </div>
+  const eventTemplate = (event: any) => (
+    <>
+      <div className="event-template flex items-center justify-between w-full">
+      <img
+          src={IMAGE_URl+event.MapUrl}
+          alt="Event"
+          style={{
+            width: "80px",
+            height: "60px",
+            marginRight: "10px",
+            borderRadius: "10%",
+          }}
+        />
+        <div className="">
+          <p className="font-semibold">{event.Subject}</p>
+          <p className="!text-xs" style={{fontSize:"14px"}}>
+            {event.Type} | {dayjs(event.StartTime).format("hh:mm A")}
+            {"-"}
+            {dayjs(event.EndTime).format("hh:mm A")}
+          </p>
+          <p className="!text-xs">{dayjs(event.Date).format("ddd, MMM D, YYYY")}</p>
+          <p className="!text-xs">
+            {event.City}, {event.state}
+          </p>
         </div>
       </div>
-      <div>
-        <Scheduler
-          data={sampleDataWithCustomSchema}
-          view={view}
-          onViewChange={handleViewChange}
-          date={date}
-          onDateChange={handleDateChange}
-          editable={false}
-          timezone={timezone}
-          modelFields={customModelFields}
-          item={CalendarProfileItem}
-          
-          
-        >
-          <TimelineView />
-          <DayView />
-          <WeekView />
-          <MonthView />
-          <AgendaView   />
-        </Scheduler>
-      </div>
+    </>
+  );
+
+  const eventSettings = {
+    dataSource: sampleDataWithCustomSchema,
+    template: eventTemplate,
+    fields: {
+      subject: { name: "Subject" },
+      imageUrl: { name: "ImageUrl" },
+    },
+  };
+
+  const onEventRendered = (args: any) => {
+    applyCategoryColor(args, scheduleObj.current?.currentView);
+  };
+
+  const onEventClick = (args: EventClickArgs | any) => {
+    const eventId = args.event?.Id;
+    if (eventId) {
+      window.open(`ride/${eventId}`, "_blank");
+    }
+    args.cancel = true;
+  };
+
+  const fetchMonthData = async (month: string) => {
+    const params = {
+      id: 33,
+      radius: 100,
+      startDate: `${month}-01`,
+      endDate: format(addMonths(new Date(`${month}-01`), 1), "yyyy-MM-dd"),
+    };
+    await dispatch(getCalendarRides(params));
+  };
+
+  React.useEffect(() => {
+    fetchMonthData(format(date, "yyyy-MM"));
+  }, [date]);
+
+  function applyCategoryColor(args: any, currentView: any) {
+    let categoryColor = args.data.CategoryColor;
+    if (!args.element || !categoryColor) {
+      return;
+    }
+    if (currentView === "Agenda") {
+      args.element.firstChild.style.borderLeftColor = categoryColor;
+    } else {
+      args.element.style.backgroundColor = categoryColor;
+      args.element.style.margin = "10px 0px";
+    }
+  }
+
+  const onNavigating = (args: NavigatingEventArgs | any) => {
+    const currentMonth = format(args.currentDate, "yyyy-MM");
+    fetchMonthData(currentMonth);
+  };
+
+  return (
+    <div className="w-11/12 mx-auto !max-w-[1320px] mt-32">
+      <ScheduleComponent
+        width="100%"
+        height="70vh"
+        className="mx-auto"
+        selectedDate={date}
+        ref={scheduleObj}
+        eventSettings={eventSettings}
+        eventRendered={onEventRendered}
+        eventClick={onEventClick}
+        navigating={onNavigating}
+      >
+        <ViewsDirective>
+          <ViewDirective option="MonthAgenda" />
+        </ViewsDirective>
+        <Inject services={[MonthAgenda]} />
+      </ScheduleComponent>
     </div>
   );
 };

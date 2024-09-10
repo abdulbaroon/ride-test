@@ -176,7 +176,7 @@ const MapBox: React.FC<MapBoxProps> = ({
     }
   }, [markerPosition]);
 
-  return (
+  return (  
     <section className="bg-darkBlack">
       <div
         className={twMerge(

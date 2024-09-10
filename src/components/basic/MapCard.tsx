@@ -1,3 +1,6 @@
+import { formatDates, formatTime } from '@/shared/util/dateFormat.util';
+import { format, parse, parseISO } from 'date-fns';
+import Link from 'next/link';
 import React from 'react';
 import { FaRegCalendarDays } from 'react-icons/fa6';
 import { IoIosCheckmarkCircleOutline } from 'react-icons/io';
@@ -13,41 +16,45 @@ interface ActivityData {
 
 const MapCard = ({data}: { data: ActivityData | any}) => {
     return (
-        <div className="w-9/12 bg-white border border-gray-200 rounded-lg shadow-lg">
-            <a href="#">
-                <img className="rounded-t-lg h-72 w-full" src={`https://dev.chasingwatts.com${data[0].activityPictures[0].picturePath}`} alt="map" />
-            </a>
-            <div className="p-5">
-                <h5 className="mb-2 text-2xl font-bold tracking-tight text-primaryText">{data[0].activityName}</h5>
+        <div className=" bg-white border rounded-lg shadow-lg mx-4 my-10  flex  justify-between">
+            <div className="p-5 w-1/2">
+                <Link href={`/ride/${data.activityID}`} target='_blank' className="mb-2 text-2xl font-bold tracking-tight text-primaryText">{data.activityName}</Link>
                 <div className='flex items-center text-gray-500 gap-3 '>
                     <IoLocationOutline className='text-lg' />
-                    <p>{data[0].startAddress}</p>
+                    <p>{data.startAddress}</p>
                 </div>
                 <div className='flex items-center text-gray-500 gap-3 '>
                     <FaRegCalendarDays className='text-lg' />
-                    <p>6/12/2024 @ 06:00 AM</p>
+                    <p>
+                    {data.startDate && formatDates(data.startDate, "EEE, MMM dd, yyyy")}
+                        @ 
+                    {data.startDate && formatTime((data.startTime))}</p>
                 </div>
                 <div className='flex items-center text-gray-500 gap-3 '>
                     <LiaRoadSolid className='text-lg' />
-                    <p>Road for {data[0].activityRoutes[0].distance} miles</p>
+                    <p>Road for {data.activityRoutes[0].distance} miles</p>
                 </div>
                 <div className='flex items-center text-gray-500 gap-3 '>
                     <IoIosCheckmarkCircleOutline className='text-lg' />
-                    <p>Roster Count: {data[0].rosterCount}</p>
+                    <p>Roster Count: {data.rosterCount}</p>
                 </div>
                 <div className='flex items-center text-gray-500 gap-3 '>
                     <RiUserSettingsLine className='text-lg' />
-                    <p>Community ride</p>
+                    <p>{data.isprivate?"Private ride":"Community ride"}</p>
                 </div>
-                <a
-                    href="#"
+                <Link
+                    href={`/ride/${data.activityID}`}
+                   target='_blank' 
                     className="inline-flex mt-3 items-center px-3 py-2 text-sm font-medium text-center text-white bg-secondaryButton rounded-lg focus:ring-4 focus:outline-none focus:ring-blue-300"
                 >
                     Read more
                     <svg className="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
                         <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 5h12m0 0L9 1m4 4L9 9" />
                     </svg>
-                </a>
+                </Link>
+            </div>
+            <div className='p-4 h-64 w-[350px]'>
+                <img className="rounded-lg h-full w-full object-fill" src={`https://dev.chasingwatts.com${data.activityPictures[0].picturePath}`} alt="map" />
             </div>
         </div>
     );

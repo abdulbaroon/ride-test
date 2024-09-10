@@ -1,0 +1,12 @@
+[
+    {
+        "relation": ["delegate_permission/common.handle_all_urls"],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "com.chasingwattsrn",
+            "sha256_cert_fingerprints": [
+                "1A:6E:DE:8B:15:E4:9E:3D:46:1E:1A:8A:CC:60:27:80:97:18:3F:B1:5B:D4:9A:BA:39:D7:2B:B1:34:E2:28:24"
+            ]
+        }
+    }
+]

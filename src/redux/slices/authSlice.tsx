@@ -1,6 +1,13 @@
-"use client"
+"use client";
 import { api } from "@/shared/api";
-import { LoginFormValues, RegisterFormValues, ResetData, UpdateProfile, User, UserProfile } from "@/shared/types/account.types";
+import {
+  LoginFormValues,
+  RegisterFormValues,
+  ResetData,
+  UpdateProfile,
+  User,
+  UserProfile,
+} from "@/shared/types/account.types";
 import { UploadFile } from "@/shared/types/profile.types";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { setCookie } from "cookies-next";
@@ -10,24 +17,26 @@ interface AuthState {
   token: string | null;
   loading: boolean;
   error: string | null;
-  profileData:{}
+  profileData: {};
+  email: string | null;
 }
 
 const initialState: AuthState = {
   user: {
-    id:null
+    id: null,
   },
-  profileData:{},
+  profileData: {},
   token: null,
   loading: false,
   error: null,
+  email: null,
 };
 
 export const signUp = createAsyncThunk(
   "accounts/register",
   async (signUpData: RegisterFormValues, { rejectWithValue }) => {
     try {
-      const endpoint = "/accounts/register"
+      const endpoint = "/accounts/register";
       const response = await api.post(endpoint, signUpData);
       return response.data;
     } catch (error: any) {
@@ -40,7 +49,7 @@ export const login = createAsyncThunk(
   "accounts/authenticate",
   async (loginData: LoginFormValues, { rejectWithValue }) => {
     try {
-      const endpoint = "/accounts/authenticate"
+      const endpoint = "/accounts/authenticate";
       const response = await api.post(endpoint, loginData);
       return response.data;
     } catch (error: any) {
@@ -49,24 +58,24 @@ export const login = createAsyncThunk(
   }
 );
 
-export const refreshToken= createAsyncThunk(
+export const refreshToken = createAsyncThunk(
   "accounts/refresh-token",
   async (_, { rejectWithValue }) => {
     try {
-      const endpoint = `/accounts/refresh-token`
+      const endpoint = `/accounts/refresh-token`;
       const response = await api.post(endpoint);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response.data);
     }
-  }    
+  }
 );
 
 export const forgotPassword = createAsyncThunk(
   "accounts/forgot-password",
   async (gmail: string, { rejectWithValue }) => {
     try {
-      const endpoint = "api/v4/accounts/forgot-password"
+      const endpoint = "/accounts/forgot-password";
       const response = await api.post(endpoint, { Email: gmail });
       return response.data;
     } catch (error: any) {
@@ -79,7 +88,7 @@ export const resetPassword = createAsyncThunk(
   "accounts/reset-password",
   async (resetData: ResetData, { rejectWithValue }) => {
     try {
-      const endpoint = "/accounts/reset-password"
+      const endpoint = "/accounts/reset-password";
       const response = await api.post(endpoint, resetData);
       return response.data;
     } catch (error: any) {
@@ -92,7 +101,7 @@ export const userprofile = createAsyncThunk(
   "userprofile",
   async (payload: UserProfile, { rejectWithValue }) => {
     try {
-      const endpoint = "/userprofile"
+      const endpoint = "/userprofile";
       const response = await api.post(endpoint, payload);
       return response.data;
     } catch (error: any) {
@@ -101,11 +110,11 @@ export const userprofile = createAsyncThunk(
   }
 );
 
-export const uploadedFile= createAsyncThunk(
+export const uploadedFile = createAsyncThunk(
   "fileupload/upload_files",
-  async (payload: UploadFile, { rejectWithValue }) => {   
+  async (payload: UploadFile, { rejectWithValue }) => {
     try {
-      const endpoint = "/fileupload/upload_files"
+      const endpoint = "/fileupload/upload_files";
       const response = await api.post(endpoint, payload);
       return response.data;
     } catch (error: any) {
@@ -114,26 +123,37 @@ export const uploadedFile= createAsyncThunk(
   }
 );
 
-export const getProfile= createAsyncThunk(
+export const getProfile = createAsyncThunk(
   "userprofile",
-  async (payload:number, { rejectWithValue }) => {
+  async (payload: number, { rejectWithValue }) => {
     try {
-      const endpoint = `/userprofile/${payload}`
+      const endpoint = `/userprofile/${payload}`;
       const response = await api.get(endpoint);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response.data);
     }
-  }    
+  }
 );
-
 
 export const updateProfile = createAsyncThunk(
   "update/userprofile",
-  async (payload: UpdateProfile, { rejectWithValue }) => {   
+  async (payload: UpdateProfile, { rejectWithValue }) => {
     try {
-      const endpoint = `/userprofile/${payload.id}`
+      const endpoint = `/userprofile/${payload.id}`;
       const response = await api.put(endpoint, payload.userdata);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const userEmail = createAsyncThunk(
+  "/accounts/account_email",
+  async (id: number, { rejectWithValue }) => {
+    try {
+      const endpoint = `/accounts/account_email?id=${id}`;
+      const response = await api.get(endpoint);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response.data);
@@ -149,10 +169,12 @@ const authSlice = createSlice({
       state.error = null;
     },
     logout(state) {
-      state.user = {
-        id:null
-      };
-      state.token = null;
+      state.user = initialState.user;
+      state.token = initialState.token;
+      state.loading = initialState.loading;
+      state.error = initialState.error;
+      state.profileData = initialState.profileData;
+      state.email = initialState.email;
     },
   },
   extraReducers: (builder) => {
@@ -178,8 +200,8 @@ const authSlice = createSlice({
         state.user = action.payload;
         const token = action.payload.jwtToken;
         state.loading = false;
-        setCookie('token', token);
-        setCookie('user',action.payload)
+        setCookie("token", token);
+        setCookie("user", action.payload.userProfile);
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
@@ -187,6 +209,9 @@ const authSlice = createSlice({
       })
       .addCase(getProfile.fulfilled, (state, action) => {
         state.profileData = action.payload;
+      })
+      .addCase(userEmail.fulfilled, (state, action) => {
+        state.email = action.payload;
       });
   },
 });

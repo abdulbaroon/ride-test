@@ -18,7 +18,11 @@ const config: Config = {
         violet:"#1f1b2d",
         lightViolet:"#282435",
         lightGray:"#dee4eb",
-        darkred:"#f23c49"
+        darkred:"#f23c49",
+        lightwhite:"#e7eef1",
+        orange:"#f65624",
+        primaryGray : "#f5f5f5",
+        LinkColor: "#f5f4f8"
       },
       screens: {
         desktop: "1180px",

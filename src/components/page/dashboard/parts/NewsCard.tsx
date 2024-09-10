@@ -16,7 +16,6 @@ const NewsCard = () => {
 
     const fetchNews = async () => {
         const response = await dispatch(getNews());
-        console.log(response, "===>news");
 
         if (getNews.fulfilled.match(response)) {
             setNews(response.payload);

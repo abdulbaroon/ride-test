@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import mapboxgl, { Map as MapboxMap, LngLatBounds } from 'mapbox-gl';
 import { RootState } from '@/redux/store/store';
-import { FormattedRide, RideItem } from '@/shared/types/dashboard.types';
+import { Explore, FormattedRide, RideItem } from '@/shared/types/dashboard.types';
 import { formatRideList } from '@/shared/util/format.util';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { formatDate, parseISO } from 'date-fns';
@@ -10,7 +10,7 @@ import { formatDate, parseISO } from 'date-fns';
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN as string;
 
 interface MapBoxModalProps {
-    profile: { homeBaseLng: number, homeBaseLat: number }|any;
+    profile: { homeBaseLng: number, homeBaseLat: number } | any;
 }
 
 interface HoverInfo {
@@ -29,11 +29,11 @@ const MapBoxModal: React.FC<MapBoxModalProps> = ({ profile }) => {
     const mapContainerRef = useRef<HTMLDivElement>(null);
     const mapRef = useRef<MapboxMap | null>(null);
     const [mapInitialized, setMapInitialized] = useState(false);
-    const [currentStyle, setCurrentStyle] = useState('mapbox://styles/mapbox/satellite-streets-v12'); // Default style
+    const [currentStyle, setCurrentStyle] = useState('mapbox://styles/mapbox/streets-v12');
     const ridedata = useSelector((state: RootState) => state.dashboard.rideList);
-
+    const exploreData = useSelector<RootState, Explore[]>((state) => state.dashboard.expoloreData);
     const [hoverInfo, setHoverInfo] = useState<HoverInfo | null>(null);
-    const [popupInfo, setPopupInfo] = useState<FormattedRide|null>(null);
+    const [popupInfo, setPopupInfo] = useState<Explore | null>(null);
 
     const rideItems = ridedata.map(formatRideList);
 
@@ -48,19 +48,25 @@ const MapBoxModal: React.FC<MapBoxModalProps> = ({ profile }) => {
             });
 
             map.on('load', () => {
-                console.log("Map loaded");
                 setMapInitialized(true);
 
                 const bounds = new LngLatBounds();
 
-                rideItems.forEach((data) => {
-                    const marker = new mapboxgl.Marker()
-                        .setLngLat([data.startLng || 0, data.startLat || 0])
+                exploreData.forEach((data) => {
+                    const markerElement = document.createElement('div');
+                    markerElement.style.width = '20px';
+                    markerElement.style.height = '20px';
+                    markerElement.style.border = `2px solid white`
+                    markerElement.style.borderRadius = data.exploreType === 'Ride' ?  '50%':'4px';
+                    markerElement.style.backgroundColor = "#e43d30";
+
+                    const marker = new mapboxgl.Marker({ element: markerElement })
+                        .setLngLat([data.entityLng || 0, data.entityLat || 0])
                         .addTo(map);
 
-                    bounds.extend([data.startLng || 0, data.startLat || 0]);
+                    bounds.extend([data.entityLng || 0, data.entityLat || 0]);
 
-                    marker.getElement().addEventListener('mouseenter', () => handleMouseEnter(marker.getElement(), data.rideName));
+                    marker.getElement().addEventListener('mouseenter', () => handleMouseEnter(marker.getElement(), data.entityName));
                     marker.getElement().addEventListener('mouseleave', handleMouseLeave);
                     marker.getElement().addEventListener('click', () => handleMarkerClick(data));
                 });
@@ -86,6 +92,7 @@ const MapBoxModal: React.FC<MapBoxModalProps> = ({ profile }) => {
         tooltip.style.background = 'black';
         tooltip.style.padding = '5px';
         tooltip.style.borderRadius = '3px';
+        tooltip.style.zIndex = '9999';
         tooltip.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
         tooltip.innerHTML = rideName;
         element.appendChild(tooltip);
@@ -99,31 +106,30 @@ const MapBoxModal: React.FC<MapBoxModalProps> = ({ profile }) => {
         }
     };
 
-    const handleMarkerClick = (data:FormattedRide) => {
+    const handleMarkerClick = (data: Explore) => {
         setPopupInfo(data);
     };
 
     useEffect(() => {
         if (popupInfo && mapRef.current) {
-            console.log("Popup Info:", popupInfo);
-            const html = {
-
-            }
             const popup = new mapboxgl.Popup({ closeOnClick: false })
-                .setLngLat([popupInfo.startLng||0, popupInfo.startLat||0])
+                .setLngLat([popupInfo.entityLng || 0, popupInfo.entityLat || 0])
                 .setHTML(`
-                         <div style="background-color: white; padding: 0.5rem; color: black; width: 13rem; margin-top: 0.75rem;">
-                           <div class="flex items-start space-y-1 flex-col">
-                             <img class="w-full rounded" src=${popupInfo.mapImage} alt="img" />
-                               <h4 class="text-sm font-semibold text-gray-700">${popupInfo.rideName}</h4>
-                               <p class="my-1 text-sm">${formatDate(parseISO(popupInfo.startDate as any), "EEE, MMM dd, yyyy")}</p>
-                            </div>
-                        <div class="w-full flex justify-center mt-2">
-                         <a class="px-6 py-[5px] bg-blue-500 font-bold text-white rounded-sm" href="/ride/getRide/${popupInfo.activityID}" >View Ride</a>
+                    <div style="background-color: white; padding: 0.5rem; color: black; width: 13rem; margin-top: 0.75rem;">
+                        <div class="flex items-start  flex-col">
+                        <img class="w-full rounded mb-2 h-36" 
+                        src=${popupInfo.exploreType === "Ride"
+                        ? `https://dev.chasingwatts.com/ogmaps/ogmap_${popupInfo.entityID}.png`
+                        : `https://dev.chasingwatts.com/useravatar/pfimg_${popupInfo.entityID}.png`} 
+                        onerror="this.onerror=null; this.src='https://dev.chasingwatts.com/useravatar/blank-avatar.png';" alt="img" />
+                            <h4 class="text-base font-semibold text-gray-700 ms-2">${popupInfo.entityName}</h4>
+                            <p class=" text-gray-500 text-sm ms-2">${formatDate(parseISO(popupInfo.entityDate as any), "EEE, MMM dd, yyyy")}</p>
                         </div>
-                    </div> `)
+                        <div class="w-full flex justify-center mt-5">
+                            <a class="px-6 py-[5px] bg-blue-500 font-bold text-white rounded-sm" href=${popupInfo.exploreType === "Ride" ? `/ride/${popupInfo.entityID}` : "#"} >${popupInfo.exploreType === "Ride" ? "View Ride" : "View Friend"}</a>
+                        </div>
+                    </div>`)
                 .addTo(mapRef.current);
-
             return () => {
                 popup.remove();
             };

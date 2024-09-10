@@ -69,3 +69,48 @@ export interface UpdateProfile{
   id:number
   userdata:UserProfile
 }
+
+interface UserGenderModel {
+  userGenderID: number;
+  genderName: string;
+}
+
+interface ActivityTypeModel {
+  activityTypeID: number;
+  activityTypeName: string;
+  activityTypeIcon: string;
+  activityTypeColor: string;
+}
+
+interface UnitOfMeasureModel {
+  unitOfMeasureID: number;
+  unitOfMeasureName: string;
+  unitOfMeasureDesc: string;
+}
+
+export interface UserProfileData {
+  userID: number;
+  firstName: string;
+  lastName: string;
+  userGenderID: number;
+  activityTypeID: number;
+  homeBaseLat: number;
+  homeBaseLng: number;
+  homeBaseCity: string;
+  homeBaseState: string;
+  homeBaseCountry: string;
+  defaultRadius: number;
+  unitOfMeasureID: number;
+  private: boolean;
+  iceContact: string;
+  icePhone: string;
+  isDeleted: boolean;
+  createdBy: number;
+  createdDate: string;
+  modifiedBy: number | null;
+  modifiedDate: string | null;
+  role: string;
+  userGenderModel: UserGenderModel;
+  activityTypeModel: ActivityTypeModel;
+  unitOfMeasureModel: UnitOfMeasureModel;
+}

@@ -57,7 +57,7 @@ export const restructureRideData = (payload: Payload) => {
             isGroup: routeData?.isGroup || false,
             hasWaiver: routeData?.HasWaiver || false,
             parentActivityID: Number(routeData?.parentActivityID) || 0,
-            teamID: Number(routeData?.teamID) || 0,
+            teamID: Number(routeData?.hubID) || 0,
             isDeleted: routeData?.isDeleted || false,
         },
         activityRoute: [

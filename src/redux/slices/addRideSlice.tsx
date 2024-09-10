@@ -67,9 +67,9 @@ export const getActivityTag = createAsyncThunk(
 
 export const getHubList = createAsyncThunk(
   "addRide/getHubList",
-  async (_, { rejectWithValue }) => {
+  async (userid:any,{ rejectWithValue }) => {
     try {
-      const endpoint = `/hub/list?id=33&radius=200`;
+      const endpoint = `/hub/${userid}/user_list`;
       const response = await api.get(endpoint);
       return response.data;
     } catch (error: any) {
@@ -109,7 +109,7 @@ export const addRide = createAsyncThunk(
 
 export const searchRide = createAsyncThunk(
   "activity/search",
-  async (payload:SearchRide, { rejectWithValue }) => {
+  async (payload:SearchRide, { rejectWithValue }) => {   
     try {
       const endpoint = `/activity/search`;
       const response = await api.post(endpoint, payload);
@@ -139,6 +139,18 @@ export const editRideApi = createAsyncThunk(
     try {
       const endpoint = `/activity/activity_edit`;
       const response = await api.post(endpoint,payload);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+)
+export const deleteRide = createAsyncThunk(
+  "/activity/delete",
+  async (id:any, { rejectWithValue }) => {
+    try {
+      const endpoint = `/activity/${id}`;
+      const response = await api.delete(endpoint);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response.data);

@@ -41,7 +41,7 @@ export interface RouteData {
   isGroup?: boolean;
   HasWaiver?: boolean;
   parentActivityID?: number;
-  teamID?: number;
+  hubID?: number;
   isDeleted?: boolean;
   document?: { uri: string };
   image?: { path: string };

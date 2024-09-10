@@ -1,4 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+@import '../../node_modules/@syncfusion/ej2-base/styles/material.css';
+@import '../../node_modules/@syncfusion/ej2-buttons/styles/material.css';  
+@import '../../node_modules/@syncfusion/ej2-calendars/styles/material.css';  
+@import '../../node_modules/@syncfusion/ej2-dropdowns/styles/material.css';  
+@import '../../node_modules/@syncfusion/ej2-inputs/styles/material.css';  
+@import '../../node_modules/@syncfusion/ej2-navigations/styles/material.css';
+@import '../../node_modules/@syncfusion/ej2-popups/styles/material.css';
+@import '../../node_modules/@syncfusion/ej2-splitbuttons/styles/material.css';
+@import "../../node_modules/@syncfusion/ej2-react-grids/styles/material.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -11,6 +20,18 @@
     @apply [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none;
   }
 }
+
+
+.e-appointment:hover {
+  background: none !important;
+  cursor: pointer !important;
+}
+
+.e-appointment:focus {
+  background: none !important;
+  background-color: none;
+}
+
 .noto-sans-400> {
     font-family: "Noto Sans", sans-serif;
     font-optical-sizing: auto;
@@ -158,6 +179,42 @@ select option:not([value=""]) {
 
 /* mapbox close button */
 .mapboxgl-popup-close-button{
-  font-size: 20px !important;
-  right: 3px !important;
+  font-size: 27px !important;
+  right: 8px !important;
+  top: 8px !important;
+}
+
+/* pagination */
+.pagination {
+  list-style: none;
+  height: 31.5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2px;
+  cursor: pointer;
+}
+
+.active {
+  background-color: #244161;
+  border-radius: 50%;
+  font-weight: 700;
+  color: white;
+}
+
+.page-item {
+  list-style: none;
+  padding: 2px 12px;
+  height: 31.5px;
+  width: 31.5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2px;
+  margin-left: 3px ;
+}
+
+
+.ql-container {
+  font-size: 18px !important;
 }

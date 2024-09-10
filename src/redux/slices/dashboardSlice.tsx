@@ -4,6 +4,7 @@ import { RideListParams } from "@/shared/types/dashboard.types";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 interface DashboardState {
+  expoloreData:[]
   getPointLevels: {}
   pointDetails: {}
   userStats: {}
@@ -11,13 +12,18 @@ interface DashboardState {
   rideList: [];
   hotRideList: [];
   leaderBoard: [],
+  weather:[],
+  friendProfile:{};
   loading: boolean;
   error: string | any;
   friendsCount:number
 }
 
 const initialState: DashboardState = {
+  expoloreData:[],
+  friendProfile:{},
   pointDetails: {},
+  weather:[],
   leaderBoard: [],
   userStats: {},
   myRideList: [],
@@ -106,7 +112,7 @@ export const getUserStats = createAsyncThunk(
 );
 
 export const getPointLevels = createAsyncThunk(
-  "/point_levels",
+  "/point_levels",                       
   async (_, { rejectWithValue }) => {
     try {
       const endpoint = `/userpoint/point_levels`;
@@ -155,6 +161,45 @@ export const getFriendCount = createAsyncThunk(
       return rejectWithValue(error.response.data);
     }
   }
+);
+
+export const getDashBoardWeather = createAsyncThunk(
+  "weather/dashboard",
+  async (params: {lat:number,lng:number,uom:number}, { rejectWithValue }) => {
+    try {
+      const endpoint = `/weather/dashboard?lat=${params.lat}&lng=${params.lng}&uom=${params.uom}`;
+      const response = await api.get(endpoint);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const getActivityExplore = createAsyncThunk(
+  "/activity/explore",
+  async (params: {id:number,radius:number}, { rejectWithValue }) => {
+    try {
+      const endpoint = `/activity/explore?id=${params.id}&radius=${params.radius}`;
+      const response = await api.get(endpoint);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const getFriendProfile= createAsyncThunk(
+  "friendProfile",
+  async (id:number, { rejectWithValue }) => {
+    try {
+      const endpoint = `/userprofile/${id}`
+      const response = await api.get(endpoint);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }    
 );
 
 const dashboardSlice = createSlice({
@@ -210,7 +255,17 @@ const dashboardSlice = createSlice({
     builder.addCase(getFriendCount.fulfilled,(state,action)=>{
       state.friendsCount = action.payload;
     })
+    builder.addCase(getDashBoardWeather.fulfilled,(state,action)=>{
+      state.weather = action.payload;
+    })
+    builder.addCase(getActivityExplore.fulfilled,(state,action)=>{
+      state.expoloreData = action.payload;
+    })
+    builder.addCase(getFriendProfile.fulfilled,(state,action)=>{
+      state.friendProfile = action.payload;
+    })
   },
 });
 
 export default dashboardSlice.reducer;
+  

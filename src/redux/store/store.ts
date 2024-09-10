@@ -5,31 +5,62 @@ import { persistStore, persistReducer } from "redux-persist";
 import authReducer from "../slices/authSlice";
 import addRideReducer from "../slices/addRideSlice";
 import calendarReducer from "../slices/calendarSlice";
-import dashboardReducer from "../slices/dashboardSlice"
-
+import dashboardReducer from "../slices/dashboardSlice";
+import rideDetailReducer from "../slices/rideDetailsSlice";
+import externalServicesReducer from "../slices/externalServicesSlice";
+import hubsSliceReducer from "../slices/hubsSlice";
+import notificationReducer from "../slices/notificationSlice";
+import pointReducer from "../slices/pointSlice";
+import profileReducer from "../slices/profileSlice";
+import  ratingReducer from "../slices/ratingSlice"
+import ridelogReducer from "../slices/rideLogSlice"
 const persistConfig = {
-    key: "root",
-    storage,
-    whitelist: ["auth", "addRide", "calendar","dashboard"],
+  key: "root",
+  storage,
+  whitelist: [
+    "auth",
+    "addRide",
+    "calendar",
+    "dashboard",
+    "rideDetail",
+    "externalServices",
+    "hubs",
+    "notification",
+    "point",
+    "profile",
+    "ridelog"
+  ],
 };
 
 const rootReducer = combineReducers({
-    auth: authReducer,
-    addRide: addRideReducer,
-    calendar: calendarReducer,
-    dashboard:dashboardReducer
+  auth: authReducer,
+  addRide: addRideReducer,
+  calendar: calendarReducer,
+  dashboard: dashboardReducer,
+  rideDetail: rideDetailReducer,
+  externalServices: externalServicesReducer,
+  hubs: hubsSliceReducer,
+  notification: notificationReducer,
+  point: pointReducer,
+  profile: profileReducer,
+  rating: ratingReducer ,
+  ridelog:ridelogReducer
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
-    reducer: persistedReducer,    
-    middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware({
-            serializableCheck: {
-                ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
-            },
-        }),
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
+        serializableCheck: {
+          ignoredActions: ["rideDetails/getShareImage/fulfilled"],
+          ignoredPaths: ["rideDetails.imageBlob"],
+        },
+      },
+    }),
 });
 
 export const persistor = persistStore(store);

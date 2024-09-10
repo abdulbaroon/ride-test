@@ -13,7 +13,17 @@ import beerMug from "./icons/beer-mug.svg"
 import burder from "./icons/burger.svg"
 import coffee from "./icons/Coffee Icon.svg"
 import snooze from "./icons/snooze.svg"
+import myFriend from "./MyFriendImg.png"
+import RWGPSLogo from "./RWGPS.png"
+import routePlaceHolder from "./route_placeholder.png"
+import letsRide from "./letsridebase.png"
+import ratingLatt from  "./lottieAssets/rating.json"
 export {
+    ratingLatt,
+    letsRide,
+    routePlaceHolder,
+    RWGPSLogo,
+    myFriend,
     beerMug,
     burder,
     coffee,

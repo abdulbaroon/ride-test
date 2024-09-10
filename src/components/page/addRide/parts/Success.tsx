@@ -18,7 +18,7 @@ const Success = ({id}:SuccessProps) => {
                 <h1 className='text-3xl tablet:text-4xl  text-secondaryButton'>Ride Created.</h1>
                 <p className='text-center text-secondaryButton'>Share and tell your friends!</p>
             </div>
-            <Link href={"#"} className='bg-secondaryButton text-center py-[9px] w-9/12 tablet:w-8/12 px-6 font-bold text-white rounded-md flex justify-center items-center gap-3'>
+            <Link href={`/ride/${id}`} className='bg-secondaryButton text-center py-[9px] w-9/12 tablet:w-8/12 px-6 font-bold text-white rounded-md flex justify-center items-center gap-3'>
                <MdOutlineRemoveRedEye className='text-xl'/> View Ride
             </Link>
             <Link href={`#`} className='bg-darkred text-center py-[9px] w-9/12 tablet:w-8/12 px-6 font-bold text-white rounded-md flex justify-center items-center gap-3'>
