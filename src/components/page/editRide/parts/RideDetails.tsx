@@ -46,8 +46,8 @@ const RideDetails: React.FC<RideDetailsProps> = ({
   const [endTime, setEndTime] = useState<Date | null | any>(
     data?.activityEndTime || setHours(setMinutes(new Date(), 30), 11)
   );
-  const [lat, setLat] = useState<number>(data?.startLat||28.5355);
-  const [lng, setLng] = useState<number>(data?.startLng||77.3910);
+  const [lat, setLat] = useState<number>(data?.startLat || 28.5355);
+  const [lng, setLng] = useState<number>(data?.startLng || 77.391);
   const [code, setCode] = useState<string>(data?.activityNotes || "");
   const [city, setCity] = useState<string>(data?.startCity || "");
   const [state, setState] = useState<string>(data?.startState || "");
@@ -109,7 +109,7 @@ const RideDetails: React.FC<RideDetailsProps> = ({
       autocompleteRef.current = new window.google.maps.places.Autocomplete(
         input,
         {
-          types: ["geocode"],
+          types: ["establishment", "geocode"],
         }
       );
       autocompleteRef.current.addListener("place_changed", handlePlaceSelect);
@@ -118,27 +118,49 @@ const RideDetails: React.FC<RideDetailsProps> = ({
 
   const handlePlaceSelect = useCallback(() => {
     const place = autocompleteRef.current?.getPlace();
-    if (place?.geometry) {
-      const { formatted_address, geometry, address_components } = place;
-      const homeBaseLat = geometry.location.lat();
-      const homeBaseLng = geometry.location.lng();
+    if (place && place.geometry) {
+      // Extract the name and vicinity (which might reflect what is shown in the dropdown)
+      const placeName = place.name || "";
+      const placeVicinity = place.vicinity || "";
+
+      const components = place.address_components;
+      let streetNumber = "";
+      let route = "";
       let homeBaseCity = "";
       let homeBaseState = "";
       let homeBaseCountry = "";
-      address_components.forEach((component: ComponentType) => {
+      let postalCode = "";
+
+      components.forEach((component: ComponentType) => {
+        if (component.types.includes("street_number"))
+          streetNumber = component.long_name;
+        if (component.types.includes("route")) route = component.long_name;
         if (component.types.includes("locality"))
           homeBaseCity = component.long_name;
         if (component.types.includes("administrative_area_level_1"))
           homeBaseState = component.long_name;
         if (component.types.includes("country"))
           homeBaseCountry = component.long_name;
+        if (component.types.includes("postal_code"))
+          postalCode = component.long_name;
       });
+
+      const fullAddress = `${streetNumber} ${route}, ${homeBaseCity}, ${homeBaseState}, ${postalCode}, ${homeBaseCountry}`;
+
+      // Use placeName and placeVicinity as fallback
+      const selectedAddress = placeName
+        ? `${placeName}, ${placeVicinity}, ${homeBaseState}, ${homeBaseCountry} `
+        : fullAddress;
+
+      const homeBaseLat = place.geometry.location.lat();
+      const homeBaseLng = place.geometry.location.lng();
+
       setLat(homeBaseLat);
       setLng(homeBaseLng);
       setCity(homeBaseCity);
       setState(homeBaseState);
       setCountry(homeBaseCountry);
-      setValue("startAddress", formatted_address);
+      setValue("startAddress", selectedAddress);
     }
   }, [setValue]);
 
@@ -264,13 +286,13 @@ const RideDetails: React.FC<RideDetailsProps> = ({
             </div>
             <div className="flex flex-col">
               <label className="font-medium text-gray-600">Ride Type</label>
-              <div className="relative">
+              <div className="relative w-full">
                 <select
                   defaultValue={data?.activityTypeID}
                   {...register("rideType", {
                     required: "Please select a Ride Type",
                   })}
-                  className={`bg-white border px-2 py-[6px] ${
+                  className={`bg-white border px-2 py-[6px] w-full ${
                     errors.rideType ? "input-error" : ""
                   }`}
                 >

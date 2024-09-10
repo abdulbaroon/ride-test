@@ -34,6 +34,7 @@ import { CgSpinner } from "react-icons/cg";
 import { editRide } from "./feature/editRide";
 import { useRouter } from "next/navigation";
 import { ReusableAlertDialog } from "@/components/basic/ReusableAlertDialog";
+import Link from "next/link";
 
 interface FormData {
   routeType?: string;
@@ -222,7 +223,7 @@ export const EditRide = ({ id }: { id: number }) => {
       mapSource,
       activityID,
       routeName: features?.properties?.name?.trimEnd() ?? "",
-      mapUrl: data?.url||(features?.properties?.links?.[0]?.href ?? ""),
+      mapUrl: data?.url || (features?.properties?.links?.[0]?.href ?? ""),
       routeNumber: extractRouteId(features?.properties?.links?.[0]?.href ?? ""),
       centerLatitude,
       centerLongitude,
@@ -234,7 +235,6 @@ export const EditRide = ({ id }: { id: number }) => {
       routeData: routeData,
       user: userData,
     };
-   
 
     const onSuccess = (response: any) => {
       setData(response);
@@ -272,7 +272,7 @@ export const EditRide = ({ id }: { id: number }) => {
         <div>
           <form onSubmit={handleSubmit(handleSubmits)}>
             <Accordion
-              defaultIndex={[0]}
+             defaultIndex={[0, 1]}
               allowMultiple
               className="border bg-white rounded-xl"
             >
@@ -507,6 +507,12 @@ export const EditRide = ({ id }: { id: number }) => {
                   "Delete"
                 )}
               </button>
+              <Link
+                href={"/dashboard"}
+                className="py-2 px-8 rounded-md bg-primaryButton text-white w-44"
+              >
+                Cancel
+              </Link>
               <button
                 type="submit"
                 className="py-2  rounded-md px-8 bg-primaryDarkblue text-white w-44"
@@ -514,7 +520,7 @@ export const EditRide = ({ id }: { id: number }) => {
                 {editLoading ? (
                   <CgSpinner className="animate-spin w-6 h-6 mx-auto" />
                 ) : (
-                  "Save Route"
+                  "Save Ride"
                 )}
               </button>
             </div>
