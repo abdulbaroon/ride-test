@@ -1,9 +1,10 @@
+
 import { RideDetails } from "@/components/page";
 import React, { FC } from "react";
 import type { Metadata, ResolvingMetadata } from "next";
 import { api } from "@/shared/api";
 import { formatRideData } from "@/shared/util/format.util";
-
+import Head from 'next/head';
 interface RideResponse {
   rideName: string;
   rideNotes: string;
@@ -23,7 +24,6 @@ export async function generateMetadata(
   const id = params.id;
   const endpoint = `/activity/${id}`;
 
-  // Fetching ride details
   let rideResponse: any | null = null;
   try {
     rideResponse = await api.get(endpoint).then((res) => res.data);
@@ -45,7 +45,7 @@ export async function generateMetadata(
       title: formattedRide?.rideName || "Ride Details",
       description: formattedRide?.rideNotes || "Details of the ride.",
       images: [
-        formattedRide?.image || "https://dev.chasingwatts.com/ridepictures/ridepicture_32497_981.png" as any,  // Fallback if image is not available
+        formattedRide?.image || "https://dev.chasingwatts.com/ridepictures/ridepicture_32497_981.png" as any,
         ...previousImages,
       ],
     },
@@ -54,7 +54,16 @@ export async function generateMetadata(
 
 const Page: FC<PageProps> = ({ params }) => {
   const { id } = params;
-  return <RideDetails id={id} />;
+  return (
+    <>
+      <Head>
+        <meta property="og:title" content="Ride Details" />
+        <meta property="og:description" content="Details of the ride" />
+        <meta property="og:image" content="https://dev.chasingwatts.com/ridepictures/ridepicture_32497_981.png" />
+      </Head>
+      <RideDetails id={id} />
+    </>
+  );
 };
 
 export default Page;
