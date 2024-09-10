@@ -7,7 +7,6 @@ export { ProfilePage } from "./profile";
 export { FeaturesPage } from "./features";
 export { SearchPage } from "./search";
 export { EditRide } from "./editRide";
-export { RideDetails } from "./rideDetails";
 export { RWGPS } from "./rwgps";
 export { Strava } from "./strava";
 export { Garmin } from "./garmin";
@@ -22,3 +21,6 @@ export { HubDetails } from "./hubDetails";
 export { Friend } from "./friend";
 export { RatingPage } from "./rating";
 export { RideLog } from "./rideLog";
+import RideDetails from "./rideDetails";
+
+export { RideDetails } 
