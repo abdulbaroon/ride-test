@@ -36,6 +36,8 @@ export async function generateMetadata(
     title: formattedRide?.rideName,
     description:formattedRide?.rideNotes,
     openGraph: {
+      title: formattedRide?.rideName,
+      description: formattedRide?.rideNotes,
       images: [formattedRide?.image as any, ...previousImages],
     },
   };
