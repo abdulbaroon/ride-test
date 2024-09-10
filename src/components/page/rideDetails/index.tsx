@@ -1,59 +1,32 @@
-"use client"
-import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import Head from "next/head";
-import Link from "next/link";
-import { FaFlagCheckered } from "react-icons/fa";
-import { MdOutlineCancelPresentation } from "react-icons/md";
+"use client";
+
 import {
-  getRideDetails,
+  activityView,
   getActivityRoster,
   getActivityroute,
   getChatActivity,
   getFriendsList,
+  getRideDetails,
   getWeather,
-  activityView,
 } from "@/redux/slices/rideDetailsSlice";
 import { AppDispatch, RootState } from "@/redux/store/store";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import RideDetail from "./parts/RideDetail";
 import { formatRideData, hasDatePassed } from "@/shared/util/format.util";
 import SideBar from "./parts/SideBar";
-import RideDetail from "./parts/RideDetail";
-import MapRoute from "./parts/MapRoute";
-import RoasterDetail from "./parts/RoasterDetail";
 import ChatBox from "./parts/ChatBox";
-import { checkUserInRide } from "@/redux/slices/ratingSlice";
-import { FormattedRideData } from "@/shared/types/dashboard.types";
+import RoasterDetail from "./parts/RoasterDetail";
 import { User } from "@/shared/types/account.types";
-import { api } from "@/shared/api";
+import MapRoute from "./parts/MapRoute";
+import { FaFlagCheckered } from "react-icons/fa";
+import { FormattedRideData } from "@/shared/types/dashboard.types";
+import { MdOutlineCancelPresentation } from "react-icons/md";
+import Link from "next/link";
+import { checkUserInRide } from "@/redux/slices/ratingSlice";
 
-const fetchRide= async (id:any)=>{
-  try {
-    const endpoint = `/activity/${id}`;
-    const response = await api.get(endpoint);
-    return response.data as any;
-  } catch (error: any) {
-   console.log("errir")
-  }
-}
-export const getServerSideProps = async ({ params }: { params: { id: string } }) => {
-  const id = parseInt(params.id);
-
-  // Fetch ride details
-  const rideResponse = await fetchRide(id);
-  console.log(rideResponse,"sds");
-  
-  const formattedRide = rideResponse ? formatRideData(rideResponse) : null;
-
-  return {
-    props: {
-      rideDetails: formattedRide,
-      id,
-    },
-  };
-};
-
-const RideDetails = ({ rideDetails: initialRideDetails, id }: { rideDetails: FormattedRideData, id: number }) => {
-  const [rideDetails, setRideDetails] = useState<FormattedRideData>(initialRideDetails);
+export const RideDetails = ({ id }: { id: number }) => {
+  const [rideDetails, setRideDetails] = useState<FormattedRideData>();
   const [userInRide, setUserInRide] = useState<boolean>(false);
 
   const user = useSelector<RootState>((state) => state.auth.user) as User;
@@ -62,13 +35,13 @@ const RideDetails = ({ rideDetails: initialRideDetails, id }: { rideDetails: For
   const fetchApis = async (id: number) => {
     const response = await dispatch(getRideDetails(id));
     if (getRideDetails.fulfilled.match(response)) {
-      const formattedRide = formatRideData(response.payload);
-      setRideDetails(formattedRide);
+      const formatedRide = formatRideData(response.payload);
+      setRideDetails(formatedRide);
       const params = {
-        date: formattedRide?.startDate,
-        lat: formattedRide?.startLat,
-        lng: formattedRide?.startLng,
-        uom: formattedRide?.rideCreateUoM ?? 1,
+        date: formatedRide?.startDate,
+        lat: formatedRide?.startLat,
+        lng: formatedRide?.startLng,
+        uom: formatedRide?.rideCreateUoM ?? 1,
       };
       const viewpayload = {
         activityID: id,
@@ -89,9 +62,7 @@ const RideDetails = ({ rideDetails: initialRideDetails, id }: { rideDetails: For
   };
 
   useEffect(() => {
-    if (!rideDetails) {
-      fetchApis(id);
-    }
+    fetchApis(id);
   }, [id]);
 
   useEffect(() => {
@@ -109,76 +80,52 @@ const RideDetails = ({ rideDetails: initialRideDetails, id }: { rideDetails: For
   }, [id]);
 
   return (
-    <>
-      <Head>
-        <meta
-          property="og:title"
-          content={rideDetails?.rideName?.toUpperCase() || "Ride Details"}
-        />
-        <meta
-          property="og:description"
-          content={rideDetails?.rideNotes || "Check out this exciting ride!"}
-        />
-        <meta
-          property="og:url"
-          content={`https://chasingwatts.com/ride/${id}`}
-        />
-        <meta
-          property="og:image"
-          content={
-            "https://dev.chasingwatts.com/ridepictures/ridepicture_32497_981.png"
-          }
-        />
-      </Head>
-
-      <div className="mt-28 mb-6">
-        <div className="w-11/12 mx-auto !max-w-[1320px]">
-          {hasDatePassed(rideDetails?.activityDateTime) && (
-            <div className="p-4 my-4 border border-[#cedce2] bg-[#e7eef1] rounded-lg flex gap-2 text-primaryDarkblue font-light items-center ">
-              <FaFlagCheckered />
-              <p className="">
-                THIS RIDE HAS PASSED! WHERE YOU ON THE RIDE?{" "}
-                {userInRide && (
-                  <>
-                    <Link href={`/rate/${id}`} className="font-bold">
-                      PLEASE RATE THE RIDE!
-                    </Link>
-                    <span>
-                      This helps ride leaders create better rides going
-                      forward!
-                    </span>
-                  </>
-                )}
-              </p>
-            </div>
-          )}
-          {rideDetails?.isCancelled && (
-            <div className="p-4 my-4 border border-red-500 bg-red-50 rounded-lg flex gap-2 text-red-600 font-semibold items-center ">
-              <MdOutlineCancelPresentation />
-              <p className="">THIS RIDE HAS CANCELLED!</p>
-            </div>
-          )}
-          <div className="flex gap-5">
-            <div className="w-1/4">
-              <SideBar id={id} />
-            </div>
-            <div className="w-3/4 space-y-5">
-              <RideDetail />
-              <MapRoute />
-              <div className="w-full flex gap-5">
-                <div className="w-1/2">
-                  <RoasterDetail />
-                </div>
-                <div className="w-1/2">
-                  <ChatBox />
-                </div>
+    <div className=" mt-28 mb-6 ">
+      <div className="w-11/12 mx-auto !max-w-[1320px]">
+        {hasDatePassed(rideDetails?.activityDateTime) && (
+          <div className="p-4 my-4 border border-[#cedce2] bg-[#e7eef1] rounded-lg flex gap-2 text-primaryDarkblue font-light items-center ">
+            <FaFlagCheckered />
+            <p className=" ">
+              THIS RIDE HAS PASSED! WHERE YOU ON THE RIDE?{" "}
+              {userInRide && (
+                <>
+                  {" "}
+                  <Link href={`/rate/${id}`} className="font-bold">
+                    {" "}
+                    PLEASE RATE THE RIDE!
+                  </Link>{" "}
+                  <span>
+                    This helps ride leaders create better rides going forward!?
+                  </span>
+                </>
+              )}
+            </p>
+          </div>
+        )}
+        {rideDetails?.isCancelled && (
+          <div className="p-4 my-4 border border-red-500 bg-red-50 rounded-lg flex gap-2 text-red-600 font-semibold items-center ">
+            <MdOutlineCancelPresentation />
+            <p className=" ">THIS RIDE HAS CANCELLED!</p>
+          </div>
+        )}
+        <div className="flex gap-5 ">
+          <div className="w-1/4">
+            <SideBar id={id} />
+          </div>
+          <div className="w-3/4 space-y-5 ">
+            <RideDetail />
+            <MapRoute />
+            <div className="w-full flex gap-5">
+              <div className="w-1/2 ">
+                <RoasterDetail />
+              </div>
+              <div className="w-1/2">
+                <ChatBox />
               </div>
             </div>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
-
-export default RideDetails;
