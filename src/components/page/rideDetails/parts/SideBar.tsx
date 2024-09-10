@@ -53,7 +53,7 @@ const SideBar: React.FC<{ id: number }> = ({ id }) => {
           <AiOutlineBarChart />
           <Link
             className="font-bold text-lg"
-            href={`/rideLog/${rides.activityID}`}
+            href={`/ridelog/${rides.activityID}`}
           >
             Ride Log
           </Link>

@@ -3,7 +3,7 @@ import { Metadata, ResolvingMetadata } from "next";
 import React from "react";
 
 export const metadata: Metadata = {
-  title: "ChasingWatt | Add",
+  title: "Chasing Watts Add",
   description: "ChasingWatts ride add ",
   openGraph: {
     title: "Ride Details",

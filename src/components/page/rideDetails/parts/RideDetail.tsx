@@ -205,11 +205,11 @@ const RideDetail = () => {
                   </div>
                 </div>
                 <div className="flex gap-3 ms-20">
-                  <p className="flex gap-1">
+                  <p className="flex gap-1 items-center">
                     <FiSunrise />
                     {weatherForecast.sunrise}
                   </p>
-                  <p className="flex gap-1">
+                  <p className="flex gap-1 items-center">
                     <FiSunset /> {weatherForecast.sunset}
                   </p>
                 </div>
@@ -292,9 +292,9 @@ const RideDetail = () => {
                     </div>
                     {
                       <div>
-                        <p className="flex items-center gap-1 font-bold mt-2">
+                        {/* <p className="flex items-center gap-1 font-bold mt-2">
                           <FaRegFileLines /> Map Notes
-                        </p>
+                        </p> */}
                         <p className="mt-1 ">
                           Ride created from{" "}
                           {route?.mapSourceModel?.mapSourceName &&

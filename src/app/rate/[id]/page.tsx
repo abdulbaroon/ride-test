@@ -6,6 +6,13 @@ interface PageProps {
     };
   }
   
+  import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: "Chasing Watts Rating",
+  description: "Rating for Chasing Watts cycling community",
+};
+
   const Page: FC<PageProps> = ({ params }) => {
     const { id } = params;
   return <RatingPage id={id}/>
