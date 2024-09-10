@@ -8,9 +8,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Ride Details",
     description: "Details of the ride.",
-    images: [
-      "https://dev.chasingwatts.com/ridepictures/ridepicture_32497_981.png" as any,
-    ],
+    images:  "https://dev.chasingwatts.com/ridepictures/ridepicture_32497_981.png" 
   },
 };
 
