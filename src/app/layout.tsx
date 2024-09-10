@@ -20,10 +20,10 @@ config.autoAddCss = false;
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata: Metadata = {
-  title: "ChasingWattsWeb",
-  description: "ChasingWattsWeb next app",
-};
+// export const metadata: Metadata = {
+//   title: "ChasingWattsWeb",
+//   description: "ChasingWattsWeb next app",
+// };
 registerLicense(
   "Ngo9BigBOggjHTQxAR8/V1NCaF1cWWhAYVVpR2Nbe055flRBalxZVAciSV9jS3pTfkZjWXZfd3RdT2JYWQ=="
 );
