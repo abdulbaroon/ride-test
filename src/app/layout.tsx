@@ -20,33 +20,33 @@ config.autoAddCss = false;
 
 const inter = Inter({ subsets: ["latin"] });
 
-// export const metadata: Metadata = {
-//     title: "ChasingWattsWeb",
-//     description: "ChasingWattsWeb next app",
-// };
+export const metadata: Metadata = {
+  title: "ChasingWattsWeb",
+  description: "ChasingWattsWeb next app",
+};
 registerLicense(
-    "Ngo9BigBOggjHTQxAR8/V1NCaF1cWWhAYVVpR2Nbe055flRBalxZVAciSV9jS3pTfkZjWXZfd3RdT2JYWQ=="
+  "Ngo9BigBOggjHTQxAR8/V1NCaF1cWWhAYVVpR2Nbe055flRBalxZVAciSV9jS3pTfkZjWXZfd3RdT2JYWQ=="
 );
 
 export default function RootLayout({
-    children,
+  children,
 }: Readonly<{
-    children: React.ReactNode;
+  children: React.ReactNode;
 }>) {
-    return (
-        <html lang='en'>
-            <body>
-                <ReduxProvider>
-                    <MainLayout>
-                        <Chakra>
-                            <CustomLayout>
-                                <Navbar />
-                                {children}
-                            </CustomLayout>
-                        </Chakra>
-                    </MainLayout>
-                </ReduxProvider>
-            </body>
-        </html>
-    );
+  return (
+    <html lang="en">
+      <body>
+        <ReduxProvider>
+          <MainLayout>
+            <Chakra>
+              <CustomLayout>
+                <Navbar />
+                {children}
+              </CustomLayout>
+            </Chakra>
+          </MainLayout>
+        </ReduxProvider>
+      </body>
+    </html>
+  );
 }
