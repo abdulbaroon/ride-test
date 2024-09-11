@@ -25,12 +25,6 @@ const nextConfig = {
             },
         ];
     },
-    async rewrites() {
-        return [{
-          source: '/resetPassword',
-          destination: "/resetpassword",
-        }]
-      },
 };
 
 export default nextConfig;
