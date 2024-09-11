@@ -8,11 +8,11 @@ export const metadata: Metadata = {
   description: "ResetPassword for Chasing Watts cycling community",
 };
 
-const ResetPassword = () => {
+const Page = () => {
 
   return (
     <ResetPasswordPage/>
   )
 }
 
-export default ResetPassword
+export default Page
