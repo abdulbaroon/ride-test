@@ -5,7 +5,7 @@ import { RootState } from '@/redux/store/store';
 import {
     Box, Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay,
 } from '@chakra-ui/react';
-import MapBoxModal from '@/components/module/MapBoxModal';
+// import MapBoxModal from '@/components/module/MapBoxModal';
 import { Explore } from '@/shared/types/dashboard.types';
 
 interface MapModalProps {
@@ -25,7 +25,7 @@ const MapModal: React.FC<MapModalProps> = ({ isOpen, onClose }) => {
                 <ModalCloseButton />
                 <ModalBody>
                     <Box bg="darkBlack" h="70vh" w="full" rounded="xl" overflow="hidden" position="relative">
-                        <MapBoxModal profile={profile} />
+                        {/* <MapBoxModal profile={profile} /> */}
                     </Box>
                 </ModalBody>
                 <ModalFooter>

@@ -11,6 +11,7 @@ interface AddRideState {
   hubList: [];
   searchRide:[];
   calenderData:[];
+  rideDetail:[];
   loading: boolean;
   error: string | any;
 }
@@ -22,6 +23,7 @@ const initialState: AddRideState = {
   hubList: [],
   searchRide:[],
   calenderData:[],
+  rideDetail:[],
   loading: false,
   error: null
 };
@@ -222,6 +224,9 @@ const addRideSlice = createSlice({
       .addCase(searchRide.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(getRide.fulfilled, (state, action) => {
+        state.rideDetail = action.payload;
       })
   }
 });

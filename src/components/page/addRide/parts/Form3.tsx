@@ -221,7 +221,7 @@ const Form3: React.FC<Form1Props> = ({
       const fullAddress = `${streetNumber} ${route}, ${homeBaseCity}, ${homeBaseState}, ${postalCode}, ${homeBaseCountry}`;
   
       // Use placeName and placeVicinity as fallback
-      const selectedAddress = placeName ? `${placeName}, ${placeVicinity}, ${homeBaseState}, ${homeBaseCountry} ` : fullAddress;
+      const selectedAddress = placeName ? `${placeName}, ${placeVicinity}` : fullAddress;
   
       const homeBaseLat = place.geometry.location.lat();
       const homeBaseLng = place.geometry.location.lng();

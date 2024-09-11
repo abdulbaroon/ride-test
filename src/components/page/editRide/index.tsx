@@ -75,7 +75,7 @@ export const EditRide = ({ id }: { id: number }) => {
   const [linkData, setLinkdata] = useState<any>({});
   const [editLoading, setLoading] = useState<boolean>(false);
   const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
-  const { push } = useRouter();
+  const { push,back } = useRouter();
   const {
     isOpen: isAlertOpen,
     onOpen: onAlertOpen,
@@ -239,6 +239,7 @@ export const EditRide = ({ id }: { id: number }) => {
     const onSuccess = (response: any) => {
       setData(response);
       toast.success("Ride saved successfully");
+      back()
     };
 
     const onError = (error: any) => {
@@ -265,7 +266,7 @@ export const EditRide = ({ id }: { id: number }) => {
       toast.error("Ride Delete Error");
     }
   };
-
+  {console.log("ads")}
   return (
     <section className="bg-[#f5f4f8] h-full">
       <div className=" pt-28 w-11/12 mx-auto !max-w-[1320px]">
@@ -439,7 +440,6 @@ export const EditRide = ({ id }: { id: number }) => {
                   </Tabs>
                 </AccordionPanel>
               </AccordionItem>
-
               <AccordionItem>
                 <h2>
                   <AccordionButton>

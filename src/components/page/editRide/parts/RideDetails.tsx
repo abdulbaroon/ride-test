@@ -57,18 +57,21 @@ const RideDetails: React.FC<RideDetailsProps> = ({
   const activityType = useSelector<RootState, ActivityType[]>(
     (state) => state.addRide.activityTypes
   );
+  const editRideDetails =useSelector<RootState, any>(
+    (state) => state.addRide.rideDetail
+  );
 
   useEffect(() => {
-    setStartDate(formatDate(data.activityDate));
-    setStartTime(parseTime(data.activityStartTime));
-    setEndTime(parseTime(data.activityEndTime));
-    setLat(data.startLat);
-    setLng(data.startLng);
-    setCode(data.activityNotes);
-    setCity(data.startCity);
-    setState(data.startState);
-    setCountry(data.startCountry);
-  }, [data]);
+    setStartDate(editRideDetails.activityDate&&formatDate(editRideDetails.activityDate));
+    setStartTime(editRideDetails.activityStartTime && parseTime(editRideDetails.activityStartTime));
+    setEndTime(editRideDetails.activityEndTime && parseTime(editRideDetails.activityEndTime));
+    setLat(editRideDetails.startLat);
+    setLng(editRideDetails.startLng);
+    setCode(editRideDetails.activityNotes);
+    setCity(editRideDetails.startCity);
+    setState(editRideDetails.startState);
+    setCountry(editRideDetails.startCountry);
+  }, [editRideDetails,data]);
 
   useEffect(() => {
     setData?.({
@@ -82,6 +85,7 @@ const RideDetails: React.FC<RideDetailsProps> = ({
       startTime,
       endTime,
     });
+    console.log("data")
   }, [
     code,
     city,
@@ -92,7 +96,7 @@ const RideDetails: React.FC<RideDetailsProps> = ({
     startDate,
     startTime,
     endTime,
-    setData,
+    editRideDetails
   ]);
 
   const loadGoogleMapsScript = useCallback(() => {
@@ -149,7 +153,7 @@ const RideDetails: React.FC<RideDetailsProps> = ({
 
       // Use placeName and placeVicinity as fallback
       const selectedAddress = placeName
-        ? `${placeName}, ${placeVicinity}, ${homeBaseState}, ${homeBaseCountry} `
+        ? `${placeName}, ${placeVicinity}`
         : fullAddress;
 
       const homeBaseLat = place.geometry.location.lat();

@@ -8,11 +8,11 @@
 
 // mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN as string;
 
-// interface MapBoxModalProps {
+// interface ExploreMapProps {
 //     profile: { homeBaseLng: number, homeBaseLat: number } | any;
 // }
 
-// const MapBoxModal: React.FC<MapBoxModalProps> = ({ profile }) => {
+// const ExploreMap: React.FC<ExploreMapProps> = ({ profile }) => {
 //     const mapContainerRef = useRef<HTMLDivElement>(null);
 //     const mapRef = useRef<MapboxMap | null>(null);
 //     const [mapInitialized, setMapInitialized] = useState(false);
@@ -192,4 +192,4 @@
 //     );
 // };
 
-// export default MapBoxModal;
+// export default ExploreMap;
