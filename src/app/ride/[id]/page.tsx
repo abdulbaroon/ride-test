@@ -56,11 +56,6 @@ const Page: FC<PageProps> = ({ params }) => {
   const { id } = params;
   return (
     <>
-      <Head>
-        <meta property="og:title" content="Ride Details" />
-        <meta property="og:description" content="Details of the ride" />
-        <meta property="og:image" content="https://dev.chasingwatts.com/ridepictures/ridepicture_32497_981.png" />
-      </Head>
       <RideDetails id={id} />
     </>
   );
