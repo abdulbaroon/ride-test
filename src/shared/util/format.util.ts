@@ -161,6 +161,19 @@ export function checkImageLoad(imageUrl: string): Promise<string | null> {
   });
 }
 
+export async function checkImageLoads(imageUrl: string): Promise<string | null> {
+  try {
+    const response = await fetch(imageUrl);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return imageUrl;
+  } catch (error) {
+    console.error('Error checking image load:', error);
+    return null;
+  }
+}
+
 export const formatRideList = (item: RideItem): FormattedRide => {
   const mapImage =
     item?.activityPictures?.find((pic) => pic.isMap)?.picturePath || "";

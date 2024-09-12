@@ -23,8 +23,8 @@ export const profileData = [
         icon: PiPersonSimpleBikeLight
     },
     {
-        link:"#",
-        name: "My Teams",
+        link:"/hubs",
+        name: "My Hubs",
         icon: RiTeamLine
     },
     {
@@ -59,12 +59,6 @@ export const profileData = [
 
     {
         link:"#",
-        name: "Badge Board",
-        icon: LuBadge
-    },
-
-    {
-        link:"#",
         name: "Reset Password",
         icon: IoKeyOutline
     },
@@ -93,8 +87,8 @@ export const sideBarData = [
         icon: PiPersonSimpleBikeLight
     },
     {
-        link:"#",
-        name: "My Teams",
+        link:"/hubs",
+        name: "My Hubs",
         icon: RiTeamLine
     },
     {
@@ -103,7 +97,6 @@ export const sideBarData = [
         icon: BsLightningCharge,
         border:true
     },
-
     {
         link:"/rwgpsconnect",
         name: "Ride w GPS Connect",
@@ -126,16 +119,9 @@ export const sideBarData = [
     {
         link:"#",
         name: "Friends",
+        border:true,
         icon: FiUsers
     },
-
-    {
-        link:"#",
-        name: "Badge Board",
-        border:true,
-        icon: LuBadge
-    },
-
     {
         link:"/notification",
         name: "Manage Notifications",

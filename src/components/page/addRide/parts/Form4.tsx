@@ -20,6 +20,7 @@ import { IoMdAdd } from "react-icons/io";
 import { GoPlusCircle } from "react-icons/go";
 import { ImGlass } from "react-icons/im";
 import Success from "./Success";
+import { useRouter } from "next/navigation";
 
 const customStyles = {
   content: {
@@ -97,6 +98,7 @@ const Form4: React.FC<Form1Props> = ({
     formState: { errors },
   } = useForm<FormData>();
   const dispatch = useDispatch<AppDispatch>();
+  const {push} = useRouter()
   const activityTags = useSelector<RootState, string[]>(
     (state) => state.addRide.activityTags
   );
@@ -122,7 +124,8 @@ const Form4: React.FC<Form1Props> = ({
     };
     const onSuccess = (response: any) => {
       toast.success("Ride saved successfully");
-      setSuccess?.(response.payload.activityID);
+      push(`ride/${response.payload.activityID}}`)
+      // setSuccess?.(response.payload.activityID);
     };
 
     const onError = (error: any) => {
@@ -248,7 +251,7 @@ const Form4: React.FC<Form1Props> = ({
             </div>
             <div className="flex gap-7 mt-5 flex-col tablet:flex-row">
               <div className="flex flex-col w-full tablet:w-1/2">
-                <label className="font-medium text-gray-600">
+                <label className="font-medium text-sm text-gray-400">
                   Activity Tags
                 </label>
                 <div className="flex flex-col relative mt-1">
@@ -262,6 +265,7 @@ const Form4: React.FC<Form1Props> = ({
                     onInputChange={(newValue) => setInputValue(newValue)}
                     onKeyDown={handleKeyDown}
                     placeholder="Type something and press enter..."
+                    className="!rounded-md"
                     value={value}
                   />
                 </div>
@@ -272,12 +276,14 @@ const Form4: React.FC<Form1Props> = ({
                 )}
               </div>
               <div className="flex flex-col w-full tablet:w-1/2">
-                <label className="font-medium text-gray-600">Hub List</label>
+                <label className="font-medium text-sm text-gray-400">Hub List</label>
                 <div className="flex flex-col relative mt-1">
                   <select
                     {...register("hubID")}
                     defaultValue={formData?.hubID}
-                    className="bg-white border rounded-md px-2 py-[6px]"
+                    className={`bg-white border rounded-md px-2 py-[6px] ${
+                    watch("hubID") ? "text-black" : "text-gray-500"
+                  }`}
                   >
                     <option value="" disabled selected>
                       Select Hub
@@ -299,7 +305,7 @@ const Form4: React.FC<Form1Props> = ({
             </div>
             <div className="mt-5 gap-7 flex flex-col tablet:flex-row">
               <div className="flex flex-col w-full tablet:w-1/2">
-                <label className="font-medium text-gray-600">
+                <label className="font-medium text-sm text-gray-400 ">
                   Event Promoter Link
                 </label>
                 <input
@@ -316,7 +322,7 @@ const Form4: React.FC<Form1Props> = ({
               </div>
               <div className="w-full tablet:w-1/2">
                 <div className="flex flex-col">
-                  <label className="font-medium text-gray-600">
+                  <label className="font-medium text-sm text-gray-400">
                     Need an image? Let us generate one!
                   </label>
                   <button

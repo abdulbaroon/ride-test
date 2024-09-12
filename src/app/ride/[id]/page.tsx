@@ -3,8 +3,9 @@ import { RideDetails } from "@/components/page";
 import React, { FC } from "react";
 import type { Metadata, ResolvingMetadata } from "next";
 import { api } from "@/shared/api";
-import { formatRideData } from "@/shared/util/format.util";
+import { checkImageLoad, checkImageLoads, formatRideData } from "@/shared/util/format.util";
 import Head from 'next/head';
+import { routePlaceHolder } from "@/assets";
 interface RideResponse {
   rideName: string;
   rideNotes: string;
@@ -16,6 +17,18 @@ interface PageProps {
     id: number;
   };
 }
+
+const loadImage = async (mapImage:string | any,image:string|any) => {
+  let url ="" as any;
+  let secondUrl ="" as any;
+  if(mapImage){
+     url = await checkImageLoads(mapImage);
+  }
+  if(image){
+     secondUrl = await checkImageLoads(image);
+  }
+  return ( secondUrl || url || routePlaceHolder.src);
+};
 
 export async function generateMetadata(
   { params }: PageProps,
@@ -36,7 +49,7 @@ export async function generateMetadata(
   }
 
   const formattedRide = rideResponse ? formatRideData(rideResponse) : null;
-  const previousImages = (await parent).openGraph?.images || [];
+  const image = await loadImage(formattedRide?.mapImage,formattedRide?.image)
 
   return {
     title: formattedRide?.rideName || "Ride Details",
@@ -44,10 +57,7 @@ export async function generateMetadata(
     openGraph: {
       title: formattedRide?.rideName || "Ride Details",
       description: formattedRide?.rideNotes || "Details of the ride.",
-      images: [
-        formattedRide?.image || "https://dev.chasingwatts.com/ridepictures/ridepicture_32497_981.png" as any,
-        ...previousImages,
-      ],
+      images: image
     },
   };
 }

@@ -29,7 +29,7 @@ export function middleware(request: NextRequest) {
   const isProtected = protectedPath.some((path) =>
     pathname.startsWith(path)
 );
-console.log(pathname,isProtected)
+
   if (!token && isProtected) {
     return NextResponse.redirect(new URL("/account/login", request.url));
   }

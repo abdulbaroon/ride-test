@@ -18,7 +18,9 @@ import RWGPSLogo from "./RWGPS.png"
 import routePlaceHolder from "./route_placeholder.png"
 import letsRide from "./letsridebase.png"
 import ratingLatt from  "./lottieAssets/rating.json"
+import hubImage from "./hubImage.png"
 export {
+    hubImage,
     ratingLatt,
     letsRide,
     routePlaceHolder,

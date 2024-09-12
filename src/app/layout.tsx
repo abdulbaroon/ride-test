@@ -23,6 +23,9 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
     title: "ChasingWattsWeb",
     description: "ChasingWattsWeb next app",
+    openGraph: {
+        images:  "https://dev.chasingwatts.com/ridepictures/ridepicture_32497_981.png" 
+      },
 };
 registerLicense(
     "Ngo9BigBOggjHTQxAR8/V1NCaF1cWWhAYVVpR2Nbe055flRBalxZVAciSV9jS3pTfkZjWXZfd3RdT2JYWQ=="

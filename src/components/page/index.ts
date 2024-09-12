@@ -23,3 +23,5 @@ export { Friend } from "./friend";
 export { RatingPage } from "./rating";
 export { RideLog } from "./rideLog";
 
+import ExploreMap from "./explore";
+export { ExploreMap };

@@ -6,6 +6,7 @@ import {
   getActivityroute,
   getChatActivity,
   getFriendsList,
+  getresponsetype,
   getRideDetails,
   getWeather,
 } from "@/redux/slices/rideDetailsSlice";
@@ -58,6 +59,7 @@ export const RideDetails = ({ id }: { id: number }) => {
       dispatch(getChatActivity(chatparams));
       dispatch(getWeather(params));
       dispatch(getFriendsList({ id: user.id, activityID: id }));
+      dispatch(getresponsetype());
     }
   };
 

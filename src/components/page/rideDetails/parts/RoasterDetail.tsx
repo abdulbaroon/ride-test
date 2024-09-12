@@ -9,20 +9,29 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 
-
+interface TabStatus {
+  [key: number]: string;
+}
 const RoasterDetail = () => {
   const [roster, setRoster] = useState<RosterDetail[]>([]);
   const [selectedTab, setSelectedTab] = useState<number>(1);
 
   const rosterDetail = useSelector<RootState, RosterDetail[]>((state) => state.rideDetail.rosterDetails);
   const rides = useSelector<RootState>((state) => state.rideDetail.rides) as Item;
-
-
-  const filterRosters = (typeID: number) => {
-    return isArray(rosterDetail) && rosterDetail?.filter((data) => data?.responseTypeModel.responseTypeID === typeID) || [];
+ 
+  console.log(rosterDetail,"sdf")
+  const tabStatuses:TabStatus = {
+    1: 'Yes',
+    2: 'Interested',
+    3: 'No'
   };
+  const filterRosters = (typeID: number) => {
+    return isArray(rosterDetail) && rosterDetail?.filter((data) => data?.responseTypeModel.responseTypeName === tabStatuses[typeID]) || [];
+  };
+
   useEffect(() => {
-    const filteredRoster = isArray(rosterDetail) && rosterDetail?.filter((data) => data?.responseTypeModel.responseTypeID === selectedTab) || [];
+    
+    const filteredRoster = isArray(rosterDetail) && rosterDetail?.filter((data) => data?.responseTypeModel.responseTypeName === tabStatuses[selectedTab]) || [];
     setRoster(filteredRoster);
   }, [selectedTab, rosterDetail]);
 

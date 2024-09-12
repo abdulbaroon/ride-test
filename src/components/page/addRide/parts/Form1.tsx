@@ -76,7 +76,7 @@ const Form1: React.FC<Form1Props> = ({ nextForm, formData, startOver }) => {
                             type='radio'
                             value='gpx'
                             {...register("routeType", { required: true })}
-                            className='w-4 h-4 bg-white border-gray-300'
+                            className='w-4 h-4 bg-white border-gray-300 '
                         />
                         <label
                             htmlFor='gpx-radio'

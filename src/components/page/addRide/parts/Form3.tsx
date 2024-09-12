@@ -26,7 +26,7 @@ interface Form1Props {
 
 interface FormData {
   rideName?: string;
-  note?:string|undefined;
+  note?: string | undefined;
   startDate?: Date | null;
   startTime?: Date | null;
   startLat?: number;
@@ -41,7 +41,7 @@ interface FormData {
   centerLatitude?: number;
   centerLongitude?: any;
   rideType?: string;
-  startAddress?:string;
+  startAddress?: string;
   geoJSON?: {
     features?: any[];
   };
@@ -106,15 +106,23 @@ const Form3: React.FC<Form1Props> = ({
   const profile = useSelector<RootState, any>(
     (state) => state.auth.profileData
   );
-  const [lat, setLat] = useState<number>(formData?.startLat||profile?.homeBaseLat);
-  const [lng, setLng] = useState<number>(formData?.startLng||profile?.homeBaseLng);
-  const [code, setCode] = useState<string|undefined>(
-   formData?.note|| "Lets ride and be respectful to each other!"
+  const [lat, setLat] = useState<number>(
+    formData?.startLat || profile?.homeBaseLat
   );
-  const [address, setAddress] = useState<string|undefined>(formData?.startAddress);
+  const [lng, setLng] = useState<number>(
+    formData?.startLng || profile?.homeBaseLng
+  );
+  const [code, setCode] = useState<string | undefined>(
+    formData?.note || "Lets ride and be respectful to each other!"
+  );
+  const [address, setAddress] = useState<string | undefined>(
+    formData?.startAddress
+  );
   const [city, setCity] = useState<string | undefined>(formData?.startCity);
   const [state, setState] = useState<string | undefined>(formData?.startState);
-  const [country, setCountry] = useState<string | undefined>(formData?.startCountry);
+  const [country, setCountry] = useState<string | undefined>(
+    formData?.startCountry
+  );
   const autocompleteRef = useRef<any>(null);
 
   const [startDate, setStartDate] = useState<Date | null>(
@@ -200,7 +208,7 @@ const Form3: React.FC<Form1Props> = ({
       // Extract the name and vicinity (which might reflect what is shown in the dropdown)
       const placeName = place.name || "";
       const placeVicinity = place.vicinity || "";
-      
+
       const components = place.address_components;
       let streetNumber = "";
       let route = "";
@@ -208,24 +216,31 @@ const Form3: React.FC<Form1Props> = ({
       let homeBaseState = "";
       let homeBaseCountry = "";
       let postalCode = "";
-  
+
       components.forEach((component: ComponentType) => {
-        if (component.types.includes("street_number")) streetNumber = component.long_name;
+        if (component.types.includes("street_number"))
+          streetNumber = component.long_name;
         if (component.types.includes("route")) route = component.long_name;
-        if (component.types.includes("locality")) homeBaseCity = component.long_name;
-        if (component.types.includes("administrative_area_level_1")) homeBaseState = component.long_name;
-        if (component.types.includes("country")) homeBaseCountry = component.long_name;
-        if (component.types.includes("postal_code")) postalCode = component.long_name;
+        if (component.types.includes("locality"))
+          homeBaseCity = component.long_name;
+        if (component.types.includes("administrative_area_level_1"))
+          homeBaseState = component.long_name;
+        if (component.types.includes("country"))
+          homeBaseCountry = component.long_name;
+        if (component.types.includes("postal_code"))
+          postalCode = component.long_name;
       });
-  
+
       const fullAddress = `${streetNumber} ${route}, ${homeBaseCity}, ${homeBaseState}, ${postalCode}, ${homeBaseCountry}`;
-  
+
       // Use placeName and placeVicinity as fallback
-      const selectedAddress = placeName ? `${placeName}, ${placeVicinity}` : fullAddress;
-  
+      const selectedAddress = placeName
+        ? `${placeName}, ${placeVicinity}`
+        : fullAddress;
+
       const homeBaseLat = place.geometry.location.lat();
       const homeBaseLng = place.geometry.location.lng();
-  
+
       setLat(homeBaseLat);
       setLng(homeBaseLng);
       setCity(homeBaseCity);
@@ -235,8 +250,6 @@ const Form3: React.FC<Form1Props> = ({
       setValue("location", selectedAddress);
     }
   }, [setValue]);
-  
-  
 
   useEffect(() => {
     if (!window.google) {
@@ -305,7 +318,7 @@ const Form3: React.FC<Form1Props> = ({
                   showIcon
                   selected={startDate}
                   onChange={(date) => setStartDate(date)}
-                  className="custom-datepicker-input"
+                  className="custom-datepicker-input  !rounded-md"
                   dateFormat="eee, MMMM d, yyyy"
                 />
               </div>
@@ -315,7 +328,7 @@ const Form3: React.FC<Form1Props> = ({
                   <DatePicker
                     selected={startTime}
                     onChange={(date) => setStartTime(date)}
-                    className="custom-datepicker-input"
+                    className="custom-datepicker-input !rounded-md "
                     showTimeSelect
                     showTimeSelectOnly
                     timeIntervals={15}
@@ -328,7 +341,7 @@ const Form3: React.FC<Form1Props> = ({
                   <DatePicker
                     selected={endTime}
                     onChange={(date) => setEndTime(date)}
-                    className="custom-datepicker-input"
+                    className="custom-datepicker-input !rounded-md"
                     showTimeSelect
                     showTimeSelectOnly
                     timeIntervals={15}
@@ -375,9 +388,9 @@ const Form3: React.FC<Form1Props> = ({
                   {...register("rideType", {
                     required: "Please select a Ride Type",
                   })}
-                  className={`bg-white border rounded-md px-2 py-[6px] ${
-                    errors.rideType ? "input-error" : ""
-                  }`}
+                  className={`bg-white border  rounded-md px-2 py-[6px] ${
+                    ridetype ? "text-black" : "text-gray-500"
+                  } ${errors.rideType ? "input-error" : ""}`}
                 >
                   <option
                     value=""
@@ -420,8 +433,8 @@ const Form3: React.FC<Form1Props> = ({
             formats={formats}
             value={code}
             style={{
-              height: "200px", 
-              fontSize: "20px", 
+              height: "200px",
+              fontSize: "20px",
             }}
             onChange={handleProcedureContentChange}
           />

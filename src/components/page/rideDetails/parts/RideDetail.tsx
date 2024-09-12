@@ -48,7 +48,7 @@ const radioButtons: Array<{ id: string; label: string }> = [
 ];
 
 const RideDetail = () => {
-  const [loading, setLoading] = useState<Number | null>(null);
+  const [loading, setLoading] = useState<string | null>(null);
   const [group, setGroup] = useState<string | null>(null);
   const dispatch = useDispatch<AppDispatch>();
   const rides = useSelector<RootState>(
@@ -61,26 +61,36 @@ const RideDetail = () => {
   const route = useSelector<RootState>(
     (state) => state.rideDetail.route
   ) as ActivityRoute;
+  const responseType = useSelector<RootState>(
+    (state) => state.rideDetail.responsetype
+  ) as any;
 
   const formatedRide = formatRideData(rides);
-  const handleJoinRoster = async (id: number) => {
+  const handleJoinRoster = async (type: string) => {
+    const respose =
+      responseType &&
+      responseType?.find((item: any) => item?.responseTypeName === type);
+    console.log(respose);
     const payload = {
       activityID: formatedRide.activityID,
       createdBy: user?.id,
       createdDate: new Date().toISOString(),
       modifiedBy: user?.id,
       modifiedDate: new Date().toISOString(),
-      responseTypeID: id,
+      responseTypeID: respose.responseTypeID,
       groupLevel: group || null,
     };
-    setLoading(id);
+    setLoading(type);
     const response = await dispatch(setActivityRoster(payload));
     if (setActivityRoster.fulfilled.match(response)) {
       toast.success("Thanks for responding to the ride!");
     }
     setLoading(null);
   };
-
+  const userRosterInfo = (formatedRide?.rosterModal?.length > 0 &&
+    formatedRide?.rosterModal?.find(
+      (data) => data.createdBy === user.id
+    )) as any;
   return (
     <section id="details">
       <div className="bg-white min-h-40 border rounded-lg">
@@ -242,20 +252,31 @@ const RideDetail = () => {
                   )}
                   <div className="w-full flex gap-6">
                     <button
-                      onClick={() => handleJoinRoster(1)}
-                      className="w-1/2 bg-[#07c98b] py-2 rounded-lg font-bold text-white text-lg"
+                      onClick={() => handleJoinRoster("Yes")}
+                      className={`w-1/2  py-2 rounded-lg font-bold  text-lg transition transform ease-in-out duration-300 ${
+                        userRosterInfo?.responseTypeModel?.responseTypeName ===
+                        "Yes"
+                          ? "bg-[#e6f9f3] text-[#07c98b]"
+                          : " bg-[#07c98b] text-white hover:bg-[#24a97f]"
+                      }`}
                     >
-                      {loading === 1 ? (
+                      {loading === "Yes" ? (
                         <CgSpinner className="mx-auto animate-spin w-6 h-6" />
                       ) : (
                         " JOIN!"
                       )}
                     </button>
                     <button
-                      onClick={() => handleJoinRoster(2)}
-                      className="w-1/2 bg-[#fdbc31] py-2 rounded-lg font-bold text-white text-lg"
+                      onClick={() => handleJoinRoster("Interested")}
+                      className={`w-1/2  py-2 rounded-lg font-bold  text-lg transition transform ease-in-out duration-300
+                        ${
+                          userRosterInfo?.responseTypeModel
+                            ?.responseTypeName === "Interested"
+                            ? "bg-[#fff5e0] text-[#fdbc31] hover:bg-[#fdbc31] hover:text-white"
+                            : " bg-[#fdbc31] text-white hover:bg-[#d09c2c]"
+                        }`}
                     >
-                      {loading === 2 ? (
+                      {loading === "Interested" ? (
                         <CgSpinner className="mx-auto animate-spin w-6 h-6" />
                       ) : (
                         " MAYBE!"
@@ -263,11 +284,17 @@ const RideDetail = () => {
                     </button>
                     {formatedRide?.rosterModal?.length > 0 && (
                       <button
-                        onClick={() => handleJoinRoster(3)}
-                        className="
-                             w-1/2 text-white bg-[#f23c49] py-2 rounded-lg font-bold  text-lg "
+                        onClick={() => handleJoinRoster("No")}
+                        className={`
+                             w-1/2 text-white ${"bg-[#f23c49]"} py-2 rounded-lg font-bold  text-lg transition transform ease-in-out duration-300
+                            ${
+                              userRosterInfo?.responseTypeModel
+                                ?.responseTypeName === "No"
+                                ? "bg-[#feebec] text-[#f23c49] hover:bg-[#f23c49] hover:text-white"
+                                : " bg-[#f23c49] text-white hover:bg-[#ce303b] hover:shadow-md "
+                            } `}
                       >
-                        {loading === 3 ? (
+                        {loading === "No" ? (
                           <CgSpinner className="mx-auto animate-spin w-6 h-6" />
                         ) : (
                           "NOPE"

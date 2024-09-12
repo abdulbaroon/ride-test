@@ -169,7 +169,7 @@ export const SearchPage = () => {
                             </label>
                             <input
                                 type='text'
-                                className='border px-2 py-[6px] w-full rounded-lg'
+                                className='border px-2 py-[6px] w-full rounded-md'
                                 {...register("location", {
                                     required:
                                         "Please search and select a location",
@@ -190,7 +190,7 @@ export const SearchPage = () => {
                                 type='text'
                                 placeholder='Ride name'
                                 {...register("rideName")}
-                                className='border px-2 py-[6px] w-full rounded-lg'
+                                className='border px-2 py-[6px] w-full  rounded-md'
                             />
                             {errors.rideName && (
                                 <p className='text-red-500 text-xs pt-1'>
@@ -208,7 +208,7 @@ export const SearchPage = () => {
                                 {...register("maxDistance", {
                                     required: "Please enter a ride radius",
                                 })}
-                                className='border px-2 py-[6px] w-full rounded-lg remove-arrow'
+                                className='border px-2 py-[6px] w-full  rounded-md remove-arrow'
                             />
                             {errors.maxDistance && (
                                 <p className='text-red-500 text-xs pt-1'>
@@ -222,7 +222,7 @@ export const SearchPage = () => {
                                     Date from
                                 </label>
                                 <input
-                                    className='border px-2 py-[6px]'
+                                    className='border px-2 py-[6px]  rounded-md'
                                     placeholder='Start date'
                                     type='date'
                                     {...register("startTime")}
@@ -238,7 +238,7 @@ export const SearchPage = () => {
                                     Date to
                                 </label>
                                 <input
-                                    className='border px-2 py-[6px]'
+                                    className='border px-2 py-[6px]  rounded-md'
                                     placeholder='End date'
                                     type='date'
                                     {...register("endTime")}
@@ -257,7 +257,7 @@ export const SearchPage = () => {
                             <div className='flex flex-col w-full relative'>
                                 <select
                                     {...register("rideType")}
-                                    className='bg-white border px-2 py-[6px]'>
+                                    className='bg-white border px-2 py-[6px]  rounded-md'>
                                     <option value='' disabled selected>
                                         Ride Type
                                     </option>
@@ -279,7 +279,7 @@ export const SearchPage = () => {
                             <div className='flex flex-col w-full relative'>
                                 <select
                                     {...register("difficulty")}
-                                    className='bg-white border px-2 py-[6px]'>
+                                    className='bg-white border px-2 py-[6px]  rounded-md'>
                                     <option value='' disabled selected>
                                         Difficulty Level
                                     </option>
@@ -302,7 +302,7 @@ export const SearchPage = () => {
                                 type='text'
                                 placeholder='Minimum distance'
                                 {...register("minDistance")}
-                                className='border px-2 py-[6px] w-full rounded-lg'
+                                className='border px-2 py-[6px] w-full  rounded-md'
                             />
                             {errors.minDistance && (
                                 <p className='text-red-500 text-xs pt-1'>
@@ -314,12 +314,12 @@ export const SearchPage = () => {
                     <div className='flex gap-3 p-5 border-t'>
                         <button
                             type='submit'
-                            className='bg-primaryText text-white px-6 py-2 rounded-lg font-semibold text-sm tablet:text-base'>
+                            className='bg-primaryText text-white px-6 py-2  rounded-md font-semibold text-sm tablet:text-base'>
                             Search
                         </button>
                         <button
                             type='button'
-                            className='bg-gray-100 shadow-md text-gray-600 px-6 py-2 rounded-lg font-semibold text-sm tablet:text-base'>
+                            className='bg-gray-100 shadow-md text-gray-600 px-6 py-2  rounded-md font-semibold text-sm tablet:text-base'>
                             Clear
                         </button>
                     </div>
@@ -330,7 +330,7 @@ export const SearchPage = () => {
                 <div>
                     {ride.length > 0 ? (
                         <div className=''>
-                            <div className='p-4 m-4 border border-[#79d59d] bg-[#e6faf3] rounded-lg '>
+                            <div className='p-4 m-4 border border-[#79d59d] bg-[#e6faf3]  rounded-md '>
                                 <p className='text-[#79d59d] font-semibold '>
                                     We found {ride.length} rides! Join one and
                                     get out there!

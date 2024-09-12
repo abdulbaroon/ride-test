@@ -12,6 +12,7 @@ interface RideDetailState {
   rosterDetails: RosterDetail[] | []
   route:ActivityRoute | {}
   friendsList:[]|UserFollowingData[]
+  responsetype:[]
 }
 
 const initialState: RideDetailState = {
@@ -22,7 +23,8 @@ const initialState: RideDetailState = {
   loading: false,
   error: null,
   rosterDetails: [],
-  friendsList:[]
+  friendsList:[],
+  responsetype:[]
 };
 
 export const getRideDetails = createAsyncThunk(
@@ -186,6 +188,20 @@ export const setBulkActivityRoster = createAsyncThunk(
   }
 );
 
+export const getresponsetype = createAsyncThunk(
+  "/activityroster",
+  async (_, { rejectWithValue}) => {
+    try {
+      const endpoint = `/responsetype`
+      const response = await api.get(endpoint);
+      return response.data;
+    } catch (error: any) {
+      console.error("Failed to process bulk activity roster:", error);
+      return rejectWithValue(error.message || 'An unknown error occurred');
+    }
+  }
+);
+
 
 const rideDetailSlice = createSlice({
   name: "rideDetail",
@@ -217,6 +233,9 @@ const rideDetailSlice = createSlice({
     });
     builder.addCase(getFriendsList.fulfilled, (state, action) => {
       state.friendsList = action.payload;
+    });
+    builder.addCase(getresponsetype.fulfilled, (state, action) => {
+      state.responsetype = action.payload;
     });
   },
 });

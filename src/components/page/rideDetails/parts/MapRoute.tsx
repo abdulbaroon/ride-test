@@ -81,7 +81,7 @@ const MapRoute = () => {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "route.gpx";
+      a.download = `route_gpx_${rides.activityID}.gpx`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);

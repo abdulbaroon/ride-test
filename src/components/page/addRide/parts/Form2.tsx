@@ -293,7 +293,7 @@ const Form2: React.FC<Form1Props> = ({
                                     {(formData?.routeName ||
                                         features?.properties?.name?.trimEnd()) && (
                                         <div className='flex flex-col w-full'>
-                                            <label className='font-medium text-gray-600 text-sm'>
+                                            <label className='font-medium text-gray-400 text-sm'>
                                                 Route Name
                                             </label>
                                             <input
@@ -305,13 +305,13 @@ const Form2: React.FC<Form1Props> = ({
                                                     features?.properties?.name?.trimEnd()
                                                 }
                                                 {...register("routeName")}
-                                                className='border px-2 py-[6px] mt-1 remove-arrow'
+                                                className='border px-2 py-[6px] mt-1 remove-arrow  rounded-md'
                                             />
                                         </div>
                                     )}
                                     <div className='flex gap-2 tablet:gap-4 flex-col tablet:flex-row mt-3'>
                                         <div className='flex flex-col tablet:w-1/2 w-full'>
-                                            <label className='font-medium text-gray-600 text-sm'>
+                                            <label className='font-medium text-gray-400 text-sm'>
                                                 Distance (miles)
                                             </label>
                                             <input
@@ -338,7 +338,7 @@ const Form2: React.FC<Form1Props> = ({
                                             )}
                                         </div>
                                         <div className='flex flex-col tablet:w-1/2 w-full'>
-                                            <label className='font-medium text-gray-600 text-sm'>
+                                            <label className='font-medium text-gray-400 text-sm'>
                                                 Avg speed (mph)
                                             </label>
                                             <input
