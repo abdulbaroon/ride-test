@@ -9,7 +9,16 @@ export function middleware(request: NextRequest) {
     "/ride/edit", 
     "/dashboard",
     "/points",
-    "/account/profile"
+    "/account/profile",
+    "/garminconnect",
+    "/notification",
+    "/points",
+    "/rate",
+    "/ridelog",
+    "/rwgpsconnect",
+    "/stravaconnect",
+    "/explore",
+    "/myfriends"
   ];
 
   // Convert the pathname to lowercase

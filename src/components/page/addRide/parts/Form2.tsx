@@ -420,7 +420,11 @@ const Form2: React.FC<Form1Props> = ({
                                             />
                                             <div className="relative me-3 w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primaryButton"></div>
                                             <span className='font-medium'>
-                                                IsGroup
+                                                ABC Groups
+                                                <span className='text-sm text-gray-500'>
+                                                    {"  "}add roster groups
+                                                    option
+                                                </span>
                                             </span>
                                         </label>
                                     </div>
@@ -441,42 +445,13 @@ const Form2: React.FC<Form1Props> = ({
                 </div>
                 {formData?.routeType === "gps" && (
                     <>
-                        <div className='flex p-2 flex-col gap-1 text-gray-600 mt-3 text-sm tablet:text-base'>
+                        <div className='flex p-2 border border-neutral-300 rounded-md flex-col gap-1 text-gray-600 mt-6 text-sm tablet:text-base'>
                             <p>
-                                Did you know you can connect your
-                                <Link
-                                    href={"/rwgpsConnect"}
-                                    className='text-primaryText'>
-                                    {" "}
-                                    Ride with GPS{" "}
-                                </Link>
-                                or{" "}
-                                <Link
-                                    href={"/stravaconnect"}
-                                    className='text-primaryText'>
-                                    {" "}
-                                    Strava{" "}
-                                </Link>{" "}
-                                account and access your routes directly?!
-                            </p>
-                            <p>
-                                Quickly setup rides from your existing routes!
-                                <Link
-                                    href={"/account/profile"}
-                                    className='text-primaryText'>
-                                    {" "}
-                                    Authorize
-                                </Link>{" "}
-                                your accounts with Chasing Watts to get started!{" "}
-                            </p>
-                        </div>
-                        <div className='flex my-3 gap-3 text-black border border-slate-500 bg-slate-300 rounded-lg p-4 text-sm tablet:text-base'>
-                            <p>
-                                Looking for new routes? Head over to
+                                Need a routes? Head over to
                                 <Link
                                     href={"https://www.ridewithgps.com"}
                                     target='_blank'
-                                    className='text-black font-bold'>
+                                    className='text-primaryText font-bold'>
                                     {" "}
                                     Ride with GPS
                                 </Link>
@@ -484,7 +459,7 @@ const Form2: React.FC<Form1Props> = ({
                                 <Link
                                     href={"https://www.strava.com"}
                                     target='_blank'
-                                    className='text-black font-bold'>
+                                    className='text-primaryText font-bold'>
                                     {" "}
                                     Strava
                                 </Link>
@@ -492,11 +467,28 @@ const Form2: React.FC<Form1Props> = ({
                                 <Link
                                     href={"https://connect.garmin.com/"}
                                     target='_blank'
-                                    className='text-black font-bold'>
+                                    className='text-primaryText font-bold'>
                                     {" "}
                                     Garmin Connect{" "}
                                 </Link>
                                 and get started!
+                            </p>
+                            <p>
+                                Did you know you can connect your
+                                <Link
+                                    href={"/rwgpsConnect"}
+                                    className='text-primaryText font-bold'>
+                                    {" "}
+                                    Ride with GPS{" "}
+                                </Link>
+                                or{" "}
+                                <Link
+                                    href={"/stravaconnect"}
+                                    className='text-primaryText font-bold'>
+                                    {" "}
+                                    Strava{" "}
+                                </Link>{" "}
+                                account and access your routes directly?
                             </p>
                         </div>
                     </>

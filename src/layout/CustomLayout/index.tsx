@@ -10,10 +10,8 @@ interface CustomLayoutProps {
 const CustomLayout: React.FC<CustomLayoutProps> = ({ children }) => {
     return (
         <>
-            {/* <Navbar /> */}
-            <div className="!mt-[89px]">
+            <Navbar />
                 {children}
-            </div>
             <Footer />
         </>
     );

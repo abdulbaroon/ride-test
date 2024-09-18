@@ -208,6 +208,7 @@ const rideDetailSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
+    // Handle getRideDetails API loading
     builder.addCase(getRideDetails.pending, (state) => {
       state.loading = true;
     });
@@ -219,25 +220,146 @@ const rideDetailSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     });
+
+    // Handle getWeather API loading
+    builder.addCase(getWeather.pending, (state) => {
+      state.loading = true;
+    });
     builder.addCase(getWeather.fulfilled, (state, action) => {
+      state.loading = false;
       state.weather = action.payload;
     });
+    builder.addCase(getWeather.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    });
+
+    // Handle activityView API loading
+    builder.addCase(activityView.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(activityView.fulfilled, (state) => {
+      state.loading = false;
+    });
+    builder.addCase(activityView.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    });
+
+    // Handle getChatActivity API loading
+    builder.addCase(getChatActivity.pending, (state) => {
+      state.loading = true;
+    });
     builder.addCase(getChatActivity.fulfilled, (state, action) => {
+      state.loading = false;
       state.activityChat = action.payload;
     });
+    builder.addCase(getChatActivity.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    });
+
+    // Handle setChatActivity API loading
+    builder.addCase(setChatActivity.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(setChatActivity.fulfilled, (state) => {
+      state.loading = false;
+    });
+    builder.addCase(setChatActivity.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    });
+
+    // Handle deleteChatActivity API loading
+    builder.addCase(deleteChatActivity.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(deleteChatActivity.fulfilled, (state) => {
+      state.loading = false;
+    });
+    builder.addCase(deleteChatActivity.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    });
+
+    // Handle getActivityRoster API loading
+    builder.addCase(getActivityRoster.pending, (state) => {
+      state.loading = true;
+    });
     builder.addCase(getActivityRoster.fulfilled, (state, action) => {
+      state.loading = false;
       state.rosterDetails = action.payload;
     });
+    builder.addCase(getActivityRoster.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    });
+
+    // Handle setActivityRoster API loading
+    builder.addCase(setActivityRoster.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(setActivityRoster.fulfilled, (state) => {
+      state.loading = false;
+    });
+    builder.addCase(setActivityRoster.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    });
+
+    // Handle getShareImage API loading
+    builder.addCase(getShareImage.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(getShareImage.fulfilled, (state, action) => {
+      state.loading = false;
+    });
+    builder.addCase(getShareImage.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    });
+
+    // Handle getActivityroute API loading
+    builder.addCase(getActivityroute.pending, (state) => {
+      state.loading = true;
+    });
     builder.addCase(getActivityroute.fulfilled, (state, action) => {
+      state.loading = false;
       state.route = action.payload;
     });
+    builder.addCase(getActivityroute.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    });
+
+    // Handle getFriendsList API loading
+    builder.addCase(getFriendsList.pending, (state) => {
+      state.loading = true;
+    });
     builder.addCase(getFriendsList.fulfilled, (state, action) => {
+      state.loading = false;
       state.friendsList = action.payload;
     });
+    builder.addCase(getFriendsList.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    });
+
+    // Handle getresponsetype API loading
+    builder.addCase(getresponsetype.pending, (state) => {
+      state.loading = true;
+    });
     builder.addCase(getresponsetype.fulfilled, (state, action) => {
+      state.loading = false;
       state.responsetype = action.payload;
+    });
+    builder.addCase(getresponsetype.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
     });
   },
 });
 
 export default rideDetailSlice.reducer;
+

@@ -7,8 +7,8 @@ export const metadata: Metadata = {
 };
 export default function NotFound() {
   return (
-    <section className="flex items-center h-full p-16 mt-24 text-gray-800">
-      <div className="container flex flex-col items-center justify-center px-5 mx-auto my-8">
+    <section className="flex items-center justify-center min-h-screen w-full  p-16 text-gray-800">
+      <div className="container flex flex-col items-center justify-center">
         <div className="max-w-md text-center">
           <h2 className="mb-8 font-extrabold text-9xl text-gray-400">
             <span className="sr-only">Error</span>404

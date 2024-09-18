@@ -1,143 +1,218 @@
 "use client";
-
 import * as React from "react";
-import "../../../../node_modules/@syncfusion/ej2-base/styles/material.css";
-import "../../../../node_modules/@syncfusion/ej2-buttons/styles/material.css";
-import "../../../../node_modules/@syncfusion/ej2-calendars/styles/material.css";
-import "../../../../node_modules/@syncfusion/ej2-dropdowns/styles/material.css";
-import "../../../../node_modules/@syncfusion/ej2-inputs/styles/material.css";
-import "../../../../node_modules/@syncfusion/ej2-lists/styles/material.css";
-import "../../../../node_modules/@syncfusion/ej2-navigations/styles/material.css";
-import "../../../../node_modules/@syncfusion/ej2-popups/styles/material.css";
-import "../../../../node_modules/@syncfusion/ej2-splitbuttons/styles/material.css";
-import "../../../../node_modules/@syncfusion/ej2-react-schedule/styles/material.css";
-
+import { timezoneNames } from "@progress/kendo-date-math";
 import {
-  ScheduleComponent,
-  MonthAgenda,
-  Inject,
-  ViewsDirective,
-  ViewDirective,
-  EventClickArgs,
-  NavigatingEventArgs,
-} from "@syncfusion/ej2-react-schedule";
+    DropDownList,
+    DropDownListChangeEvent,
+} from "@progress/kendo-react-dropdowns";
+import {
+    Scheduler,
+    DayView,
+    WeekView,
+    MonthView,
+    AgendaView,
+    SchedulerViewChangeEvent,
+    SchedulerDateChangeEvent,
+    SchedulerViewItemProps,
+    SchedulerViewItem,
+    SchedulerViewSlot,
+    SchedulerViewSlotProps,
+    SchedulerEditItem,
+    SchedulerItem,
+} from "@progress/kendo-react-scheduler";
 
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/redux/store/store";
-import { addMonths, format } from "date-fns";
+import "@progress/kendo-date-math/tz/Etc/UTC";
+import "@progress/kendo-date-math/tz/Europe/Sofia";
+import "@progress/kendo-date-math/tz/Europe/Madrid";
+import "@progress/kendo-date-math/tz/Asia/Dubai";
+import "@progress/kendo-date-math/tz/Asia/Tokyo";
+import "@progress/kendo-date-math/tz/America/New_York";
+import "@progress/kendo-date-math/tz/America/Los_Angeles";
+import "@progress/kendo-theme-default/dist/all.css";
+
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store/store";
+import { format, subMonths } from "date-fns";
 import useCalendarEvents from "@/shared/hook/useCalenderEvent";
+import { CalendarProfileItem } from "./parts/CustomEventItem";
 import { getCalendarRides } from "@/redux/slices/calendarSlice";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import dayjs from "dayjs";
-import { IMAGE_URl } from "@/constant/appConfig";
+import { Spinner } from "@chakra-ui/react";
 
-export const Calender: React.FC = () => {
-  const [date, setDate] = React.useState(new Date());
-  const dispatch = useDispatch<AppDispatch>();
-  const { sampleDataWithCustomSchema } = useCalendarEvents();
-  const scheduleObj = React.useRef<any>(null);
-  const { push } = useRouter();
+export const Calender = () => {
+    const profile = useSelector<RootState, any>(
+        (state) => state.auth.profileData
+    );
+    const timezones = React.useMemo(() => timezoneNames(), []);
+    const [date, setDate] = React.useState(dayjs().toDate());
+    const [loading, setLoading] = React.useState(false);
+    const [currentMonth, setCurrentMonth] = React.useState(0);
+    const [timezone, setTimezone] = React.useState("Etc/UTC");
+    const dispatch = useDispatch<AppDispatch>();
+    const { customCalendarFields, calendarEvents } = useCalendarEvents();
 
-  const eventTemplate = (event: any) => (
-    <>
-      <div className="event-template flex items-center justify-between w-full">
-      <img
-          src={IMAGE_URl+event.MapUrl}
-          alt="Event"
-          style={{
-            width: "80px",
-            height: "60px",
-            marginRight: "10px",
-            borderRadius: "10%",
-          }}
-        />
-        <div className="">
-          <p className="font-semibold">{event.Subject}</p>
-          <p className="!text-xs" style={{fontSize:"14px"}}>
-            {event.Type} | {dayjs(event.StartTime).format("hh:mm A")}
-            {"-"}
-            {dayjs(event.EndTime).format("hh:mm A")}
-          </p>
-          <p className="!text-xs">{dayjs(event.Date).format("ddd, MMM D, YYYY")}</p>
-          <p className="!text-xs">
-            {event.City}, {event.state}
-          </p>
-        </div>
-      </div>
-    </>
-  );
-
-  const eventSettings = {
-    dataSource: sampleDataWithCustomSchema,
-    template: eventTemplate,
-    fields: {
-      subject: { name: "Subject" },
-      imageUrl: { name: "ImageUrl" },
-    },
-  };
-
-  const onEventRendered = (args: any) => {
-    applyCategoryColor(args, scheduleObj.current?.currentView);
-  };
-
-  const onEventClick = (args: EventClickArgs | any) => {
-    const eventId = args.event?.Id;
-    if (eventId) {
-      window.open(`ride/${eventId}`, "_blank");
-    }
-    args.cancel = true;
-  };
-
-  const fetchMonthData = async (month: string) => {
-    const params = {
-      id: 33,
-      radius: 100,
-      startDate: `${month}-01`,
-      endDate: format(addMonths(new Date(`${month}-01`), 1), "yyyy-MM-dd"),
+    const fetchCalendarRides = async (monthDate: Date) => {
+        try {
+            setLoading(true);
+            setCurrentMonth(dayjs(monthDate).month() + 1);
+            const params = {
+                id: profile.userID,
+                radius: profile.defaultRadius,
+                startDate: dayjs(monthDate)
+                    .startOf("month")
+                    .format("YYYY-MM-DD"),
+                endDate: dayjs(monthDate).endOf("month").format("YYYY-MM-DD"),
+            };
+            await dispatch(getCalendarRides(params));
+            setLoading(false);
+        } catch (error) {
+            console.error("Failed to fetch calendar rides:", error);
+            setLoading(false);
+        }
     };
-    await dispatch(getCalendarRides(params));
-  };
 
-  React.useEffect(() => {
-    fetchMonthData(format(date, "yyyy-MM"));
-  }, [date]);
+    React.useEffect(() => {
+        fetchCalendarRides(dayjs().toDate());
+    }, [profile]);
 
-  function applyCategoryColor(args: any, currentView: any) {
-    let categoryColor = args.data.CategoryColor;
-    if (!args.element || !categoryColor) {
-      return;
-    }
-    if (currentView === "Agenda") {
-      args.element.firstChild.style.borderLeftColor = categoryColor;
-    } else {
-      args.element.style.backgroundColor = categoryColor;
-      args.element.style.margin = "10px 0px";
-    }
-  }
+    const handleDateChange = React.useCallback(
+        (event: SchedulerDateChangeEvent) => {
+            //console.log("date change event....", event);
+            console.log("current month....", currentMonth);
 
-  const onNavigating = (args: NavigatingEventArgs | any) => {
-    const currentMonth = format(args.currentDate, "yyyy-MM");
-    fetchMonthData(currentMonth);
-  };
+            const newMonth = dayjs(event.value).month() + 1;
 
-  return (
-    <div className="w-11/12 mx-auto !max-w-[1320px] mt-32">
-      <ScheduleComponent
-        width="100%"
-        height="70vh"
-        className="mx-auto"
-        selectedDate={date}
-        ref={scheduleObj}
-        eventSettings={eventSettings}
-        eventRendered={onEventRendered}
-        eventClick={onEventClick}
-        navigating={onNavigating}
-      >
-        <ViewsDirective>
-          <ViewDirective option="MonthAgenda" />
-        </ViewsDirective>
-        <Inject services={[MonthAgenda]} />
-      </ScheduleComponent>
-    </div>
-  );
+            if (newMonth !== currentMonth) {
+                setCurrentMonth(newMonth);
+                console.log("current month changed: new month:", newMonth);
+                fetchCalendarRides(dayjs(event.value).toDate());
+            } else {
+                console.log("current month is same: ", newMonth);
+            }
+
+            setDate(event.value);
+        },
+        [currentMonth, setCurrentMonth, setDate]
+    );
+
+    const handleTimezoneChange = React.useCallback(
+        (event: DropDownListChangeEvent) => {
+            setTimezone(event.target.value);
+        },
+        [setTimezone]
+    );
+
+    const customAgendaRender = (props: any) => {
+        //console.log("agenda event....", props);
+        const eventColor = props.dataItem.Color || "#000";
+
+        return (
+            <Link href={`/ride/${props.dataItem.TaskID}`} target='_blank'>
+                <div
+                    //className='k-event'
+                    style={{ display: "flex", alignItems: "center" }}>
+                    <div
+                        className='text-xs text-black font-semibold p-1.5 rounded-md'
+                        style={{ backgroundColor: props.dataItem.Color }}>
+                        {props.dataItem.Type}
+                    </div>
+                    <span className='ml-2'>{props.dataItem.Title}</span>
+                </div>
+            </Link>
+        );
+    };
+
+    const customViewItem = (props: SchedulerViewItemProps) => {
+        return (
+            <SchedulerViewItem
+                {...props}
+                style={{
+                    ...props.style,
+                    height: "auto",
+                }}
+            />
+        );
+    };
+
+    const customItem = (props: SchedulerViewItemProps) => {
+        return (
+            <Link href={`/ride/${props.dataItem.TaskID}`} target='_blank'>
+                <SchedulerItem
+                    {...props}
+                    style={{
+                        ...props.style,
+                        color: "black",
+                        backgroundColor: props.dataItem.Color,
+                        cursor: "pointer",
+                        padding: 5,
+                        height: "auto",
+                    }}>
+                    {props.dataItem.Title}
+                </SchedulerItem>
+            </Link>
+        );
+    };
+
+    const customViewSlot = (props: SchedulerViewSlotProps) => {
+        return (
+            <SchedulerViewSlot
+                {...props}
+                style={{
+                    ...props.style,
+                    minHeight: 120,
+                }}
+            />
+        );
+    };
+
+    return (
+        <div className='mt-28 h-full'>
+            <div className='w-11/12 h-full mx-auto flex gap-5 !max-w-[1320px]'>
+                <div className='h-full w-full'>
+                    {loading && (
+                        <div className='flex justify-center items-center w-full py-3'>
+                            <Spinner color='red.500' />
+                        </div>
+                    )}
+                    <div className='flex justify-self-start items-center bg-white border border-neutral-300 rounded-md p-3 mb-4'>
+                        <div>
+                            😍 There are{" "}
+                            {calendarEvents.length === 0
+                                ? "zero"
+                                : calendarEvents.length}{" "}
+                            rides scheduled for this month.
+                        </div>
+                    </div>
+                    <Scheduler
+                        height={"100%"}
+                        data={calendarEvents}
+                        modelFields={customCalendarFields}
+                        date={date}
+                        onDateChange={handleDateChange}
+                        //onNavigate={handleNavigate}
+                        editable={false}
+                        timezone={timezone}
+                        item={customItem}
+                        viewItem={customViewItem}
+                        viewSlot={customViewSlot}
+                        defaultView='agenda'>
+                        <DayView
+                            currentTimeMarker
+                            startTime='05:00'
+                            endTime='16:00'
+                        />
+                        <MonthView
+                            itemsPerSlot={5}
+                            //viewItem={customMonthRender}
+                        />
+                        <AgendaView
+                            numberOfDays={7}
+                            viewTask={customAgendaRender}
+                        />
+                    </Scheduler>
+                </div>
+            </div>
+        </div>
+    );
 };

@@ -25,61 +25,115 @@ import { FormattedRideData } from "@/shared/types/dashboard.types";
 import { MdOutlineCancelPresentation } from "react-icons/md";
 import Link from "next/link";
 import { checkUserInRide } from "@/redux/slices/ratingSlice";
+import { toast } from "react-toastify";
+import { useRouter, useSearchParams } from "next/navigation";
+import Lottie from "lottie-react";
+import * as animationData from "../../../assets/lottieAssets/loader.json";
 
 export const RideDetails = ({ id }: { id: number }) => {
+  const router = useRouter();
   const [rideDetails, setRideDetails] = useState<FormattedRideData>();
   const [userInRide, setUserInRide] = useState<boolean>(false);
-
+  const [loading, setLoading] = useState(false);
+  const searchParams = useSearchParams();
+  const shareCode = searchParams.get("share");
   const user = useSelector<RootState>((state) => state.auth.user) as User;
+
   const dispatch = useDispatch<AppDispatch>();
 
   const fetchApis = async (id: number) => {
-    const response = await dispatch(getRideDetails(id));
-    if (getRideDetails.fulfilled.match(response)) {
-      const formatedRide = formatRideData(response.payload);
-      setRideDetails(formatedRide);
-      const params = {
-        date: formatedRide?.startDate,
-        lat: formatedRide?.startLat,
-        lng: formatedRide?.startLng,
-        uom: formatedRide?.rideCreateUoM ?? 1,
-      };
-      const viewpayload = {
-        activityID: id,
-        createdBy: user?.id,
-        createdDate: new Date().toISOString(),
-      };
-      const chatparams = {
-        activityID: id,
-        userID: user?.id,
-      };
-      dispatch(getActivityroute(id));
-      dispatch(getActivityRoster(id));
-      dispatch(activityView(viewpayload));
-      dispatch(getChatActivity(chatparams));
-      dispatch(getWeather(params));
-      dispatch(getFriendsList({ id: user.id, activityID: id }));
-      dispatch(getresponsetype());
+    try {
+      setLoading(true);
+      const response = await dispatch(getRideDetails(id));
+      if (getRideDetails.fulfilled.match(response)) {
+        const formatedRide = formatRideData(response.payload);
+        setRideDetails(formatedRide);
+
+        const params = {
+          date: formatedRide?.startDate,
+          lat: formatedRide?.startLat,
+          lng: formatedRide?.startLng,
+          uom: formatedRide?.rideCreateUoM ?? 1,
+        };
+
+        const viewpayload = {
+          activityID: id,
+          createdBy: user?.id,
+          createdDate: new Date().toISOString(),
+        };
+
+        const chatparams = {
+          activityID: id,
+          userID: user?.id,
+        };
+
+        await Promise.all([
+          dispatch(getActivityroute(id)),
+          dispatch(getActivityRoster(id)),
+          dispatch(activityView(viewpayload)),
+          dispatch(getChatActivity(chatparams)),
+          dispatch(getWeather(params)),
+          dispatch(getFriendsList({ id: user.id, activityID: id })),
+          dispatch(getresponsetype()),
+        ]);
+        return response.payload;
+      }
+    } catch (error) {
+      console.error("Error fetching APIs:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const checkUser = async () => {
+    if (id && user.id) {
+      const response = await dispatch(
+        checkUserInRide({ activityID: id, userID: user.id })
+      );
+      if (checkUserInRide.fulfilled.match(response)) {
+        setUserInRide(response.payload);
+        return response.payload;
+      }
     }
   };
 
   useEffect(() => {
-    fetchApis(id);
-  }, [id]);
-
-  useEffect(() => {
-    const checkUser = async () => {
-      if (id && user.id) {
-        const response = await dispatch(
-          checkUserInRide({ activityID: id, userID: user.id })
-        );
-        if (checkUserInRide.fulfilled.match(response)) {
-          setUserInRide(response.payload);
+    const init = async () => {
+      const [res1, res2] = await Promise.all([checkUser(), fetchApis(id)]);
+      if(!res1&&res2?.isPrivate){
+        if (res2.shareCode==shareCode){
+            return true
+        }
+        else {
+            router.push("/dashboard")  
         }
       }
+      console.log(res1, res2,shareCode, "res");
     };
-    checkUser();
+
+    init();
   }, [id]);
+
+  if (loading) {
+    return (
+      <div className=" z-50 absolute top-0   ">
+        <div className="w-[100vw] bg-white  border mx-auto min-h-screen flex flex-col justify-center items-center">
+        <div >
+
+          <Lottie
+            className="w-full mx-auto"
+            aria-activedescendant=""
+            animationData={animationData}
+            loop={true}
+          >
+          </Lottie>
+          <div className="text-center text-gray-500 text-xl">Fetching Ride...</div>
+        </div>
+
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className=" mt-28 mb-6 ">
@@ -88,7 +142,7 @@ export const RideDetails = ({ id }: { id: number }) => {
           <div className="p-4 my-4 border border-[#cedce2] bg-[#e7eef1] rounded-lg flex gap-2 text-primaryDarkblue font-light items-center ">
             <FaFlagCheckered />
             <p className=" ">
-              THIS RIDE HAS PASSED! WHERE YOU ON THE RIDE?{" "}
+              THIS RIDE HAS PASSED! WERE YOU ON THE RIDE?{" "}
               {userInRide && (
                 <>
                   {" "}
@@ -97,7 +151,7 @@ export const RideDetails = ({ id }: { id: number }) => {
                     PLEASE RATE THE RIDE!
                   </Link>{" "}
                   <span>
-                    This helps ride leaders create better rides going forward!?
+                    This helps ride leaders create better rides going forward!
                   </span>
                 </>
               )}
@@ -107,7 +161,15 @@ export const RideDetails = ({ id }: { id: number }) => {
         {rideDetails?.isCancelled && (
           <div className="p-4 my-4 border border-red-500 bg-red-50 rounded-lg flex gap-2 text-red-600 font-semibold items-center ">
             <MdOutlineCancelPresentation />
-            <p className=" ">THIS RIDE HAS CANCELLED!</p>
+            <p className="uppercase">THIS RIDE HAS BEEN CANCELLED!</p>
+          </div>
+        )}
+        {rideDetails?.isPrivate && userInRide && (
+          <div className="p-4 my-4 border border-red-500 bg-red-50 rounded-lg flex gap-2 text-red-600 font-semibold items-center ">
+            <MdOutlineCancelPresentation />
+            <p className="uppercase">
+              THIS IS A PRIVATE RIDE! ONLY YOU CAN JOIN.
+            </p>
           </div>
         )}
         <div className="flex gap-5 ">

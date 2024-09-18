@@ -22,6 +22,9 @@ export { HubDetails } from "./hubDetails";
 export { Friend } from "./friend";
 export { RatingPage } from "./rating";
 export { RideLog } from "./rideLog";
+export { Links } from "./links";
+export { Contact } from "./contactUs";
+export {MyFriends} from "./myFriends"
 
 import ExploreMap from "./explore";
 export { ExploreMap };

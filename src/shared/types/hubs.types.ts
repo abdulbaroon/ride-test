@@ -1,8 +1,10 @@
+import { UserProfile } from "./account.types";
+
 interface HubTypeModel {
     hubTypeID: number;
     hubTypeName: string;
-  }
-  
+}
+
 export interface Hub {
     hubID: number;
     hubTypeID: number;
@@ -11,16 +13,16 @@ export interface Hub {
     hubLat: number;
     hubLng: number;
     hubAddress: string;
-    hubAddress2?: string; 
+    hubAddress2?: string;
     hubCity: string;
     hubState: string;
     hubZip: string;
     hubCountry: string;
-    hubPhone?: string; 
-    hubEmail?: string; 
-    hubUrl?: string; 
+    hubPhone?: string;
+    hubEmail?: string;
+    hubUrl?: string;
     hubLogoUrl: string;
-    hubSocialUrl?: string; 
+    hubSocialUrl?: string;
     isPrivate: boolean;
     isDeleted: boolean;
     createdBy: number;
@@ -31,14 +33,12 @@ export interface Hub {
     activeMembers: number;
     activityCount: number;
     hubTypeModel: HubTypeModel;
-  }
-  
+}
 
 export interface HubMemberRoleModel {
     hubMemberRoleID: number;
     hubMemberRole: string;
 }
-
 
 export interface UserProfileModel {
     userID: number;
@@ -58,14 +58,13 @@ export interface UserProfileModel {
     icePhone: string;
     isDeleted: boolean;
     createdBy: number;
-    createdDate: string; 
+    createdDate: string;
     modifiedBy: number;
-    modifiedDate: string; 
-    userGenderModel?: any; 
-    activityTypeModel?: any; 
-    unitOfMeasureModel?: any; 
+    modifiedDate: string;
+    userGenderModel?: any;
+    activityTypeModel?: any;
+    unitOfMeasureModel?: any;
 }
-
 
 export interface HubMember {
     hubMemberID: number;
@@ -77,95 +76,94 @@ export interface HubMember {
     hubMemberRoleModel: HubMemberRoleModel;
 }
 
-
 interface ActivityPicture {
-  activityPictureID: number;
-  activityID: number;
-  picturePath: string;
-  isMap: boolean;
-  isDeleted: boolean;
+    activityPictureID: number;
+    activityID: number;
+    picturePath: string;
+    isMap: boolean;
+    isDeleted: boolean;
 }
 
 interface ActivityRoute {
-  activityRouteID: number;
-  activityID: number;
-  routeName: string;
-  mapSourceID: number;
-  isPrimary: boolean;
-  difficultyLevelID: number;
-  distance: number;
-  speed: number;
-  routeNumber: string;
-  mapUrl: string;
-  gpxRoutePath: string;
-  geoRoutePath: string;
-  isDeleted: boolean;
-  createdBy: number;
-  createdDate: string;
-  modifiedBy: number;
-  modifiedDate: string;
-  mapSourceModel?: any; // Assuming no specific model is provided
-  difficultyLevelModel: {
+    activityRouteID: number;
+    activityID: number;
+    routeName: string;
+    mapSourceID: number;
+    isPrimary: boolean;
     difficultyLevelID: number;
-    levelName: string;
-    levelDescription: string;
-    levelColor: string;
-    levelIcon: string;
-  };
+    distance: number;
+    speed: number;
+    routeNumber: string;
+    mapUrl: string;
+    gpxRoutePath: string;
+    geoRoutePath: string;
+    isDeleted: boolean;
+    createdBy: number;
+    createdDate: string;
+    modifiedBy: number;
+    modifiedDate: string;
+    mapSourceModel?: any; // Assuming no specific model is provided
+    difficultyLevelModel: {
+        difficultyLevelID: number;
+        levelName: string;
+        levelDescription: string;
+        levelColor: string;
+        levelIcon: string;
+    };
 }
 
 export interface HubActivity {
-  activityID: number;
-  activityTypeID: number;
-  activityTypeName: string;
-  activityTypeIcon: string;
-  activityTypeColor: string;
-  userID: number;
-  userFirstName: string;
-  userLastName: string;
-  activityName: string;
-  activityDate: string;
-  activityStartTime: string;
-  activityEndTime: string;
-  startName: string;
-  startAddress: string;
-  startCity: string;
-  startState: string;
-  startCountry: string;
-  startLat: number;
-  startLng: number;
-  startW3W: string;
-  activityNotes: string;
-  eventLink: null | string;
-  isPrivate: boolean;
-  isCancelled: boolean;
-  isPromoted: boolean;
-  isGroup: boolean;
-  hasWaiver: boolean;
-  isCommunity: boolean;
-  isDrop: boolean;
-  isLightsRequired: boolean;
-  parentActivityID: number;
-  hubID: number;
-  hubName: string;
-  hubTypeName: string;
-  viewStatus: string;
-  viewCount: number;
-  likeCount: number;
-  chatCount: number;
-  rosterCount: number;
-  userHasLiked: boolean;
-  userInRoster: boolean;
-  userResponseName: null | string;
-  userResponseColor: null | string;
-  groupLevel: null | string;
-  isDeleted: boolean;
-  createdBy: number;
-  createdDate: string;
-  modifiedBy: number;
-  modifiedDate: string;
-  activityOwner: null | string;
-  activityPictures: ActivityPicture[];
-  activityRoutes: ActivityRoute[];
-  activityRoster: null | string;
+    activityID: number;
+    activityTypeID: number;
+    activityTypeName: string;
+    activityTypeIcon: string;
+    activityTypeColor: string;
+    userID: number;
+    userFirstName: string;
+    userLastName: string;
+    activityName: string;
+    activityDate: string;
+    activityStartTime: string;
+    activityEndTime: string;
+    startName: string;
+    startAddress: string;
+    startCity: string;
+    startState: string;
+    startCountry: string;
+    startLat: number;
+    startLng: number;
+    startW3W: string;
+    activityNotes: string;
+    eventLink: null | string;
+    isPrivate: boolean;
+    isCancelled: boolean;
+    isPromoted: boolean;
+    isGroup: boolean;
+    hasWaiver: boolean;
+    isCommunity: boolean;
+    isDrop: boolean;
+    isLightsRequired: boolean;
+    parentActivityID: number;
+    hubID: number;
+    hubName: string;
+    hubTypeName: string;
+    viewStatus: string;
+    viewCount: number;
+    likeCount: number;
+    chatCount: number;
+    rosterCount: number;
+    userHasLiked: boolean;
+    userInRoster: boolean;
+    userResponseName: null | string;
+    userResponseColor: null | string;
+    groupLevel: null | string;
+    isDeleted: boolean;
+    createdBy: number;
+    createdDate: string;
+    modifiedBy: number;
+    modifiedDate: string;
+    activityOwner: UserProfile;
+    activityPictures: ActivityPicture[];
+    activityRoutes: ActivityRoute[];
+    activityRoster: null | string;
 }

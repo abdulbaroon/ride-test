@@ -1,14 +1,17 @@
-import { SearchPage } from "@/components/page"
-import { Metadata } from 'next';
+import { SearchPage } from "@/components/page";
+import CustomLayout from "@/layout/CustomLayout";
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Chasing Watts Search",
-  description: "Search for Chasing Watts cycling community",
+  title: "Chasing Watts | Search",
+  description: "Search for Chasing Watts",
 };
 const Page = () => {
   return (
-    <SearchPage/>
-  )
-}
+    <CustomLayout>
+      <SearchPage />;
+    </CustomLayout>
+  );
+};
 
-export default Page
+export default Page;

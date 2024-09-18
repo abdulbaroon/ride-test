@@ -1,15 +1,13 @@
-import { RegisterPage } from '../../../components/page'
-import React from 'react'
-import { Metadata } from 'next';
+import { RegisterPage } from "../../../components/page";
+import React from "react";
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Chasing Watts Register",
-  description: "Register for Chasing Watts cycling community",
+    title: "Chasing Watts | Register",
+    description: "Create a Chasing Watts account",
 };
 const Register = () => {
-  return (
-    <RegisterPage/>
-  )
-}
+    return <RegisterPage />;
+};
 
-export default Register
+export default Register;

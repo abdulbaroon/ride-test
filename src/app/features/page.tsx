@@ -1,16 +1,19 @@
-import { FeaturesPage } from "@/components/page"
-import { Metadata } from 'next';
+import { FeaturesPage } from "@/components/page";
+import CustomLayout from "@/layout/CustomLayout";
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Chasing Watts Features",
-  description: "Features for Chasing Watts cycling community",
+    title: "Chasing Watts | Features",
+    description: "Features for Chasing Watts",
 };
 const page = () => {
-  return (
-    <>
-    <FeaturesPage/>
-    </>
-  )
-}
+    return (
+        <>
+            <CustomLayout>
+            <FeaturesPage />
+            </CustomLayout>
+        </>
+    );
+};
 
-export default page
+export default page;

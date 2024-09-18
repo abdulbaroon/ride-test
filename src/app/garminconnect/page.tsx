@@ -1,15 +1,19 @@
-import { Garmin } from '@/components/page'
-import React from 'react'
-import { Metadata } from 'next';
+import { Garmin } from "@/components/page";
+import React from "react";
+import { Metadata } from "next";
+import CustomLayout from "@/layout/CustomLayout";
 
 export const metadata: Metadata = {
-  title: "Chasing Watts GarminConnect",
-  description: "GarminConnect for Chasing Watts cycling community",
+  title: "Chasing Watts | Garmin Connect",
+  description: "Garmin Connect for Chasing Watts",
 };
+
 const page = () => {
   return (
-    <Garmin/>
-  )
-}
+    <CustomLayout>
+      <Garmin />;
+    </CustomLayout>
+  );
+};
 
-export default page
+export default page;

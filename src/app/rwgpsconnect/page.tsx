@@ -1,15 +1,18 @@
-import { RWGPS } from '@/components/page'
-import React from 'react'
-import { Metadata } from 'next';
+import { RWGPS } from "@/components/page";
+import React from "react";
+import { Metadata } from "next";
+import CustomLayout from "@/layout/CustomLayout";
 
 export const metadata: Metadata = {
-  title: "Chasing Watts rwgpsConnect",
-  description: "rwgpsConnect for Chasing Watts cycling community",
+  title: "Chasing Watts | Ride w GPS Connect",
+  description: "Ride w GPS Connect for Chasing Watts",
 };
 const page = () => {
   return (
-    <RWGPS/>
-  )
-}
+    <CustomLayout>
+      <RWGPS />;
+    </CustomLayout>
+  );
+};
 
-export default page
+export default page;

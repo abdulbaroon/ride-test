@@ -40,7 +40,7 @@ export const ForgotPage = () => {
 
     return (
         <div className=' w-full flex justify-center items-center bg-[#f5f4f8] my-40'>
-            <div className='w-full desktop:w-1/2 mx-auto bg-white border rounded-xl flex items-center flex-col tablet:flex-row'>
+            <div className='w-full desktop:w-1/2 mx-auto bg-white border border-neutral-300 rounded-md flex items-center flex-col tablet:flex-row'>
                 <div className='w-full tablet:w-1/2 p-6 tablet:p-12  flex justify-center items-center'>
                     <div>
                         <img src={accountLogo.src} alt='Logo' />
@@ -75,7 +75,7 @@ export const ForgotPage = () => {
                             {loading ? (
                                 <CgSpinner className=' mx-auto animate-spin w-6 h-6 ' />
                             ) : (
-                                "Email Link"
+                                "Send Reset Code"
                             )}
                         </button>
                         <p className='pt-6 tablet:pt-7 text-gray-500'>

@@ -40,8 +40,9 @@ export const AboutUs = () => {
                 backgroundAttachment: "fixed",
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "center center",
+                borderRadius: "6px",
             }}>
-            <div className='bg-violet h-96 mt-20 flex justify-center items-center flex-col'>
+            <div className='bg-violet h-96 mt-20 flex justify-center items-center flex-col rounded-b-md'>
                 <p className=' text-white text-5xl font-bold'>
                     We help cyclists find{" "}
                     <span className='text-primaryText'>dream rides</span>
@@ -105,7 +106,7 @@ export const AboutUs = () => {
                 <div className=' !max-w-[1320px] mx-auto'>
                     <div className='flex  gap-28 '>
                         <div className='w-1/2'>
-                            <div className='w-11/12 bg-[#f6e4e2] p-12 my-16 space-y-6 rounded-lg '>
+                            <div className='w-11/12 bg-[#f6e4e2] p-12 my-16 space-y-6 rounded-md '>
                                 <p className='text-2xl font-bold'>
                                     Download Our App
                                 </p>
@@ -129,7 +130,10 @@ export const AboutUs = () => {
                                         }
                                         target='_blank'>
                                         <div className='w-48 sm:w-44 desktop:w-48'>
-                                            <img src={googleStore.src} alt='google' />
+                                            <img
+                                                src={googleStore.src}
+                                                alt='google'
+                                            />
                                         </div>
                                     </Link>
                                 </div>
@@ -169,7 +173,7 @@ export const AboutUs = () => {
                     <div className='flex gap-7 mt-6'>
                         {rideFeatures?.map((feature, index) => (
                             <div
-                                className='w-4/12 bg-white rounded-lg p-6 space-y-1 shadow'
+                                className='w-4/12 bg-white rounded-md border border-neutral-300 p-6 space-y-1'
                                 key={index}>
                                 {feature.icon}
                                 <p className='text-2xl text-gray-800 font-bold'>

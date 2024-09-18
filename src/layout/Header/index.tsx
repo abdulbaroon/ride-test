@@ -61,7 +61,7 @@ export const Header = () => {
                             <Link
                                 href={"/calender"}
                                 className='hover:text-white'>
-                                Calender
+                                Calendar
                             </Link>
                             {user && (
                                 <Link href={"#"} className='hover:text-white'>

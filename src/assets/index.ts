@@ -19,7 +19,13 @@ import routePlaceHolder from "./route_placeholder.png"
 import letsRide from "./letsridebase.png"
 import ratingLatt from  "./lottieAssets/rating.json"
 import hubImage from "./hubImage.png"
+import hubEmpty from "./HubEmpty.png"
+import circleIcon from "./icons/circle.png"
+import rectangleIcon from "./icons/Rectangle.png"
 export {
+    rectangleIcon,
+    circleIcon,
+    hubEmpty,
     hubImage,
     ratingLatt,
     letsRide,

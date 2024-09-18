@@ -12,8 +12,10 @@ import hubsSliceReducer from "../slices/hubsSlice";
 import notificationReducer from "../slices/notificationSlice";
 import pointReducer from "../slices/pointSlice";
 import profileReducer from "../slices/profileSlice";
-import  ratingReducer from "../slices/ratingSlice"
-import ridelogReducer from "../slices/rideLogSlice"
+import ratingReducer from "../slices/ratingSlice";
+import ridelogReducer from "../slices/rideLogSlice";
+import contactSlice from "../slices/contactSlice";
+import linksReducer from "../slices/linksSlice";
 const persistConfig = {
   key: "root",
   storage,
@@ -28,7 +30,8 @@ const persistConfig = {
     "notification",
     "point",
     "profile",
-    "ridelog"
+    //"ridelog",
+    "contact",
   ],
 };
 
@@ -43,8 +46,10 @@ const rootReducer = combineReducers({
   notification: notificationReducer,
   point: pointReducer,
   profile: profileReducer,
-  rating: ratingReducer ,
-  ridelog:ridelogReducer
+  rating: ratingReducer,
+  ridelog: ridelogReducer,
+  contact: contactSlice,
+  links: linksReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -54,16 +59,16 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
-        serializableCheck: {
-          ignoredActions: ["rideDetails/getShareImage/fulfilled"],
-          ignoredPaths: ["rideDetails.imageBlob"],
-        },
+        ignoredActions: [
+          "persist/PERSIST",
+          "persist/REHYDRATE",
+          "rideDetails/getShareImage/fulfilled",
+        ],
+        ignoredPaths: ["rideDetails.imageBlob"],
       },
     }),
 });
 
 export const persistor = persistStore(store);
-
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

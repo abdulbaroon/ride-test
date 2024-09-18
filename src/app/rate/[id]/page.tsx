@@ -1,21 +1,26 @@
-import {RatingPage} from '@/components/page';
-import React, { FC } from 'react'
+import { RatingPage } from "@/components/page";
+import React, { FC } from "react";
 interface PageProps {
-    params: {
-      id: number;
-    };
-  }
-  
-  import { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: "Chasing Watts Rating",
-  description: "Rating for Chasing Watts cycling community",
-};
-
-  const Page: FC<PageProps> = ({ params }) => {
-    const { id } = params;
-  return <RatingPage id={id}/>
+  params: {
+    id: number;
+  };
 }
 
-export default Page
+import { Metadata } from "next";
+import CustomLayout from "@/layout/CustomLayout";
+
+export const metadata: Metadata = {
+  title: "Chasing Watts | Ride Rating",
+  description: "Rating for Chasing Watts",
+};
+
+const Page: FC<PageProps> = ({ params }) => {
+  const { id } = params;
+  return (
+    <CustomLayout>
+      <RatingPage id={id} />;
+    </CustomLayout>
+  );
+};
+
+export default Page;

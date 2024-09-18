@@ -13,55 +13,37 @@ interface CalendarEvent {
     activityTypeColor: string;
 }
 const useCalendarEvents = () => {
-    const calenderData = useSelector<RootState, CalendarEvent[] | any>(
+    const calenderData = useSelector<RootState, CalendarEvent[]>(
         (state) => state.calendar.rides
     );
-    const eventData = calenderData.map((data: any) => {
+
+    const eventData = calenderData.map((data) => {
         const startDate = `${format(data.activityDate, "yyyy-MM-dd")}T${
             data.activityStartTime
         }.000Z`;
         const endDate = `${format(data.activityDate, "yyyy-MM-dd")}T${
             data.activityEndTime
         }.000Z`;
-        const mapImage =
-            data?.activityPictures?.find((pic: any) => pic.isMap)
-                ?.picturePath || "";
-
-        // return {
-        //     TaskID: data?.activityID,
-        //     OwnerID: data.userID,
-        //     Title: data?.activityName,
-        //     Description: data?.activityNotes,
-        //     StartTimezone: null,
-        //     Start: startDate,
-        //     End: endDate,
-        //     Color: data.activityTypeColor,
-        //     EndTimezone: null,
-        //     RecurrenceRule: null,
-        //     RecurrenceID: null,
-        //     RecurrenceException: null,
-        //     isAllDay: false
-        // };
 
         return {
-            Date: data.activityDate,
-            Type: data.activityTypeName,
-            Id: data?.activityID,
-            Subject: data?.activityName,
+            TaskID: data?.activityID,
+            OwnerID: data.userID,
+            Title: data?.activityName,
             Description: data?.activityNotes,
-            StartTime: startDate,
-            EndTime: endDate,
-            // StartTimezone: "Europe/Moscow",
-            // EndTimezone:" Europe/Moscow",
-            City: data?.startCity,
-            state: data?.startState,
-            CategoryColor: data.activityTypeColor,
-            GroupId: 1,
-            MapUrl: mapImage,
+            StartTimezone: null,
+            Start: startDate,
+            End: endDate,
+            Type: data.activityTypeName,
+            Color: data.activityTypeColor,
+            EndTimezone: null,
+            RecurrenceRule: null,
+            RecurrenceID: null,
+            RecurrenceException: null,
+            isAllDay: false,
         };
     });
 
-    const customModelFields = {
+    const customCalendarFields = {
         id: "TaskID",
         title: "Title",
         description: "Description",
@@ -84,15 +66,17 @@ const useCalendarEvents = () => {
     const randomInt = (min: number, max: number) =>
         Math.floor(Math.random() * (max - min + 1)) + min;
 
-    const sampleDataWithCustomSchema = eventData?.map((dataItem: any) => ({
+    const calendarEvents = eventData?.map((dataItem) => ({
         ...dataItem,
-        StartTime: parseAdjust(dataItem.StartTime),
-        EndTime: parseAdjust(dataItem.EndTime),
+        Start: parseAdjust(dataItem.Start),
+        End: parseAdjust(dataItem.End),
+        PersonIDs: randomInt(1, 2),
+        RoomID: randomInt(1, 2),
     }));
 
     return {
-        customModelFields,
-        sampleDataWithCustomSchema,
+        customCalendarFields,
+        calendarEvents,
     };
 };
 

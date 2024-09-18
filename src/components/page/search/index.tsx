@@ -13,6 +13,7 @@ import { User } from "@/shared/types/account.types";
 import Slider from "react-slick";
 import { isArray } from "lodash";
 import { addDays, format } from "date-fns";
+import { CgSpinner } from "react-icons/cg";
 
 interface FormData {
     rideName?: string;
@@ -60,6 +61,7 @@ export const SearchPage = () => {
     const difficultyLevel = useSelector<RootState, DifficultyLevel[]>(
         (state) => state.addRide.difficultyLevels
     );
+    const [finalLoading, setFinalLoading] = useState<boolean>();
 
     const user = useSelector<RootState>((state) => state.auth.user) as User;
     const {
@@ -79,11 +81,11 @@ export const SearchPage = () => {
         if (user.userProfile?.defaultRadius) {
             setValue("maxDistance", user.userProfile?.defaultRadius);
         }
-        
+
         const today = new Date();
         const defaultStartDate = format(addDays(today, 1), "yyyy-MM-dd");
         const defaultEndDate = format(addDays(today, 30), "yyyy-MM-dd");
-    
+
         setValue("startTime", defaultStartDate);
         setValue("endTime", defaultEndDate);
     }, [user, setValue]);
@@ -141,23 +143,33 @@ export const SearchPage = () => {
             minDistance: Number(data.minDistance) || null,
             maxDistance: Number(data.maxDistance) || null,
         };
+        setFinalLoading(true);
         const response = await dispatch(searchRide(payload));
+        setFinalLoading(false);
         if (searchRide.fulfilled.match(response)) {
             if (response.payload.length > 0) {
-                setRide(response.payload);
-                toast.success(`We found ${response.payload.length} rides!`);
+                if (response.payload.length > 25) {
+                    setRide(response.payload.slice(0, 25));
+                    toast.success(
+                        `We found ${response.payload.length} rides but only showing the first 25; please refine your search.`
+                    );
+                } else {
+                    setRide(response.payload);
+                    toast.success(`We found ${response.payload.length} rides!`);
+                }
             } else {
                 toast.error("No rides found");
                 setRide([]);
             }
         } else if (searchRide.rejected.match(response)) {
-            toast.error("failed to find ride");
+            toast.error("Error in ride search.");
+            setFinalLoading(false);
         }
     };
- 
+
     return (
-        <div className='mt-[90px] w-11/12 mx-auto  flex gap-10 p-4 !max-w-[1320px]'>
-            <div className='w-4/12 bg-white rounded-2xl shadow-lg h-fit'>
+        <div className='mt-[90px] w-11/12 mx-auto flex gap-10 p-4 !max-w-[1320px]'>
+            <div className='w-4/12 bg-white rounded-md border border-neutral-300 h-fit sticky top-28'>
                 <h1 className='text-2xl font-bold p-4 border-b'>
                     Search Criteria
                 </h1>
@@ -165,7 +177,7 @@ export const SearchPage = () => {
                     <div className='w-11/12 mx-auto my-6 space-y-3'>
                         <div className='flex flex-col'>
                             <label className='font-normal text-sm text-gray-400'>
-                                Start Location - search
+                                Start Location
                             </label>
                             <input
                                 type='text'
@@ -314,8 +326,12 @@ export const SearchPage = () => {
                     <div className='flex gap-3 p-5 border-t'>
                         <button
                             type='submit'
-                            className='bg-primaryText text-white px-6 py-2  rounded-md font-semibold text-sm tablet:text-base'>
-                            Search
+                            className='text-sm tablet:text-base bg-primaryText text-white px-9 py-2 rounded-md font-semibold w-32'>
+                            {finalLoading ? (
+                                <CgSpinner className='mx-auto animate-spin w-6 h-6' />
+                            ) : (
+                                "Search"
+                            )}
                         </button>
                         <button
                             type='button'
@@ -325,15 +341,19 @@ export const SearchPage = () => {
                     </div>
                 </form>
             </div>
-            <div className='w-8/12 bg-white rounded-2xl shadow-lg h-fit'>
+            <div className='w-8/12 bg-white rounded-md border border-neutral-300 h-fit'>
                 <h1 className='text-2xl font-bold p-4 border-b'>Find a ride</h1>
                 <div>
                     {ride.length > 0 ? (
                         <div className=''>
                             <div className='p-4 m-4 border border-[#79d59d] bg-[#e6faf3]  rounded-md '>
                                 <p className='text-[#79d59d] font-semibold '>
-                                    We found {ride.length} rides! Join one and
-                                    get out there!
+                                    We found{" "}
+                                    {`${
+                                        Number(ride.length) === 1
+                                            ? "1 ride"
+                                            : `${ride.length} rides`
+                                    }! Join one, get out there, and let's ride!`}
                                 </p>
                             </div>
                             <div className='slider-container '>
@@ -346,14 +366,11 @@ export const SearchPage = () => {
                             </div>
                         </div>
                     ) : (
-                        <div className='text-center flex flex-col items-center m-8 '>
-                            <div className='rounded-full shadow-xl '>
-                                <ImSearch className='text-4xl text-darkred  m-5' />
-                            </div>
-                            <h1 className='text-xl font-bold mt-4 text-darkred'>
-                                Please select ride criteria and find yourself
-                                some great rides!
-                            </h1>
+                        <div className='p-4 m-4 border border-red-500 bg-red-100 rounded-md '>
+                            <p className='text-gray-700 font-semibold '>
+                                Please enter your search criteria and find some
+                                great rides!
+                            </p>
                         </div>
                     )}
                 </div>

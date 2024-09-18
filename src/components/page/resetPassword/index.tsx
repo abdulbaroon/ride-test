@@ -23,8 +23,8 @@ export const ResetPasswordPage = () => {
     const [loading, setloading] = useState(false);
     const { push, back } = useRouter();
     const dispatch = useDispatch<AppDispatch>();
-    const searchParams = useSearchParams()
-    const code = searchParams.get("code")
+    const searchParams = useSearchParams();
+    const code = searchParams.get("code");
     const {
         register,
         handleSubmit,
@@ -36,11 +36,11 @@ export const ResetPasswordPage = () => {
     });
     const password = watch("password", "");
 
-    useEffect(()=>{
-     if(code){
-        setValue("reset_code",code)
-     }
-    },[code])
+    useEffect(() => {
+        if (code) {
+            setValue("reset_code", code);
+        }
+    }, [code]);
 
     const onSubmit = async (data: LoginFormValues) => {
         const resetData = {
@@ -65,7 +65,7 @@ export const ResetPasswordPage = () => {
 
     return (
         <div className=' w-full flex justify-center items-center bg-[#f5f4f8] my-40'>
-            <div className='w-full desktop:w-1/2 mx-auto bg-white border rounded-xl flex items-center flex-col tablet:flex-row'>
+            <div className='w-full desktop:w-1/2 mx-auto bg-white border border-neutral-300 rounded-md flex items-center flex-col tablet:flex-row'>
                 <div className='w-full tablet:w-1/2 p-6 tablet:p-12  flex justify-center items-center'>
                     <div>
                         <img src={accountLogo.src} alt='Logo' />
@@ -94,9 +94,7 @@ export const ResetPasswordPage = () => {
                                 )}
                             </div>
                         </div>
-                        <label className='text-gray-500'>
-                             New password
-                        </label>
+                        <label className='text-gray-500'>New password</label>
                         <div className='relative'>
                             <div className='mb-6'>
                                 <input

@@ -42,20 +42,19 @@ const Form1: React.FC<Form1Props> = ({ nextForm, formData, startOver }) => {
             <form onSubmit={handleSubmit(handleSubmits)} className=''>
                 <div className='space-y-2 mt-4'>
                     <h1 className=' text-base tablet:text-xl desktop:text-2xl font-bold'>
-                        Have a route mapped out? Ride with GPS or Strava? Public
-                        ride?
+                        Have a route mapped out? Ride with GPS, Strava or
+                        Garmin?
                     </h1>
                     <p className='font-bold text-xs tablet:text-sm'>
-                        Quickly create a ride from public or your created routes
-                        or rides and we&apos;ll load most of the ride details
-                        for you!
+                        Quickly create a ride from any public route! Just paste
+                        url or upload a GPX file.
                     </p>
                     <p className='font-bold text-xs tablet:text-sm pb-2'>
                         If not, no worries! Just select &quot;No Route&quot; and
                         create a ride with just a start location.
                     </p>
                 </div>
-                <div className='space-y-3 m-5 pt-6'>
+                <div className='space-y-3 m-5 pt-4'>
                     <div className='flex items-center me-4'>
                         <input
                             id='gps-radio'
@@ -108,12 +107,16 @@ const Form1: React.FC<Form1Props> = ({ nextForm, formData, startOver }) => {
                     <IoAlert className='bg-gray-300 text-sm p-[1px] rounded-sm' />
                     <p>
                         Want to create some great routes?? Check out
-                        <Link href={"https://ridewithgps.com"} className='text-primaryText'>
+                        <Link
+                            href={"https://ridewithgps.com"}
+                            className='text-primaryText'>
                             {" "}
                             Ride with GPS{" "}
                         </Link>
                         or
-                        <Link href={"https://strava.com "} className='text-primaryText'>
+                        <Link
+                            href={"https://strava.com "}
+                            className='text-primaryText'>
                             {" "}
                             Strava
                         </Link>

@@ -1,15 +1,18 @@
-import { Calender } from "@/components/page"
-import { Metadata } from 'next';
+import { Calender } from "@/components/page";
+import CustomLayout from "@/layout/CustomLayout";
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Chasing Watts Calendar",
-  description: "Calendar for Chasing Watts cycling community",
+    title: "Chasing Watts | Calendar",
+    description: "Calendar for Chasing Watts",
 };
 
 const Page = () => {
-  return (
-    <Calender/>
-  )
-}
+    return(
+        <CustomLayout>
+         <Calender />;
+        </CustomLayout>
+      ); 
+};
 
-export default Page
+export default Page;

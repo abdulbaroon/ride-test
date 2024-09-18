@@ -1,17 +1,14 @@
-import { ForgotPage } from '../../../components/page'
-import React from 'react'
-import { Metadata } from 'next';
+import { ForgotPage } from "../../../components/page";
+import React from "react";
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Chasing Watts Forgot Password",
-  description: "Reset your password for Chasing Watts cycling community",
+    title: "Chasing Watts | Forgot Password",
+    description: "Reset your password for Chasing Watts",
 };
 
 const ForgotPassword = () => {
-  
-  return (
-    <ForgotPage/>
-  )
-}
+    return <ForgotPage />;
+};
 
-export default ForgotPassword
+export default ForgotPassword;

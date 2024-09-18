@@ -12,7 +12,6 @@ import CustomLayout from "@/layout/CustomLayout";
 import Chakra from "@/shared/providers/Chakra";
 import MainLayout from "@/shared/providers/MainLayout";
 import Navbar from "@/components/basic/Navbar";
-import { registerLicense } from "@syncfusion/ej2-base";
 
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
@@ -21,15 +20,12 @@ config.autoAddCss = false;
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-    title: "ChasingWattsWeb",
-    description: "ChasingWattsWeb next app",
+    title: "Chasing Watts",
+    description: "Chasing Watts - Connecting Cyclists",
     openGraph: {
-        images:  "https://dev.chasingwatts.com/ridepictures/ridepicture_32497_981.png" 
-      },
+        images: "https://chasingwatts.com/images/chasingwatts.svg",
+    },
 };
-registerLicense(
-    "Ngo9BigBOggjHTQxAR8/V1NCaF1cWWhAYVVpR2Nbe055flRBalxZVAciSV9jS3pTfkZjWXZfd3RdT2JYWQ=="
-);
 
 export default function RootLayout({
     children,
@@ -41,12 +37,7 @@ export default function RootLayout({
             <body>
                 <ReduxProvider>
                     <MainLayout>
-                        <Chakra>
-                            <CustomLayout>
-                                <Navbar />
-                                {children}
-                            </CustomLayout>
-                        </Chakra>
+                        <Chakra>{children}</Chakra>
                     </MainLayout>
                 </ReduxProvider>
             </body>

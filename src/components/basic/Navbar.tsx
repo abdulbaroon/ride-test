@@ -19,7 +19,13 @@ import {
   getNotifications,
 } from "@/redux/slices/notificationSlice";
 import NotificationBar from "./NotificationBar";
-import { getActivityTag, getActivityType, getDifficultyLevel } from "@/redux/slices/addRideSlice";
+import {
+  getActivityTag,
+  getActivityType,
+  getDifficultyLevel,
+} from "@/redux/slices/addRideSlice";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronDown } from "@fortawesome/pro-solid-svg-icons/faChevronDown";
 
 const Navbar = () => {
   const router = useRouter();
@@ -41,6 +47,8 @@ const Navbar = () => {
     onClose: notifOnClose,
   } = useDisclosure();
 
+  const [dropdown, setDropdown] = useState(false);
+
   useEffect(() => {
     const userCookie = getCookie("user");
     if (userCookie) {
@@ -56,9 +64,9 @@ const Navbar = () => {
       dispatch(getProfile(userData.id));
       dispatch(userEmail(userData.id));
       fetchNotifications();
-      dispatch(getDifficultyLevel())
-      dispatch(getActivityType())
-      dispatch(getActivityTag())
+      dispatch(getDifficultyLevel());
+      dispatch(getActivityType());
+      dispatch(getActivityTag());
     }
   }, [userData]);
 
@@ -79,6 +87,7 @@ const Navbar = () => {
       );
     }
   };
+
   return (
     <header className=" bg-secondaryButton fixed top-0 w-full z-50">
       <div className="w-11/12 mx-auto py-4 flex justify-between !max-w-[1320px]">
@@ -89,39 +98,68 @@ const Navbar = () => {
             </Link>
           </div>
           <div className="ms-6 ">
-            <div className="text-gray-400 font-semibold hidden tablet:flex gap-5 py-4 cursor-pointer">
+            <div className="text-white font-semibold hidden tablet:flex gap-5 py-4 cursor-pointer">
               {user ? (
-                <Link href={"/dashboard"} className=" hover:text-white ">
+                <Link href={"/dashboard"} className=" hover:text-gray-400 ">
                   Dashboard
                 </Link>
               ) : (
-                <Link href={"#"} className="border-r pe-4 hover:text-white ">
+                <Link href={"#"} className="border-r pe-4 hover:text-gray-400 ">
                   Register
                 </Link>
               )}
               {user ? (
-                <Link href={"/ride/add"} className="hover:text-white">
+                <Link href={"/ride/add"} className="hover:text-gray-400">
                   Add Ride
                 </Link>
               ) : (
-                <Link href={"/features"} className="hover:text-white">
+                <Link href={"/features"} className="hover:text-gray-400">
                   Features
                 </Link>
               )}
-              <Link href={"/search"} className="hover:text-white">
+              <Link href={"/search"} className="hover:text-gray-400">
                 Search
               </Link>
-              <Link href={"/calendar"} className="hover:text-white">
+              <Link href={"/calendar"} className="hover:text-gray-400">
                 Calender
               </Link>
               {user && (
-                <Link href={"/hubs"} className="hover:text-white">
+                <Link href={"/hubs"} className="hover:text-gray-400">
                   Hubs
                 </Link>
               )}
-              <Link href={"/about"} className="hover:text-white">
-                About Us
-              </Link>
+              {user && (
+                <Link href={"/explore"} className="hover:text-gray-400">
+                  Explore
+                </Link>
+              )}
+              <div
+                onMouseEnter={() => setDropdown(true)}
+                onMouseLeave={() => setDropdown(false)}
+                className="dropdown"
+              >
+                <Link href={"/about"} className="hover:text-gray-400">
+                  About Us
+                </Link>
+                <FontAwesomeIcon
+                  icon={faChevronDown}
+                  size="sm"
+                  className="text-white ml-1"
+                />
+                {dropdown && (
+                  <div className="dropdown-menu">
+                    <div>
+                      <Link href="/about">About Us</Link>
+                    </div>
+                    <div>
+                      <Link href="/contactus">Contact Us</Link>
+                    </div>
+                    <div>
+                      <Link href="https://help.chasingwatts.com">Help</Link>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

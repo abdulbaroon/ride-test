@@ -99,6 +99,7 @@ export const DashboardPage: React.FC = () => {
     const [hotRideArray, setHotRideArray] = useState<FormattedRide[] | []>([]);
     const [openFilter, setOpenFilter] = useState(false);
     const [filter, setfilter] = useState<boolean>(false);
+    const [inputFilter, setInputFilter] = useState<any>();
     const userData = useSelector<RootState>((state) => state.auth.user) as User;
     const dispatch = useDispatch<AppDispatch>();
     const hotRidedata = useSelector<RootState, Item[]>(
@@ -146,20 +147,6 @@ export const DashboardPage: React.FC = () => {
         userID: profile.userID,
     };
 
-    useEffect(() => {
-        if (ridedata) {
-            setRideArray(ridedata);
-            const formattedRide = ridedata.map((data) => formatRideList(data));
-            setRideListArray(formattedRide);
-        }
-
-        if (hotRidedata) {
-            const formattedHotRide = hotRidedata.map((data) =>
-                formatRideList(data)
-            );
-            setHotRideArray(formattedHotRide);
-        }
-    }, [ridedata, hotRidedata]);
 
     const handleApi = async () => {
         if (userData.userProfile?.defaultRadius && userData.id) {
@@ -232,26 +219,44 @@ export const DashboardPage: React.FC = () => {
         }
     };
 
-    const handelFilterInput = (data: FilterInputs) => {
-        const rdata: RideItem[] = ridedata.filter((item: RideItem) => {
-            const matchesName = data.rideName
-                ? item?.activityName
-                      .toLowerCase()
-                      .includes(data.rideName.toLowerCase())
-                : true;
-            const matchesRadius = data.radius
-                ? data.radius >
-                  (item?.activityRoutes?.[0]?.distance ?? Infinity)
-                : true;
-            const matchesType = data.rideType
-                ? Number(data.rideType) === item?.activityTypeID
-                : true;
-            return matchesName && matchesRadius && matchesType;
-        });
-        setRideArray(rdata);
-        const formatRide = rdata?.map((data) => formatRideList(data));
-        setRideListArray(formatRide);
-    };
+    useEffect(() => {
+        if (inputFilter) {
+            const rdata: RideItem[] = ridedata.filter((item: RideItem) => {
+                const matchesName = inputFilter.rideName
+                    ? item?.activityName
+                          .toLowerCase()
+                          .includes(inputFilter.rideName.toLowerCase())
+                    : true;
+                const matchesRadius = inputFilter.radius
+                    ? inputFilter.radius >
+                      (item?.activityRoutes?.[0]?.distance ?? Infinity)
+                    : true;
+                const matchesType = inputFilter.rideType
+                    ? Number(inputFilter.rideType) === item?.activityTypeID
+                    : true;
+                return matchesName && matchesRadius && matchesType;
+            });
+            setRideArray(rdata);
+            const formatRide = rdata?.map((data) => formatRideList(data));
+            setRideListArray(formatRide);
+        } else {
+            if (ridedata) {
+                setRideArray(ridedata);
+                const formattedRide = ridedata.map((data) =>
+                    formatRideList(data)
+                );
+                setRideListArray(formattedRide);
+            }
+
+            if (hotRidedata) {
+                const formattedHotRide = hotRidedata.map((data) =>
+                    formatRideList(data)
+                );
+                setHotRideArray(formattedHotRide);
+            }
+        }
+    }, [inputFilter, ridedata, hotRidedata]);
+
     const handelClearFilter = () => {
         setRideArray(ridedata);
         const formattedRide = ridedata.map((data) => formatRideList(data));
@@ -273,7 +278,7 @@ export const DashboardPage: React.FC = () => {
                     <WeatherForecast />
                 </div>
                 <div className='w-[75%]'>
-                    <div className='w-full min-h-10 h-fit border rounded-lg shadow-lg bg-white p-5 flex justify-between items-start'>
+                    <div className='w-full min-h-10 h-fit border border-neutral-300 rounded-md bg-white p-5 flex justify-between items-start'>
                         <div>
                             <Greeting
                                 rides={ridedata.length}
@@ -285,17 +290,18 @@ export const DashboardPage: React.FC = () => {
                                     userData.userProfile?.lastName
                                 }
                             />
+                        </div>
+                        <div className='flex gap-2'>
                             <button
                                 onClick={onOpen}
-                                className='mt-5 ms-2 rounded-md flex justify-center items-center bg-primaryButton text-white gap-1 text-sm py-2 px-4'>
+                                className='rounded-md justify-center items-center h-10 flex 
+                                bg-primaryButton text-white gap-1 text-sm py-2 px-4'>
                                 <MdOutlineDirectionsBike />
                                 My Rides
                                 <span className='bg-primaryText px-2 rounded-md'>
                                     {myRidedata?.length}
                                 </span>
                             </button>
-                        </div>
-                        <div className='flex gap-2'>
                             <Tooltip
                                 hasArrow
                                 label='Clear Filter'
@@ -303,7 +309,7 @@ export const DashboardPage: React.FC = () => {
                                 bg='black'>
                                 <button
                                     onClick={handelClearFilter}
-                                    className='text-2xl text-white bg-yellow-500 p-2 rounded-md  h-fit '>
+                                    className='text-2xl text-white bg-yellow-500 p-2 rounded-md h-fit'>
                                     <TbFilterX />
                                 </button>
                             </Tooltip>
@@ -318,11 +324,11 @@ export const DashboardPage: React.FC = () => {
                                     <TbFilter />
                                 </button>
                             </Tooltip>
-                            <button
+                            {/* <button
                                 onClick={onMapOpen}
                                 className='flex justify-center items-center px-3 py-2 bg-primaryDarkblue rounded-md text-white gap-1'>
                                 <FaRegMap /> Map
-                            </button>
+                            </button> */}
                         </div>
                     </div>
 
@@ -330,7 +336,9 @@ export const DashboardPage: React.FC = () => {
                         {openFilter && (
                             <QuickFilter
                                 closeFilter={() => setOpenFilter(false)}
-                                handelFilterData={handelFilterInput}
+                                handelFilterData={(data) =>
+                                    setInputFilter(data)
+                                }
                             />
                         )}
                     </div>
@@ -373,7 +381,7 @@ export const DashboardPage: React.FC = () => {
                                     </>
                                 ) : (
                                     <>
-                                        <div className='min-h-52 border rounded-lg shadow-lg bg-white p-6 text-center'>
+                                        <div className='min-h-52 border rounded-md bg-white p-6 text-center'>
                                             <p className='mt-3 text-xl font-semibold '>
                                                 There are no upcoming rides in
                                                 your area!
