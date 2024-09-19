@@ -94,7 +94,7 @@ export const Strava = () => {
                         <p className='text-primaryText'>Strava Connect</p>
                     </h1>
                 </div>
-                <div className='bg-white rounded-lg border '>
+                <div className='bg-white rounded-md border border-neutral-300'>
                     <p className='text-2xl font-bold p-4 border-b text-gray-600'>
                         Strava Connect
                     </p>

@@ -44,7 +44,9 @@ const MapRoute = () => {
     centerLongitude,
     centerLatitude,
     gpxFile,
+    loading,
   } = useGpxToGeoJson();
+  console.log(loading,"loading")
   const [activeComponent, setActiveComponent] = useState<string>("map");
 
   const downloadAndShareGpxFile = (gpxRoutePath: string) => {
@@ -180,6 +182,8 @@ const MapRoute = () => {
           )}
         </div>
         <div className="">
+
+          {loading&&<div>loading...</div>}
           {activeComponent === "map" && (
             <MapComponent
               geoJSON={geoJSON}

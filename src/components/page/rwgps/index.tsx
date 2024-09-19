@@ -66,7 +66,7 @@ export const RWGPS = () => {
                         </p>
                     </h1>
                 </div>
-                <div className='bg-white rounded-lg border '>
+                <div className='bg-white rounded-md border border-neutral-300'>
                     <p className='text-2xl font-bold p-4 border-b text-gray-600'>
                         Ride with GPS Connect
                     </p>
@@ -117,7 +117,7 @@ export const RWGPS = () => {
                         Not using Ride with GPS?{" "}
                         <Link
                             className='text-primaryText'
-                            href={"https://ridewithgps.com/users/7665517"}
+                            href={"https://ridewithgps.com/signup"}
                             target='_blank'>
                             {" "}
                             Register for a free account{" "}

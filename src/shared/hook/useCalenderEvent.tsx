@@ -11,6 +11,7 @@ interface CalendarEvent {
     activityEndTime: string;
     activityTypeName: string;
     activityTypeColor: string;
+    isPrivate: boolean;
 }
 const useCalendarEvents = () => {
     const calenderData = useSelector<RootState, CalendarEvent[]>(
@@ -40,6 +41,7 @@ const useCalendarEvents = () => {
             RecurrenceID: null,
             RecurrenceException: null,
             isAllDay: false,
+            isPrivate: data.isPrivate,
         };
     });
 
@@ -53,6 +55,7 @@ const useCalendarEvents = () => {
         recurrenceId: "RecurrenceID",
         recurrenceExceptions: "RecurrenceException",
         color: "Color",
+        private: "isPrivate",
     };
 
     const currentYear = new Date().getFullYear();

@@ -37,7 +37,7 @@ const ProfileSideData: React.FC<Props> = ({ name }) => {
     };
     return (
         <>
-            <div className='border border-gray-300 rounded-xl w-full desktop:w-[25%] bg-white shadow-lg overflow-hidden h-fit'>
+            <div className='border border-neutral-300 rounded-md w-full desktop:w-[25%] bg-white overflow-hidden h-fit'>
                 <div className='bg-gray-300 border-b border-gray-400'>
                     <h1 className=' font-bold py-3 px-4 text-gray-800'>
                         {name}

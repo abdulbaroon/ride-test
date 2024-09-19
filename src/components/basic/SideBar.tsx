@@ -86,9 +86,7 @@ const SideBar: FC<SideBarProps> = ({ isOpen, onClose }) => {
                                     return (
                                         <div key={index} onClick={onClose}>
                                             <div
-                                                className={`
-                       
-                     py-[6px] px-4 flex gap-3 items-center `}>
+                                                className={`py-[6px] px-4 flex gap-3 items-center`}>
                                                 <div className='text-gray-400 text-xl'>
                                                     {React.createElement(icon)}
                                                 </div>

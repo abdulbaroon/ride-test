@@ -335,7 +335,7 @@ export const ProfilePage = () => {
         <section className='w-full py-10 '>
             {!success ? (
                 <div className='flex flex-col desktop:flex-row w-11/12  mx-auto !max-w-[1320px] gap-5 mt-[90px]'>
-                    <div className='w-full desktop:w-3/4 border bg-white rounded-xl shadow-lg py-10 px-10'>
+                    <div className='w-full desktop:w-3/4 bg-white rounded-md border border-neutral-300 py-10 px-10'>
                         <h1 className=' w-full font-bold border-b text-4xl'>
                             Profile Settings
                         </h1>
@@ -458,7 +458,7 @@ export const ProfilePage = () => {
                                         <label className='text-xs text-gray-500'>
                                             Ride start radius*
                                         </label>
-                                        <div className='flex gap-3 justify-center items-center py-3 border rounded-lg px-2'>
+                                        <div className='flex gap-3 justify-center items-center py-3 border rounded-md px-2'>
                                             <input
                                                 {...register(
                                                     "rideStartRadius",
@@ -612,7 +612,7 @@ export const ProfilePage = () => {
                                 <button
                                     type='submit'
                                     disabled={loading}
-                                    className='bg-primaryText py-[9px] px-6 font-bold text-white rounded-lg w-44'>
+                                    className='bg-primaryText py-[9px] px-6 font-bold text-white rounded-md w-44'>
                                     {loading ? (
                                         <CgSpinner className=' mx-auto animate-spin w-6 h-6 ' />
                                     ) : (

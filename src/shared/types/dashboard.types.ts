@@ -104,6 +104,7 @@ export interface Item {
     isDrop?: boolean;
     isCommunity?: boolean;
     isPrivate?: boolean;
+    shareCode?: string;
     isLightsRequired?: boolean;
     isGroup?: boolean;
     isCancelled?: boolean;
@@ -162,6 +163,7 @@ export interface FormattedRideData {
     mapImage: string;
     isDrop: boolean;
     isPrivate: boolean;
+    shareCode: string;
     isLightsRequired: boolean;
     isCommunity: boolean;
     isCancelled: boolean;
@@ -230,6 +232,7 @@ export interface RideItem {
     activityPictures?: Picture[];
     isDrop?: boolean;
     isPrivate?: boolean;
+    shareCode?: string;
     isLightsRequired?: boolean;
     isCommunity?: boolean;
     isCancelled?: boolean;
@@ -278,6 +281,7 @@ export interface FormattedRide {
     image: string;
     isDrop: boolean;
     isPrivate: boolean;
+    shareCode: string;
     isLightsRequired: boolean;
     isCommunity: boolean;
     isCancelled: boolean;

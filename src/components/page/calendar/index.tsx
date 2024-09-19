@@ -34,11 +34,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store/store";
 import { format, subMonths } from "date-fns";
 import useCalendarEvents from "@/shared/hook/useCalenderEvent";
-import { CalendarProfileItem } from "./parts/CustomEventItem";
 import { getCalendarRides } from "@/redux/slices/calendarSlice";
 import Link from "next/link";
 import dayjs from "dayjs";
 import { Spinner } from "@chakra-ui/react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faLock } from "@fortawesome/pro-solid-svg-icons/faLock";
 
 export const Calender = () => {
     const profile = useSelector<RootState, any>(
@@ -56,9 +57,10 @@ export const Calender = () => {
         try {
             setLoading(true);
             setCurrentMonth(dayjs(monthDate).month() + 1);
+            setDate(monthDate);
             const params = {
-                id: profile.userID,
-                radius: profile.defaultRadius,
+                id: profile.userID || 0,
+                radius: profile.defaultRadius || 50,
                 startDate: dayjs(monthDate)
                     .startOf("month")
                     .format("YYYY-MM-DD"),
@@ -79,13 +81,13 @@ export const Calender = () => {
     const handleDateChange = React.useCallback(
         (event: SchedulerDateChangeEvent) => {
             //console.log("date change event....", event);
-            console.log("current month....", currentMonth);
+            //console.log("current month....", currentMonth);
 
             const newMonth = dayjs(event.value).month() + 1;
 
             if (newMonth !== currentMonth) {
                 setCurrentMonth(newMonth);
-                console.log("current month changed: new month:", newMonth);
+                //console.log("current month changed: new month:", newMonth);
                 fetchCalendarRides(dayjs(event.value).toDate());
             } else {
                 console.log("current month is same: ", newMonth);
@@ -118,6 +120,15 @@ export const Calender = () => {
                         {props.dataItem.Type}
                     </div>
                     <span className='ml-2'>{props.dataItem.Title}</span>
+                    {props.dataItem.isPrivate && (
+                        <span className='ml-2'>
+                            <FontAwesomeIcon
+                                icon={faLock}
+                                size='sm'
+                                color='red'
+                            />
+                        </span>
+                    )}
                 </div>
             </Link>
         );

@@ -68,22 +68,24 @@ const ChatBox = () => {
     return (
         <section id='chat'>
             <div className='bg-white min-h-40 border p-5 rounded-lg'>
-                <form
-                    onSubmit={handleSubmit}
-                    className='relative rounded-lg overflow-hidden'>
-                    <input
-                        className='border w-full py-2 px-3 rounded-lg outline-none'
-                        type='text'
-                        placeholder="What's up?"
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                    />
-                    <button
-                        type='submit'
-                        className='absolute top-0 right-0 rounded-e-lg text-lg bg-primaryText border text-white z-10 h-full w-10 text-center flex justify-center items-center'>
-                        <FaRegPaperPlane className=' ' />
-                    </button>
-                </form>
+                {user?.id !== null && (
+                    <form
+                        onSubmit={handleSubmit}
+                        className='relative rounded-lg overflow-hidden'>
+                        <input
+                            className='border w-full py-2 px-3 rounded-lg outline-none'
+                            type='text'
+                            placeholder="What's up?"
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
+                        />
+                        <button
+                            type='submit'
+                            className='absolute top-0 right-0 rounded-e-lg text-lg bg-primaryText border text-white z-10 h-full w-10 text-center flex justify-center items-center'>
+                            <FaRegPaperPlane className=' ' />
+                        </button>
+                    </form>
+                )}
                 {activityChat.length > 0 ? (
                     activityChat?.map((data, index) => (
                         <div

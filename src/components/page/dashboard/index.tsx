@@ -147,7 +147,6 @@ export const DashboardPage: React.FC = () => {
         userID: profile.userID,
     };
 
-
     const handleApi = async () => {
         if (userData.userProfile?.defaultRadius && userData.id) {
             const params = {
@@ -381,7 +380,7 @@ export const DashboardPage: React.FC = () => {
                                     </>
                                 ) : (
                                     <>
-                                        <div className='min-h-52 border rounded-md bg-white p-6 text-center'>
+                                        <div className='min-h-52 border border-neutral-300 rounded-md bg-white p-6 text-center'>
                                             <p className='mt-3 text-xl font-semibold '>
                                                 There are no upcoming rides in
                                                 your area!

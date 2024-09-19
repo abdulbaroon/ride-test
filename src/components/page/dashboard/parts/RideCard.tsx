@@ -43,6 +43,7 @@ import { faRuler } from "@fortawesome/pro-light-svg-icons/faRuler";
 import { faShareNodes } from "@fortawesome/pro-light-svg-icons/faShareNodes";
 import { faUser } from "@fortawesome/pro-light-svg-icons/faUser";
 import { getDifficultyLevel } from "@/redux/slices/addRideSlice";
+import { MY_DOMAIN } from "@/constant/appConfig";
 
 interface RideCardProps {
     data: FormattedRide;
@@ -199,7 +200,7 @@ const RideCard: React.FC<RideCardProps> = ({
                         <PopoverBody>
                             <div className='space-y-2'>
                                 <Link
-                                    href={`https://www.facebook.com/sharer/sharer.php?u=https://web-dev.chasingwatts.com/ride/${data.activityID}`}
+                                    href={`https://www.facebook.com/sharer/sharer.php?u=${MY_DOMAIN}/ride/${data.activityID}`}
                                     target='_blank'>
                                     <p className='flex gap-2 items-center hover:text-primaryText mb-2'>
                                         <FontAwesomeIcon
@@ -213,7 +214,7 @@ const RideCard: React.FC<RideCardProps> = ({
                                     </p>
                                 </Link>
                                 <Link
-                                    href={`https://www.twitter.com/intent/tweet?url=https://web-dev.chasingwatts.com/ride/${data.activityID}&text=${data.rideName} via @ChasingWattsApp`}
+                                    href={`https://www.twitter.com/intent/tweet?url=${MY_DOMAIN}/ride/${data.activityID}&text=${data.rideName} via @ChasingWattsApp`}
                                     target='_blank'>
                                     <p className='flex gap-2 items-center hover:text-primaryText mb-2'>
                                         <FontAwesomeIcon
@@ -225,7 +226,7 @@ const RideCard: React.FC<RideCardProps> = ({
                                     </p>
                                 </Link>
                                 <Link
-                                    href={`https://www.reddit.com/submit?url=https://web-dev.chasingwatts.com/ride/${data.activityID}&title=${data.rideName}`}
+                                    href={`https://www.reddit.com/submit?url=${MY_DOMAIN}/ride/${data.activityID}&title=${data.rideName}`}
                                     target='_blank'>
                                     <p className='flex gap-2 items-center hover:text-primaryText mb-2'>
                                         {" "}
@@ -238,7 +239,7 @@ const RideCard: React.FC<RideCardProps> = ({
                                     </p>
                                 </Link>
                                 <Link
-                                    href={`https://www.threads.net/intent/post?text=https://web-dev.chasingwatts.com/ride/${data.activityID}`}
+                                    href={`https://www.threads.net/intent/post?text=${MY_DOMAIN}/ride/${data.activityID}`}
                                     target='_blank'>
                                     <p className='flex gap-2 items-center hover:text-primaryText'>
                                         <FontAwesomeIcon

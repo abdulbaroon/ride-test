@@ -22,16 +22,25 @@ interface PageProps {
     };
 }
 
-const loadImage = async (mapImage: string | any, image: string | any) => {
+const loadImage = async (mapImage: string | any, image: string | any, name:any) => {
     let url = "" as any;
     let secondUrl = "" as any;
-    if (mapImage) {
-        url = await checkImageLoads(mapImage);
-    }
+    let generateURL="" as any
     if (image) {
         secondUrl = await checkImageLoads(image);
     }
-    return secondUrl || url || routePlaceHolder.src;
+    else if (mapImage) {
+        url = await checkImageLoads(mapImage);
+    }
+    if(secondUrl){
+       const newurl = `https://ogcdn.net/e4b8c678-7bd5-445d-ba03-bfaad510c686/v4/${name}/${name}/${secondUrl}/og.png`
+       generateURL = await checkImageLoads(newurl);
+    }else if(url){
+        const newurl = `https://ogcdn.net/e4b8c678-7bd5-445d-ba03-bfaad510c686/v4/${name}/${name}/${url}/og.png`
+        generateURL = await checkImageLoads(newurl);
+     }
+    
+    return generateURL || secondUrl || url || routePlaceHolder.src;
 };
 
 export async function generateMetadata(
@@ -55,9 +64,10 @@ export async function generateMetadata(
     const formattedRide = rideResponse ? formatRideData(rideResponse) : null;
     const image = await loadImage(
         formattedRide?.mapImage,
-        formattedRide?.image
+        formattedRide?.image,
+        formattedRide?.rideName,
     );
-
+     console.log( removeTags(formattedRide?.rideNotes),"ride")
     return {
         title: "Chasing Watts | " + formattedRide?.rideName || "Ride Details",
         description: removeTags(formattedRide?.rideNotes) || "Details of the ride.",

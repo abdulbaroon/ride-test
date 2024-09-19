@@ -25,9 +25,6 @@ export function removeTags(str:string| any) {
     else
         str = str.toString();
 
-    // Regular expression to identify HTML tags in
-    // the input string. Replacing the identified
-    // HTML tag with a null string.
     return str.replace(/(<([^>]+)>)/ig, '');
 }
 
@@ -93,6 +90,11 @@ export const formatRideData = (item: Item): FormattedRideData => {
     const mapImage =
         item?.activityPictureModel?.find((pic) => pic.isMap)?.picturePath || "";
 
+    const startDateTime = getTimeToDate(
+        item.activityStartTime,
+        item.activityDate
+    );
+
     return {
         userID: item.userID,
         activityID: item?.activityID,
@@ -127,7 +129,7 @@ export const formatRideData = (item: Item): FormattedRideData => {
         startDate: item?.activityDate,
         startTime: item?.activityStartTime,
         endTime: item?.activityEndTime,
-        activityDateTime: item.activityDate + item.activityStartTime,
+        activityDateTime: startDateTime,
         tags: item?.activityTagModel || [],
         dalleUrl: item?.dalleUrl,
         image: item?.activityPictureModel
@@ -140,6 +142,7 @@ export const formatRideData = (item: Item): FormattedRideData => {
         mapImage: IMAGE_URl + mapImage,
         isDrop: item?.isDrop || false,
         isPrivate: item.isPrivate || false,
+        shareCode: item?.shareCode || "",
         isLightsRequired: item?.isLightsRequired || false,
         isCommunity: item?.isCommunity || false,
         isCancelled: item?.isCancelled || false,
@@ -196,6 +199,11 @@ export const formatRideList = (item: RideItem): FormattedRide => {
         item?.activityPictures?.find((pic) => pic.isMap)?.picturePath || "";
     const secondImage =
         item?.activityPictures?.find((pic) => !pic.isMap)?.picturePath || "";
+
+    const startDateTime = getTimeToDate(
+        item.activityStartTime,
+        item.activityDate
+    );
     return {
         userID: item.userID,
         activityID: item?.activityID,
@@ -224,16 +232,14 @@ export const formatRideList = (item: RideItem): FormattedRide => {
         startDate: item?.activityDate,
         startTime: item?.activityStartTime,
         endTime: item?.activityEndTime,
-        activityDateTime: getTimeToDate(
-            item.activityStartTime,
-            item.activityDate
-        ),
+        activityDateTime: startDateTime, //item.activityDate + item.activityStartTime,
         rideTypeID: item?.activityTypeID,
         rideType: item?.activityTypeName,
         mapImage: mapImage && IMAGE_URl + mapImage,
         image: secondImage && IMAGE_URl + secondImage,
         isDrop: item?.isDrop || false,
         isPrivate: item.isPrivate || false,
+        shareCode: item?.shareCode || "",
         isLightsRequired: item?.isLightsRequired || false,
         isCommunity: item?.isCommunity || false,
         isCancelled: item?.isCancelled || false,

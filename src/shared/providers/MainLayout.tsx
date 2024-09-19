@@ -16,7 +16,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 transition={Bounce}
                 closeOnClick
                 pauseOnHover
-                style={{ width: "400px", height: "80px" }}
+                style={{ width: "300px", height: "80px" }}
             />
             <BackToTop />
             <NextTopLoader

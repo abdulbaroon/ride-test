@@ -66,7 +66,7 @@ export const profileData = (userID: number) => [
     },
 
     {
-        link: "#",
+        link: "/account/forgot",
         name: "Reset Password",
         icon: IoKeyOutline,
     },

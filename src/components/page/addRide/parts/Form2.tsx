@@ -205,9 +205,8 @@ const Form2: React.FC<Form1Props> = ({
                                     ) : (
                                         <p className='font-extrabold text-base tablet:text-xl text-gray-400'>
                                             Copy any public route URL from Ride
-                                            with GPS, Strava, or Garmin or
-                                            connect and easily use your own
-                                            routes!
+                                            with GPS, Strava, or Garmin Connect
+                                            and easily use your own routes!
                                         </p>
                                     )}
                                 </div>
@@ -231,8 +230,8 @@ const Form2: React.FC<Form1Props> = ({
                                     <div className='space-y-3 pt-6'>
                                         <div className='flex flex-col relative w-full'>
                                             <label className='font-medium text-gray-600'>
-                                                Public route link - Ride with
-                                                GPS, Strava, or Garmin
+                                                Paste any public route link -
+                                                Ride with GPS, Strava, or Garmin
                                             </label>
                                             <input
                                                 type='input'
@@ -445,8 +444,10 @@ const Form2: React.FC<Form1Props> = ({
                 </div>
                 {formData?.routeType === "gps" && (
                     <>
-                        <div className='flex p-2 border border-neutral-300 rounded-md flex-col gap-1 text-gray-600 mt-6 text-sm tablet:text-base'>
-                            <p>
+                        <div
+                            className='flex p-2 border border-amber-300 bg-amber-100 rounded-md flex-col gap-1
+                         text-gray-600 mt-6'>
+                            <p className='text-sm'>
                                 Need a routes? Head over to
                                 <Link
                                     href={"https://www.ridewithgps.com"}
@@ -473,7 +474,7 @@ const Form2: React.FC<Form1Props> = ({
                                 </Link>
                                 and get started!
                             </p>
-                            <p>
+                            <p className='text-sm'>
                                 Did you know you can connect your
                                 <Link
                                     href={"/rwgpsConnect"}

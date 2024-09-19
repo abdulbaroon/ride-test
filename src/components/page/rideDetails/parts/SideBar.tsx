@@ -30,7 +30,7 @@ const SideBar: React.FC<{ id: number }> = ({ id }) => {
     {
     }
     return (
-        <div className='bg-white min-h-40 border rounded-lg sticky top-28'>
+        <div className='bg-white min-h-40 border border-neutral-300 rounded-md sticky top-28'>
             <div className='text-gray-700  hover:text-primaryButton flex gap-3 py-4 px-7 border-b items-center'>
                 <GrStatusInfo />
                 <Link className='font-bold text-lg' href={"#details"}>
@@ -77,12 +77,16 @@ const SideBar: React.FC<{ id: number }> = ({ id }) => {
         <PiCalendarDots/>
         <Link className='font-bold text-lg' href={"#"}>Cal Reminder</Link>
      </div> */}
-            <div className='text-gray-700 text-lg hover:text-primaryButton flex gap-3 py-4 px-7 border-b items-center'>
-                <AiOutlineUsergroupAdd />
-                <button onClick={OnInviteOpen} className='font-bold text-lg'>
-                    Invite Friends
-                </button>
-            </div>
+            {user?.id !== null && (
+                <div className='text-gray-700 text-lg hover:text-primaryButton flex gap-3 py-4 px-7 border-b items-center'>
+                    <AiOutlineUsergroupAdd />
+                    <button
+                        onClick={OnInviteOpen}
+                        className='font-bold text-lg'>
+                        Invite Friends
+                    </button>
+                </div>
+            )}
             {rides?.activityRouteModel?.[0]?.mapSourceID !== 4 && (
                 <div className='text-gray-700 text-lg hover:text-primaryButton flex gap-3 py-4 px-7 border-b items-center'>
                     <MdOutlineShare />
