@@ -10,6 +10,7 @@ import {
 } from "@/shared/util/format.util";
 import Head from "next/head";
 import { routePlaceHolder } from "@/assets";
+import { MY_DOMAIN } from "@/constant/appConfig";
 interface RideResponse {
     rideName: string;
     rideNotes: string;
