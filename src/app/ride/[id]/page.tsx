@@ -33,10 +33,13 @@ const loadImage = async (mapImage: string | any, image: string | any, name:any) 
         url = await checkImageLoads(mapImage);
     }
     if(secondUrl){
-       const newurl = `https://ogcdn.net/e4b8c678-7bd5-445d-ba03-bfaad510c686/v4/${name}/${name}/${secondUrl}/og.png`
+       const newurl = `https://ogcdn.net/e4b8c678-7bd5-445d-ba03-bfaad510c686/v4/${MY_DOMAIN}/${name}/${secondUrl}/og.png`
        generateURL = await checkImageLoads(newurl);
     }else if(url){
-        const newurl = `https://ogcdn.net/e4b8c678-7bd5-445d-ba03-bfaad510c686/v4/${name}/${name}/${url}/og.png`
+        const newurl = `https://ogcdn.net/e4b8c678-7bd5-445d-ba03-bfaad510c686/v4/${MY_DOMAIN}/${name}/${url}/og.png`
+        generateURL = await checkImageLoads(newurl);
+     }else {
+        const newurl = `https://ogcdn.net/e4b8c678-7bd5-445d-ba03-bfaad510c686/v4/${MY_DOMAIN}/${name}/${routePlaceHolder.src}/og.png`
         generateURL = await checkImageLoads(newurl);
      }
     
