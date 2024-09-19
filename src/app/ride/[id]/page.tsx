@@ -6,6 +6,7 @@ import {
     checkImageLoad,
     checkImageLoads,
     formatRideData,
+    removeTags,
 } from "@/shared/util/format.util";
 import Head from "next/head";
 import { routePlaceHolder } from "@/assets";
@@ -59,9 +60,9 @@ export async function generateMetadata(
 
     return {
         title: "Chasing Watts | " + formattedRide?.rideName || "Ride Details",
-        description: formattedRide?.rideNotes || "Details of the ride.",
+        description: removeTags(formattedRide?.rideNotes) || "Details of the ride.",
         openGraph: {
-            title: formattedRide?.rideName || "Ride Details",
+            title: removeTags(formattedRide?.rideName) || "Ride Details",
             description: formattedRide?.rideNotes || "Details of the ride.",
             images: image,
         },

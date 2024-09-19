@@ -23,7 +23,7 @@ export const MyFriends = () => {
 
   useEffect(() => {
     if (user?.id) {
-      dispatch(getFriends(33));
+      dispatch(getFriends(user?.id));
     }
   }, [user]);
 
@@ -44,7 +44,7 @@ export const MyFriends = () => {
           <p className="text-primaryText">My Friends</p>
         </h1>
       </div>
-      <div className="bg-white border border-neutral-300 px-7 py-4 rounded-md mt-3">
+      <div className="bg-white border border-neutral-300 min-h-full px-7 py-4 rounded-md mt-3">
         <h1 className=" text-2xl font-bold text-gray-700">My Friends</h1>
         <div className="relative mt-3">
           <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -114,10 +114,9 @@ export const MyFriends = () => {
             })}
           </div>
         ) : (
-          <div className="flex flex-col justify-center items-center text-lg text-primaryButton">
+          <div className="flex flex-col justify-center items-center text-lg mb-28 text-primaryButton">
             <img className="w-52" src={myFriend.src} alt="" />
             <p> You do not have any other friends here </p>
-            <p>or you have already invited everyone.</p>
           </div>
         )}
       </div>

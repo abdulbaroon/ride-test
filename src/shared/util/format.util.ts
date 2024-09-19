@@ -19,6 +19,17 @@ export const extractRouteId = (url: string) => {
         return null;
     }
 };
+export function removeTags(str:string| any) {
+    if ((str === null) || (str === ''))
+        return false;
+    else
+        str = str.toString();
+
+    // Regular expression to identify HTML tags in
+    // the input string. Replacing the identified
+    // HTML tag with a null string.
+    return str.replace(/(<([^>]+)>)/ig, '');
+}
 
 export const readFileAsBase64 = (filePath: string): Promise<string> => {
     return new Promise((resolve, reject) => {
