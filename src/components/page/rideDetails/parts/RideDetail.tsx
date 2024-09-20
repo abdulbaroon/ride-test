@@ -460,7 +460,7 @@ const RideDetail = () => {
                 <div
                   className="mt-1 w-[90%]"
                   dangerouslySetInnerHTML={{
-                    __html: formatedRide.rideNotes,
+                    __html: formatedRide?.rideNotes,
                   }}
                 />
               </div>
