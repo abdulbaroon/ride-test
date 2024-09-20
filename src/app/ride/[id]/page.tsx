@@ -35,16 +35,16 @@ const loadImage = async (mapImage: string | any, image: string | any, name:any) 
     }
     if(secondUrl){
         const newurl = `https://ogcdn.net/e4b8c678-7bd5-445d-ba03-bfaad510c686/v4/${encodeURIComponent(MY_DOMAIN||"http://chasingwatts.com/")}/${encodeURIComponent(name)}/${encodeURIComponent(secondUrl)}/og.png`;
-        console.log(newurl, "Sd");
+        console.log(newurl, "Sd1");
         
        generateURL = await checkImageLoads(newurl);
     }else if(url){
-        const newurl = `https://ogcdn.net/e4b8c678-7bd5-445d-ba03-bfaad510c686/v4/${encodeURIComponent(MY_DOMAIN||"http://chasingwatts.com/")}/${encodeURIComponent(name)}/${encodeURIComponent(secondUrl)}/og.png`;
-console.log(newurl, "Sd");
+        const newurl = `https://ogcdn.net/e4b8c678-7bd5-445d-ba03-bfaad510c686/v4/${encodeURIComponent(MY_DOMAIN||"http://chasingwatts.com/")}/${encodeURIComponent(name)}/${encodeURIComponent(url)}/og.png`;
+console.log(newurl, "Sd2");
         generateURL = await checkImageLoads(newurl);
      }else {
-        const newurl = `https://ogcdn.net/e4b8c678-7bd5-445d-ba03-bfaad510c686/v4/${encodeURIComponent(MY_DOMAIN||"http://chasingwatts.com/")}/${encodeURIComponent(name)}/${encodeURIComponent(secondUrl)}/og.png`;
-        console.log(newurl, "Sd");        
+        const newurl = `https://ogcdn.net/e4b8c678-7bd5-445d-ba03-bfaad510c686/v4/${encodeURIComponent(MY_DOMAIN||"http://chasingwatts.com/")}/${encodeURIComponent(name)}/${encodeURIComponent(routePlaceHolder.src)}/og.png`;
+        console.log(newurl, "Sd3");        
         generateURL = await checkImageLoads(newurl);
      }
     
