@@ -39,13 +39,13 @@ export function middleware(request: NextRequest) {
     const isProtected = protectedPath.some((path) => pathname.startsWith(path));
 
     if (!token && isProtected) {
-        return NextResponse.redirect(new URL("/account/login", request.url));
+        return NextResponse.redirect(new URL(`/account/login?returnurl=${pathname}`, request.url));
     }
 
     // If userProfile is null or undefined, redirect to profile setup page
-    // if (!userProfile && pathname !== "/account/profile") {
-    //   return NextResponse.redirect(new URL("/account/profile", request.url));
-    // }
+    if (!userProfile && pathname !== "/account/profile" && token) {
+      return NextResponse.redirect(new URL("/account/profile", request.url));
+    }
 
     // Continue to the requested page
     return NextResponse.next();

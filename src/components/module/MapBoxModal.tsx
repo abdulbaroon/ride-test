@@ -61,7 +61,6 @@ const MapBoxModal: React.FC<MapBoxModalProps> = ({ profile }) => {
     }),
     [exploreData]
   );
-  console.log(geoJsonData, "data");
 
   // Fetch current location using the Geolocation API
   const handleGetCurrentLocation = () => {
@@ -87,9 +86,7 @@ const MapBoxModal: React.FC<MapBoxModalProps> = ({ profile }) => {
   };
 
   useEffect(() => {
-    console.log(geoJsonData, "check1");
     if (!mapInitialized && mapContainerRef.current) {
-      console.log(geoJsonData, "check2");
 
       let initialCenter: [number, number] = [0, 0];
 
@@ -228,8 +225,6 @@ const MapBoxModal: React.FC<MapBoxModalProps> = ({ profile }) => {
           const coordinates = feature?.geometry.coordinates.slice();
           const properties = feature?.properties;
           const mag = e.features?.[0].properties;
-          console.log(e, mag, feature, "sd1");
-          console.log(coordinates, "sd2");
 
           setPopupInfo({
             entityName: properties.entityName,

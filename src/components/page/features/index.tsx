@@ -33,7 +33,7 @@ export const FeaturesPage = () => {
                 <h1 className='w-11/12 mx-auto text-gray-500 flex gap-2 items-center'>
                     <HiOutlineHome />
                     {">"}
-                    <span className='text-primaryText'>The Feature</span>
+                    <span className='text-primaryText'>The Features</span>
                 </h1>
             </div>
             <div className='bg-transparent py-16'>
@@ -73,9 +73,9 @@ export const FeaturesPage = () => {
                     <table className='w-full text-sm text-left rtl:text-right text-gray-500 shadow-md sm:rounded-lg mt-3'>
                         <thead className='text-xs text-gray-700 uppercase bg-gray-50  '>
                             <tr>
-                                <th scope='col' className='px-6 py-3 w-1/2'>
-                                    Product name
-                                </th>
+                                <th
+                                    scope='col'
+                                    className='px-6 py-3 w-1/2'></th>
                                 <th scope='col' className='px-6 py-3 w-1/4'>
                                     Chasing Watts
                                 </th>
@@ -96,7 +96,7 @@ export const FeaturesPage = () => {
                                         <MdCheck className='text-2xl font-bold' />
                                     </td>
                                     <td className='px-6 py-4 ps-16 '>
-                                        {i === 0 ? (
+                                        {i === 0 || i === 3 ? (
                                             <MdCheck className='text-2xl font-bold' />
                                         ) : (
                                             <RxCross1 className='text-xl font-bold' />
@@ -110,7 +110,7 @@ export const FeaturesPage = () => {
             </div>
             <div className='bg-white'>
                 <div className='w-11/12 mx-auto pt-20 pb-36'>
-                    <div className='bg-secondaryButton rounded-xl flex  mx-auto px-[8%] '>
+                    <div className='bg-secondaryButton rounded-md flex  mx-auto px-[8%] '>
                         <div className='w-1/2 py-10'>
                             <h1 className='text-3xl mt-1 font-semibold text-white'>
                                 Join Chasing Watts today.

@@ -11,7 +11,7 @@ const GPXFileUploader: React.FC<GPXFileUploaderProps> = ({
     handleFile,
     errors,
 }) => (
-    <div className='my-10 border rounded-xl p-5 w-full'>
+    <div className='my-10 border rounded-md p-5 w-full'>
         <FileUploader
             handleChange={handleFile}
             name='file'

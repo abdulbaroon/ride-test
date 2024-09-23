@@ -66,7 +66,7 @@ export const RegisterPage = () => {
                     <div>
                         <img src={accountLogo.src} alt='Logo' />
                         <h3 className=' text-2xl tablet:text-3xl font-bold pb-6'>
-                            Join the community and let&apos;s ride!
+                            Join the community!
                         </h3>
                         <div className='mb-3'>
                             {logindata.map((d, index) => (
@@ -184,11 +184,15 @@ export const RegisterPage = () => {
                         <div className='flex gap-3 mb-4 text-sm p-5'>
                             <p className=' text-gray-500'>
                                 By joining, I agree to the{" "}
-                                <Link href={"#"} className='text-primaryText'>
+                                <Link
+                                    href={"/terms"}
+                                    className='text-primaryText'>
                                     terms of use
                                 </Link>{" "}
                                 and activity{" "}
-                                <Link href={"#"} className='text-primaryText'>
+                                <Link
+                                    href={"/liability"}
+                                    className='text-primaryText'>
                                     release of liability
                                 </Link>{" "}
                                 waiver.{" "}

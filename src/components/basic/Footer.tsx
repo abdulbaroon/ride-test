@@ -16,7 +16,9 @@ const Footer = () => {
                             <FaHeart />{" "}
                         </span>
                         by{" "}
-                        <Link className='hover:text-white font-bold' href={"#"}>
+                        <Link
+                            className='hover:text-white font-bold'
+                            href={"https://chasingwatts.com"}>
                             {" "}
                             Chasing Watts LLC
                         </Link>

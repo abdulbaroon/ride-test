@@ -46,7 +46,7 @@ export const Calender = () => {
         (state) => state.auth.profileData
     );
     const timezones = React.useMemo(() => timezoneNames(), []);
-    const [date, setDate] = React.useState(dayjs().toDate());
+    const [date, setDate] = React.useState(new Date());
     const [loading, setLoading] = React.useState(false);
     const [currentMonth, setCurrentMonth] = React.useState(0);
     const [timezone, setTimezone] = React.useState("Etc/UTC");
@@ -200,6 +200,7 @@ export const Calender = () => {
                         data={calendarEvents}
                         modelFields={customCalendarFields}
                         date={date}
+                        defaultDate={date}
                         onDateChange={handleDateChange}
                         //onNavigate={handleNavigate}
                         editable={false}

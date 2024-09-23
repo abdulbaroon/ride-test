@@ -64,3 +64,11 @@ export const formatIsoDateString = (dateString: string): string => {
     }
     return "";
 };
+
+export const currentYear = new Date().getFullYear();
+
+export const parseAdjust = (eventDate: string) => {
+        const date = new Date(eventDate);
+        date.setFullYear(currentYear);
+        return date;
+    };

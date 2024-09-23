@@ -352,15 +352,15 @@ export const DashboardPage: React.FC = () => {
 
                     <div className='text-xl flex gap-5'>
                         <div className='w-[65%] mt-6 '>
-                            <div>
-                                {isArray(hotRideArray) &&
-                                    hotRideArray.length > 0 && (
+                            {isArray(hotRideArray) &&
+                                hotRideArray.length > 0 && (
+                                    <div>
                                         <p className='font-bold ms-1 mb-3'>
                                             Hot Rides
                                         </p>
-                                    )}
-                                <HotRideCard data={hotRideArray} />
-                            </div>
+                                    </div>
+                                )}
+                            <HotRideCard data={hotRideArray} />
 
                             <div className='mt-5'>
                                 {isArray(rideListArray) &&

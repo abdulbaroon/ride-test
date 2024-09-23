@@ -39,7 +39,7 @@ const LeaderBoardList = () => {
                 <p className='text-xs flex items-center gap-1'>
                     <BsLightningCharge className='text-yellow-600' />
                     Get on the leaderboard!
-                    <Link href='#' className='text-primaryText'>
+                    <Link href='/points' className='text-primaryText'>
                         Earn points!
                     </Link>
                 </p>

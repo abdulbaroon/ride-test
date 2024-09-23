@@ -4,6 +4,9 @@ import {
     appleStore,
     arrowRight,
     googleStore,
+    mockList,
+    mockDetail,
+    mockExplore,
     rideDetail,
     rideList,
     rideMap,
@@ -56,9 +59,9 @@ export const HomePage = () => {
                         </div>
                     </div>
                     <div className='w-full tablet:w-2/5 flex justify-center desktop:justify-start '>
-                        <div className='w-[350px]'>
+                        <div className='w-[350px] p-6'>
                             <img
-                                src={rideList.src}
+                                src={mockList.src}
                                 className='w-full h-full'
                                 alt='ridelist'
                             />
@@ -109,8 +112,8 @@ export const HomePage = () => {
             <div>
                 <div className='bg-violet  '>
                     <div className='w-11/12 mx-auto !max-w-[1320px] py-20 text-wrap'>
-                        <h1 className='text-5xl text-white font-bold text-center'>
-                            Welcome to Chasing Watts.
+                        <h1 className='text-4xl text-white font-bold text-center'>
+                            Details to make your ride great.
                         </h1>
                         <div className='flex flex-col tablet:flex-row justify-center mt-14 gap-5 w-full'>
                             <div className=' mt-5 w-full tablet:w-1/2 desktop:w-5/12 flex  tablet:items-end flex-col '>
@@ -122,7 +125,7 @@ export const HomePage = () => {
                                             <div className='text-primaryText text-2xl mt-1'>
                                                 {createElement(data.icons)}
                                             </div>
-                                            <div className='flex flex-col items-start flex-wrap  gap-1'>
+                                            <div className='flex flex-col items-start flex-wrap gap-1'>
                                                 <h1 className='text-white text-lg font-semibold '>
                                                     {data.title}
                                                 </h1>
@@ -137,7 +140,7 @@ export const HomePage = () => {
                             <div className='w-2/12 hidden desktop:block '>
                                 <div className=' '>
                                     <img
-                                        src={rideDetail.src}
+                                        src={mockDetail.src}
                                         className='w-full '
                                         alt=''
                                     />
@@ -170,9 +173,9 @@ export const HomePage = () => {
                                 See all the Features
                             </Link>
                             <Link
-                                href={"#"}
+                                href={"/search"}
                                 className='bg-transparent rounded-lg py-[14px] px-7 w-fit text-white border border-white font-bold'>
-                                How to Find a Ride
+                                Search for a Ride
                             </Link>
                         </div>
                     </div>
@@ -180,7 +183,7 @@ export const HomePage = () => {
             </div>
 
             <div id='app'>
-                <div className='w-11/12 mx-auto !max-w-[1320px] bg-lightGray rounded-xl my-10 py-10 min-h-[40vh] flex flex-col tablet:flex-row px-2 tablet:px-10 desktop:px-32'>
+                <div className='w-11/12 mx-auto !max-w-[1320px] bg-lightGray rounded-md my-10 py-10 min-h-[40vh] flex flex-col tablet:flex-row px-2 tablet:px-10 desktop:px-32'>
                     <div className='w-full tablet:w-1/2'>
                         <div className='flex flex-col justify-center text-center tablet:text-start h-full gap-7'>
                             <h1 className='text-3xl font-bold text-gray-800'>
@@ -212,7 +215,7 @@ export const HomePage = () => {
                     </div>
                     <div className='w-full mt-10 tablet:mt-0 tablet:w-1/2 flex justify-center tablet:justify-end'>
                         <div className='w-96'>
-                            <img src={rideMap.src} className='w-full' />
+                            <img src={mockExplore.src} className='w-full' />
                         </div>
                     </div>
                 </div>

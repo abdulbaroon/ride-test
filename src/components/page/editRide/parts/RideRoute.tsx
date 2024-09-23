@@ -28,7 +28,7 @@ const RideRoute: React.FC<RideRouteProps> = ({
     return (
         <div>
             {geoJSON?.features && (
-                <div className='border rounded-xl p-6 flex items-center gap-5  '>
+                <div className='border rounded-md p-6 flex items-center gap-5  '>
                     <div className='w-1/2 '>
                         <div className='flex flex-col w-full'>
                             <label className='font-medium text-gray-600 text-sm'>

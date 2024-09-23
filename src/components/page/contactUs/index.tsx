@@ -62,7 +62,7 @@ export const Contact = () => {
 
     return (
         <div className='w-full flex justify-center items-center bg-[#f5f4f8] my-40'>
-            <div className='w-full desktop:w-1/2 mx-auto bg-white border rounded-xl flex items-center flex-col tablet:flex-row'>
+            <div className='w-full desktop:w-1/2 mx-auto bg-white border rounded-md flex items-center flex-col tablet:flex-row'>
                 <div className='w-full tablet:w-1/2 p-6 tablet:p-12'>
                     <div>
                         <h3 className='text-2xl tablet:text-3xl font-bold pb-6'>

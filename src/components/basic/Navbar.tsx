@@ -107,7 +107,7 @@ const Navbar = () => {
                                 </Link>
                             ) : (
                                 <Link
-                                    href={"#"}
+                                    href={"/account/register"}
                                     className='border-r pe-4 hover:text-gray-400 '>
                                     Register
                                 </Link>
@@ -134,7 +134,7 @@ const Navbar = () => {
                                 <Link
                                     href={"/calendar"}
                                     className='hover:text-gray-400'>
-                                    Calender
+                                    Calendar
                                 </Link>
                             )}
                             {user && (
@@ -215,7 +215,7 @@ const Navbar = () => {
                         <Link
                             href={`/account/login`}
                             className='bg-primaryText text-white px-4 py-[6px] rounded-lg font-bold'>
-                            sign in
+                            Sign In
                         </Link>
                     )}
                 </div>

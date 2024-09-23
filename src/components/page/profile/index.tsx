@@ -510,7 +510,7 @@ export const ProfilePage = () => {
                                         </div>
                                     </div>
                                 </div>
-                                <div className='w-full tablet:w-1/2  mt-4 rounded-xl'>
+                                <div className='w-full tablet:w-1/2  mt-4 rounded-md'>
                                     <MapBox
                                         center={[lng, lat]}
                                         initialZoom={11}

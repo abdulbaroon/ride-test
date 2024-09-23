@@ -303,7 +303,7 @@ export const EditRide = ({ id }: { id: number }) => {
                         <Accordion
                             defaultIndex={[0, 1]}
                             allowMultiple
-                            className='border bg-white rounded-xl'>
+                            className='border bg-white rounded-md'>
                             <AccordionItem>
                                 <h2>
                                     <AccordionButton>
@@ -391,7 +391,7 @@ export const EditRide = ({ id }: { id: number }) => {
                                             </TabPanel>
                                             <TabPanel>
                                                 {currentTab === 2 && (
-                                                    <div className='border shadow-xl rounded-xl p-6'>
+                                                    <div className='border border-slate-200 rounded-md p-6'>
                                                         <div className='w-1/2 '>
                                                             <div className='flex gap-2 tablet:gap-4 flex-col tablet:flex-row mt-3'>
                                                                 <div className='flex flex-col tablet:w-1/2 w-full'>
@@ -621,11 +621,14 @@ export const EditRide = ({ id }: { id: number }) => {
                                     "Delete"
                                 )}
                             </button>
-                            <Link
-                                href={"/dashboard"}
+                            <button
+                                type='button'
+                                onClick={() => {
+                                    back();
+                                }}
                                 className='py-2 px-8 rounded-md bg-primaryButton text-white w-44'>
                                 Cancel
-                            </Link>
+                            </button>
                             <button
                                 type='submit'
                                 className='py-2  rounded-md px-8 bg-primaryDarkblue text-white w-44'>

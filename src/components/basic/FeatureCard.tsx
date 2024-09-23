@@ -10,10 +10,10 @@ type Props = {
 
 const FeatureCard = (props: Props) => {
     return (
-        <div className='min-h-60 border relative mt-10 rounded-2xl'>
+        <div className='min-h-60 border relative mt-10 rounded-md'>
             <div className='p-6 flex justify-center items-center flex-col text-center'>
                 <div
-                    className={`w-fit text-5xl p-4 rounded-full  shadow-xl`}
+                    className={`w-fit text-5xl p-4 rounded-full border border-neutral-200`}
                     style={{ color: props.color, backgroundColor: "white" }}>
                     {createElement(props.icon)}
                 </div>

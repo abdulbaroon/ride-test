@@ -16,7 +16,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { useDispatch, useSelector } from "react-redux";
 import Linkify from "linkify-react";
 
-const ChatBox = () => {
+const ChatBox = ({ userLogin }: { userLogin: any }) => {
     const activityChat = useSelector<RootState, ActivityChat[]>(
         (state) => state.rideDetail.activityChat
     );
@@ -68,7 +68,7 @@ const ChatBox = () => {
     return (
         <section id='chat'>
             <div className='bg-white min-h-40 border p-5 rounded-lg'>
-                {user?.id !== null && (
+                {userLogin && (
                     <form
                         onSubmit={handleSubmit}
                         className='relative rounded-lg overflow-hidden'>

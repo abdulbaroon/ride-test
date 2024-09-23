@@ -6,8 +6,6 @@ export default function HubsLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div>
       <CustomLayout>{children}</CustomLayout>
-    </div>
   );
 }

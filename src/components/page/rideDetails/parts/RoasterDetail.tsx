@@ -153,24 +153,31 @@ const RoasterDetail = () => {
                                 </div>
                             ))}
                             {roster.length === 0 &&
-                                (selectedTab === 3 ? (
+                                (selectedTab === 1 ? (
                                     <div className='text-gray-500'>
-                                        <div className='font-semibold text-xs py-2 justify-center items-center flex'>
-                                            Nothing to see here.
+                                        <div className='font-semibold text-sm mt-3 py-2 justify-center items-center flex'>
+                                            Be the cool one! Join and start the
+                                            trend!
                                         </div>
                                     </div>
-                                ) : (
+                                ) : selectedTab === 2 ? (
                                     <div className='text-gray-500'>
-                                        <div className='font-semibold text-xs py-2 justify-center items-center flex'>
+                                        <div className='font-semibold text-sm mt-3 py-2 justify-center items-center flex'>
                                             Interested? Join the ride and be in
                                             the know!
                                         </div>
                                     </div>
-                                ))}
+                                ) : selectedTab === 3 ? (
+                                    <div className='text-gray-500'>
+                                        <div className='font-semibold text-sm mt-3 py-2 justify-center items-center flex'>
+                                            Nothing to see here.
+                                        </div>
+                                    </div>
+                                ) : null)}
                         </>
                     ) : (
                         <>
-                            <div
+                            {/* <div
                                 className='w-full bg-teal-200 mt-3 p-1 rounded-lg'
                                 style={{
                                     backgroundColor:
@@ -181,7 +188,7 @@ const RoasterDetail = () => {
                                         selectedTab - 1
                                     ]
                                 } (${roster.length}) `}
-                            </div>
+                            </div> */}
                             {roster.map((data, index) => (
                                 <div
                                     key={index}
@@ -207,25 +214,27 @@ const RoasterDetail = () => {
                                 </div>
                             ))}
                             {roster.length === 0 &&
-                                (selectedTab === 3 ? (
+                                (selectedTab === 1 ? (
                                     <div className='text-gray-500'>
-                                        <div className='text-gray-500'>
-                                            <div className='font-semibold text-xs py-2 justify-center items-center flex'>
-                                                Interested? Join the ride and be
-                                                in the know!
-                                            </div>
+                                        <div className='font-semibold text-sm mt-3 py-2 justify-center items-center flex'>
+                                            Be the cool one! Join and start the
+                                            trend!
                                         </div>
                                     </div>
-                                ) : (
+                                ) : selectedTab === 2 ? (
                                     <div className='text-gray-500'>
-                                        <div className='text-gray-500'>
-                                            <div className='font-semibold text-xs py-2 justify-center items-center flex'>
-                                                Be the cool one! Join and start
-                                                a trend!
-                                            </div>
+                                        <div className='font-semibold text-sm mt-3 py-2 justify-center items-center flex'>
+                                            Interested? Join the ride and be in
+                                            the know!
                                         </div>
                                     </div>
-                                ))}
+                                ) : selectedTab === 3 ? (
+                                    <div className='text-gray-500'>
+                                        <div className='font-semibold text-sm mt-3 py-2 justify-center items-center flex'>
+                                            Nothing to see here.
+                                        </div>
+                                    </div>
+                                ) : null)}
                         </>
                     )}
                 </div>

@@ -57,7 +57,7 @@ export const AboutUs = () => {
                 <div className='flex !max-w-[1320px] mx-auto'>
                     <div className='w-4/12 flex flex-col items-center justify-center '>
                         <FaRoute className='text-5xl text-white  me-3' />
-                        <p className='text-5xl text-white font-bold mt-2  flex flex-row'>
+                        <div className='text-5xl text-white font-bold mt-2  flex flex-row'>
                             <AnimatedNumbers
                                 includeComma
                                 animateToNumber={15}
@@ -67,12 +67,12 @@ export const AboutUs = () => {
                                 })}
                             />
                             K+
-                        </p>
+                        </div>
                         <p className='text-white text-lg '>Rides created</p>
                     </div>
                     <div className='w-4/12 flex flex-col items-center justify-center '>
                         <FaRegEye className='text-5xl text-white  me-3 ' />
-                        <p className='text-5xl text-white font-bold mt-2  flex flex-row'>
+                        <div className='text-5xl text-white font-bold mt-2  flex flex-row'>
                             <AnimatedNumbers
                                 includeComma
                                 animateToNumber={2.6}
@@ -82,12 +82,12 @@ export const AboutUs = () => {
                                 })}
                             />
                             M+
-                        </p>
+                        </div>
                         <p className='text-white text-lg '>Rides viewed</p>
                     </div>
                     <div className='w-4/12 flex flex-col items-center justify-center   '>
                         <MdPeopleAlt className='text-5xl text-white  ' />
-                        <p className='text-5xl text-white font-bold mt-2 flex flex-row'>
+                        <div className='text-5xl text-white font-bold mt-2 flex flex-row'>
                             <AnimatedNumbers
                                 includeComma
                                 animateToNumber={10}
@@ -97,7 +97,7 @@ export const AboutUs = () => {
                                 })}
                             />
                             K+
-                        </p>
+                        </div>
                         <p className='text-white text-lg '>Cyclists</p>
                     </div>
                 </div>
@@ -164,7 +164,7 @@ export const AboutUs = () => {
                             <div>
                                 <Link
                                     href='/account/register'
-                                    className='text-white w-fit bg-primaryText py-3 px-8 rounded-3xl font-bold flex justify-center items-center text-lg '>
+                                    className='text-white w-fit bg-primaryText py-3 px-8 rounded-md font-bold flex justify-center items-center text-lg '>
                                     Get Started <RiArrowRightSLine />
                                 </Link>
                             </div>
