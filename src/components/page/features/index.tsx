@@ -2,6 +2,7 @@ import { featbg, logo, navLogo } from "@/assets";
 import FeatureCard from "@/components/basic/FeatureCard";
 import { featureCard } from "@/constant";
 import { url } from "inspector";
+import Link from "next/link";
 import React from "react";
 import { FaCheck } from "react-icons/fa";
 import { HiOutlineHome } from "react-icons/hi";
@@ -120,12 +121,12 @@ export const FeaturesPage = () => {
                                 let&apos;s ride!
                             </p>
                             <div className='flex  gap-2 mt-5'>
-                                <button className='bg-darkred rounded-lg py-3 px-5 w-fit text-white  font-bold'>
+                                <Link href={"/account/login"}  className='bg-darkred rounded-lg py-3 px-5 w-fit text-white  font-bold'>
                                     Sign up - it&apos;s free
-                                </button>
-                                <button className='bg-primaryButton rounded-lg py-3 w-fit px-5 text-white font-bold'>
+                                </Link> 
+                                <Link href={"/account/register"} className='bg-primaryButton rounded-lg py-3 w-fit px-5 text-white font-bold'>
                                     Already Member? Login.
-                                </button>
+                                </Link>
                             </div>
                         </div>
                         <div className='w-1/2 flex items-center'>

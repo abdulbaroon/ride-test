@@ -33,6 +33,7 @@ const loadImage = async (mapImage: string | any, image: string | any, name:any) 
     else if (mapImage) {
         url = await checkImageLoads(mapImage);
     }
+    
     if(secondUrl){
         const newurl = `https://ogcdn.net/e4b8c678-7bd5-445d-ba03-bfaad510c686/v4/${encodeURIComponent(MY_DOMAIN||"http://chasingwatts.com/")}/${encodeURIComponent(name)}/${encodeURIComponent(secondUrl)}/og.png`;
         

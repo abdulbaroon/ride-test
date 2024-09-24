@@ -1,62 +1,43 @@
 "use client";
-import {
-    burder,
-    coffee,
-    beerMug,
-    snooze,
-    rideDetail,
-    rideList,
-    letsRide,
-} from "@/assets";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { MdOutlineDirectionsBike } from "react-icons/md";
-import UserProfile from "./parts/UserProfile";
-import Greeting from "./parts/Greeting";
 import { TbFilter, TbFilterX } from "react-icons/tb";
-import { FaRegMap } from "react-icons/fa";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux/store/store";
-import { User } from "@/shared/types/account.types";
+import { Tooltip, useDisclosure } from "@chakra-ui/react";
+import { format } from "date-fns";
+import { RootState, AppDispatch } from "@/redux/store/store";
 import {
-    getActivityExplore,
-    getDashBoardWeather,
-    getFriendCount,
+    getRideList,
     getHotRideList,
-    getLeaderBoard,
     getMyRideList,
     getPointDetails,
-    getPointLevels,
-    getRideList,
     getUserStats,
+    getActivityExplore,
+    getFriendCount,
+    getDashBoardWeather,
+    getLeaderBoard,
+    getPointLevels,
 } from "@/redux/slices/dashboardSlice";
-import {
-    FormattedRide,
-    FormattedRideData,
-    Item,
-    RideItem,
-} from "@/shared/types/dashboard.types";
 import { formatRideList } from "@/shared/util/format.util";
+import { isArray } from "lodash";
+import Greeting from "./parts/Greeting";
+import UserProfile from "./parts/UserProfile";
 import RideCard from "./parts/RideCard";
-import { addDays, format } from "date-fns";
+import HotRideCard from "./parts/HotRideCard";
 import DateFilterButton from "./parts/DateFilterButton";
 import QuickFilter from "./parts/QuickFilter";
-import { Button, Tooltip, useDisclosure } from "@chakra-ui/react";
-import NewsCard from "./parts/NewsCard";
-import HotRideCard from "./parts/HotRideCard";
-import MyRideModal from "./parts/MyRideModal";
-import { getProfile } from "@/redux/slices/authSlice";
-import LeaderBoardList from "./parts/LeaderBoardList";
-import FriendCard from "./parts/FriendCard";
-import MapModal from "./parts/MapModal";
-import { profileData } from "@/constant";
 import WeatherForecast from "./parts/WeatherForecast";
-import { isArray } from "lodash";
+import MyRideModal from "./parts/MyRideModal";
+import MapModal from "./parts/MapModal";
+import LeaderBoardList from "./parts/LeaderBoardList";
+import NewsCard from "./parts/NewsCard";
+import { profileData } from "@/constant";
+import { getProfile } from "@/redux/slices/authSlice";
+import { FormattedRide, Item, RideItem } from "@/shared/types/dashboard.types";
+import { faBeerMug, faCoffee, faHamburger, faThumbsUp, faZzz } from "@fortawesome/pro-light-svg-icons";
+import { User } from "@/shared/types/account.types";
+import { letsRide } from "@/assets";
 import Link from "next/link";
-import { faCoffee } from "@fortawesome/pro-light-svg-icons/faCoffee";
-import { faHamburger } from "@fortawesome/pro-light-svg-icons/faHamburger";
-import { faBeerMug } from "@fortawesome/pro-light-svg-icons/faBeerMug";
-import { faZzz } from "@fortawesome/pro-light-svg-icons/faZzz";
-import { faThumbsUp } from "@fortawesome/pro-light-svg-icons/faThumbsUp";
 
 const getTimeOfDayIconAndGreeting = () => {
     const now = new Date();
@@ -92,16 +73,17 @@ interface FilterInputs {
     rideName: string;
 }
 export const DashboardPage: React.FC = () => {
-    const [rideListArray, setRideListArray] = useState<FormattedRide[] | []>(
-        []
-    );
-    const [rideArray, setRideArray] = useState<RideItem[] | []>([]);
-    const [hotRideArray, setHotRideArray] = useState<FormattedRide[] | []>([]);
-    const [openFilter, setOpenFilter] = useState(false);
-    const [filter, setfilter] = useState<boolean>(false);
-    const [inputFilter, setInputFilter] = useState<any>();
-    const userData = useSelector<RootState>((state) => state.auth.user) as User;
     const dispatch = useDispatch<AppDispatch>();
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const { isOpen: isMapOpen, onOpen: onMapOpen, onClose: onMapClose } = useDisclosure();
+
+    const [rideListArray, setRideListArray] = useState<FormattedRide[]>([]);
+    const [hotRideArray, setHotRideArray] = useState<FormattedRide[]>([]);
+    const [openFilter, setOpenFilter] = useState(false);
+    const [inputFilter, setInputFilter] = useState<any>(null);
+    const [filter, setFilter] = useState(false);
+
+    const userData = useSelector<RootState>((state) => state.auth.user) as User;
     const hotRidedata = useSelector<RootState, Item[]>(
         (state) => state.dashboard.hotRideList
     );
@@ -121,12 +103,11 @@ export const DashboardPage: React.FC = () => {
         (state) => state.auth.profileData
     );
 
-    const { isOpen, onOpen, onClose } = useDisclosure();
-    const {
-        isOpen: isMapModal,
-        onOpen: onMapOpen,
-        onClose: onMapClose,
-    } = useDisclosure();
+    const ridememo = useMemo(()=>(
+        rideListArray?.map((data) => (
+            <RideCard data={data} key={data.activityID} userData={userData} />
+        ))
+    ),[rideListArray])
 
     const { icon, greeting } = getTimeOfDayIconAndGreeting();
 
@@ -147,7 +128,7 @@ export const DashboardPage: React.FC = () => {
         userID: profile.userID,
     };
 
-    const handleApi = async () => {
+    const fetchDashboardData = useCallback(() => {
         if (userData.userProfile?.defaultRadius && userData.id) {
             const params = {
                 id: userData.id,
@@ -160,225 +141,104 @@ export const DashboardPage: React.FC = () => {
             dispatch(getPointLevels());
             dispatch(getProfile(userData.id));
             dispatch(getLeaderBoard(0));
+            dispatch(getFriendCount({ id: userData.id, radius: profile.defaultRadius }));
+            dispatch(getDashBoardWeather({ lat: profile?.homeBaseLat||0, lng: profile.homeBaseLng,uom: profile?.unitOfMeasureID || 1 }));
         }
-    };
+    }, [dispatch, userData?.id, profile?.defaultRadius]);
+
     useEffect(() => {
-        if (userData?.id && profile) {
-            dispatch(
-                getActivityExplore({
-                    id: userData?.id,
-                    radius: profile?.defaultRadius,
-                })
-            );
-            dispatch(
-                getFriendCount({
-                    id: userData?.id,
-                    radius: profile?.defaultRadius,
-                })
-            );
-            dispatch(
-                getDashBoardWeather({
-                    lat: profile?.homeBaseLat,
-                    lng: profile?.homeBaseLng,
-                    uom: profile?.unitOfMeasureID || 1,
-                })
-            );
-        }
-    }, [userData, profile]);
+        fetchDashboardData();
+    }, [fetchDashboardData]);
 
-    const handleHotRideApi = async () => {
-        if (userData.userProfile?.defaultRadius && userData.id) {
-            const params = {
-                id: userData.id,
-                feedType: "Hot",
-                radius: userData.userProfile?.defaultRadius,
-            };
-            await dispatch(getHotRideList(params));
-        }
-    };
 
-    const handleMyRideApi = async () => {
-        if (userData.userProfile?.defaultRadius && userData.id) {
-            const params = {
-                id: userData.id,
-                feedType: "me",
-                radius: userData.userProfile?.defaultRadius,
-            };
-            await dispatch(getMyRideList(params));
-        }
+    useEffect(() => {
+        const formattedRides = ridedata.map(formatRideList);
+        const formattedHotRides = hotRidedata.map(formatRideList);
+
+        setRideListArray(inputFilter ? ridedata?.filter(applyFilter)?.map(formatRideList) : formattedRides);
+        setHotRideArray(formattedHotRides);
+    }, [inputFilter, ridedata, hotRidedata]);
+
+    const applyFilter = (ride: any) => {
+        console.log(inputFilter,"input")
+        const matchesName = inputFilter.rideName
+        ? ride?.activityName
+              .toLowerCase()
+              .includes(inputFilter.rideName.toLowerCase())
+        : true;
+    const matchesRadius = inputFilter.radius
+        ? inputFilter.radius >
+          (ride?.activityRoutes?.[0]?.distance ?? Infinity)
+        : true;
+    const matchesType = inputFilter.rideType
+        ? Number(inputFilter.rideType) === ride?.activityTypeID
+        : true;
+    return matchesName && matchesRadius && matchesType;
     };
 
     const handelFilterData = (data: RideItem[]) => {
         if (data) {
             const formatRide = data?.map((data) => formatRideList(data));
             setRideListArray(formatRide);
-            setfilter(true);
+            setFilter(true)
         } else {
             setRideListArray([]);
         }
     };
 
-    useEffect(() => {
-        if (inputFilter) {
-            const rdata: RideItem[] = ridedata.filter((item: RideItem) => {
-                const matchesName = inputFilter.rideName
-                    ? item?.activityName
-                          .toLowerCase()
-                          .includes(inputFilter.rideName.toLowerCase())
-                    : true;
-                const matchesRadius = inputFilter.radius
-                    ? inputFilter.radius >
-                      (item?.activityRoutes?.[0]?.distance ?? Infinity)
-                    : true;
-                const matchesType = inputFilter.rideType
-                    ? Number(inputFilter.rideType) === item?.activityTypeID
-                    : true;
-                return matchesName && matchesRadius && matchesType;
-            });
-            setRideArray(rdata);
-            const formatRide = rdata?.map((data) => formatRideList(data));
-            setRideListArray(formatRide);
-        } else {
-            if (ridedata) {
-                setRideArray(ridedata);
-                const formattedRide = ridedata.map((data) =>
-                    formatRideList(data)
-                );
-                setRideListArray(formattedRide);
-            }
-
-            if (hotRidedata) {
-                const formattedHotRide = hotRidedata.map((data) =>
-                    formatRideList(data)
-                );
-                setHotRideArray(formattedHotRide);
-            }
-        }
-    }, [inputFilter, ridedata, hotRidedata]);
-
-    const handelClearFilter = () => {
-        setRideArray(ridedata);
-        const formattedRide = ridedata.map((data) => formatRideList(data));
-        setRideListArray(formattedRide);
-        setfilter(false);
+    const clearFilter = () => {
+        setFilter(false);
+        setInputFilter(null);
+        setRideListArray(ridedata.map(formatRideList));
     };
 
-    useEffect(() => {
-        handleApi();
-        handleHotRideApi();
-        handleMyRideApi();
-    }, []);
-
     return (
-        <div className=' mt-28 mb-6 '>
-            <div className='w-11/12 mx-auto flex gap-5 !max-w-[1320px] '>
-                <div className='w-1/4'>
+        <div className="mt-28 mb-6">
+            <div className="w-11/12 mx-auto flex gap-5 max-w-[1320px]">
+                <div className="w-1/4">
                     <UserProfile {...user} />
                     <WeatherForecast />
                 </div>
-                <div className='w-[75%]'>
-                    <div className='w-full min-h-10 h-fit border border-neutral-300 rounded-md bg-white p-5 flex justify-between items-start'>
-                        <div>
-                            <Greeting
-                                rides={ridedata.length}
-                                icon={icon}
-                                greeting={greeting}
-                                name={
-                                    userData.userProfile?.firstName +
-                                    " " +
-                                    userData.userProfile?.lastName
-                                }
-                            />
-                        </div>
-                        <div className='flex gap-2'>
-                            <button
-                                onClick={onOpen}
-                                className='rounded-md justify-center items-center h-10 flex 
-                                bg-primaryButton text-white gap-1 text-sm py-2 px-4'>
+                <div className="w-[75%]">
+                    <div className="w-full min-h-10 h-fit border border-neutral-300 rounded-md bg-white p-5 flex justify-between items-start">
+                        <Greeting rides={ridedata.length} icon={icon} greeting={greeting} name={user.name} />
+                        <div className="flex gap-2">
+                            <button onClick={onOpen} className="rounded-md flex bg-primaryButton text-white gap-1 text-sm py-2 px-4">
                                 <MdOutlineDirectionsBike />
                                 My Rides
-                                <span className='bg-primaryText px-2 rounded-md'>
-                                    {myRidedata?.length}
-                                </span>
+                                <span className="bg-primaryText px-2 rounded-md">{myRidedata.length}</span>
                             </button>
-                            <Tooltip
-                                hasArrow
-                                label='Clear Filter'
-                                placement='top'
-                                bg='black'>
-                                <button
-                                    onClick={handelClearFilter}
-                                    className='text-2xl text-white bg-yellow-500 p-2 rounded-md h-fit'>
+                            <Tooltip label="Clear Filter" placement="top" bg="black">
+                                <button onClick={clearFilter} className="text-2xl text-white bg-yellow-500 p-2 rounded-md">
                                     <TbFilterX />
                                 </button>
                             </Tooltip>
-                            <Tooltip
-                                hasArrow
-                                label='Filter'
-                                placement='top'
-                                bg='black'>
-                                <button
-                                    onClick={() => setOpenFilter(true)}
-                                    className='text-2xl text-white bg-primaryText  p-2 rounded-md h-fit '>
+                            <Tooltip label="Filter" placement="top" bg="black">
+                                <button onClick={() => setOpenFilter(true)} className="text-2xl text-white bg-primaryText p-2 rounded-md">
                                     <TbFilter />
                                 </button>
                             </Tooltip>
-                            {/* <button
-                                onClick={onMapOpen}
-                                className='flex justify-center items-center px-3 py-2 bg-primaryDarkblue rounded-md text-white gap-1'>
-                                <FaRegMap /> Map
-                            </button> */}
                         </div>
                     </div>
 
-                    <div>
-                        {openFilter && (
-                            <QuickFilter
-                                closeFilter={() => setOpenFilter(false)}
-                                handelFilterData={(data) =>
-                                    setInputFilter(data)
-                                }
-                            />
-                        )}
-                    </div>
+                    {openFilter && <QuickFilter closeFilter={() => setOpenFilter(false)} handelFilterData={setInputFilter} />}
 
-                    <div>
-                        <DateFilterButton
-                            ridedata={rideArray}
-                            handelFilterData={handelFilterData}
-                            filter={filter}
-                        />
-                    </div>
+                    <DateFilterButton ridedata={ridedata} handelFilterData={handelFilterData} filter={filter} />
 
-                    <div className='text-xl flex gap-5'>
-                        <div className='w-[65%] mt-6 '>
-                            {isArray(hotRideArray) &&
-                                hotRideArray.length > 0 && (
-                                    <div>
-                                        <p className='font-bold ms-1 mb-3'>
-                                            Hot Rides
-                                        </p>
-                                    </div>
-                                )}
-                            <HotRideCard data={hotRideArray} />
-
-                            <div className='mt-5'>
-                                {isArray(rideListArray) &&
-                                rideListArray.length > 0 ? (
-                                    <>
-                                        <p className='font-bold ms-1 mb-3'>
-                                            Upcoming Rides{" "}
-                                        </p>
-                                        {rideListArray?.map((data) => (
-                                            <RideCard
-                                                data={data}
-                                                key={data.activityID}
-                                                userData={userData}
-                                                handleLike={handleApi}
-                                            />
-                                        ))}
-                                    </>
-                                ) : (
+                    <div className="text-xl flex gap-5">
+                        <div className="w-[65%] mt-6">
+                            {hotRideArray.length > 0 && (
+                                <>
+                                    <p className="font-bold ms-1 mb-3">Hot Rides</p>
+                                    <HotRideCard data={hotRideArray} />
+                                </>
+                            )}
+                            {rideListArray.length > 0 ? (
+                                <>
+                                    <p className="font-bold ms-1 mb-3">Upcoming Rides</p>
+                                    {ridememo}
+                                </>
+                            ) : (
                                     <>
                                         <div className='min-h-52 border border-neutral-300 rounded-md bg-white p-6 text-center'>
                                             <p className='mt-3 text-xl font-semibold '>
@@ -419,20 +279,18 @@ export const DashboardPage: React.FC = () => {
                                                     Add Ride
                                                 </Link>
                                             </div>
-                                        </div>
+                                </div>
                                     </>
-                                )}
-                            </div>
+                            )}
                         </div>
                         <div className='w-[35%] mt-6 space-y-7 '>
                             <NewsCard />
                             <LeaderBoardList />
-                            {/* <FriendCard /> */}
                         </div>
                     </div>
                 </div>
             </div>
-            <MapModal isOpen={isMapModal} onClose={onMapClose} />
+            <MapModal isOpen={isMapOpen} onClose={onMapClose} />
             <MyRideModal isOpen={isOpen} onClose={onClose} />
         </div>
     );

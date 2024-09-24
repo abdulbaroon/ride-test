@@ -26,7 +26,7 @@ import { MdOutlineCancelPresentation } from "react-icons/md";
 import Link from "next/link";
 import { checkUserInRide } from "@/redux/slices/ratingSlice";
 import { toast } from "react-toastify";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import {  notFound, usePathname, useRouter, useSearchParams } from "next/navigation";
 import Lottie from "lottie-react";
 import * as animationData from "../../../assets/lottieAssets/loader.json";
 import { Alert, AlertIcon } from "@chakra-ui/react";
@@ -53,6 +53,7 @@ export const RideDetails = ({ id }: { id: number }) => {
             const response = await dispatch(getRideDetails(id));
             if (getRideDetails.fulfilled.match(response)) {
                 const formatedRide = formatRideData(response.payload);
+                console.log("ride fetching")
                 setRideDetails(formatedRide);
 
                 const params = {
@@ -85,6 +86,9 @@ export const RideDetails = ({ id }: { id: number }) => {
                     dispatch(getresponsetype()),
                 ]);
                 return response.payload;
+            }else if(getRideDetails.rejected.match(response)){
+                console.log("sadfasdfasdf=======>retun")
+               return notFound()
             }
         } catch (error) {
             console.error("Error fetching data:", error);

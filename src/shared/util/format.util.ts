@@ -164,7 +164,7 @@ export const formatRideData = (item: Item): FormattedRideData => {
     };
 };
 
-export function checkImageLoad(imageUrl: string): Promise<string | null> {
+export function checkImageLoad(imageUrl: string): Promise<string | any> {
     return new Promise((resolve, reject) => {
         const img = new Image();
         img.src = imageUrl;

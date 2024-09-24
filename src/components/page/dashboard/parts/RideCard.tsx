@@ -1,5 +1,5 @@
 import { FormattedRide } from "@/shared/types/dashboard.types";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { format, parse, parseISO } from "date-fns";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store/store";
@@ -52,7 +52,7 @@ interface RideCardProps {
     isLike?: boolean;
     showPicture?: boolean;
 }
-
+const data=0
 export const setDifficultyIcon = (
     iconName: string | any,
     iconColor: string | any
@@ -109,20 +109,23 @@ const RideCard: React.FC<RideCardProps> = ({
     showPicture = true,
 }) => {
     const [like, setLike] = useState(false);
-    const [imageUrl, setImageUrl] = useState<string | any>(null);
-    const dispatch = useDispatch<AppDispatch>();
+    const imageUrlRef = useRef<string | null>(null);
+        const dispatch = useDispatch<AppDispatch>();
 
-    //console.log("Ride Data: ", data);
+        console.log("Ride Data: ", data);
 
-    useEffect(() => {
-        const loadImage = async () => {
-            const url = await checkImageLoad(data.mapImage);
-            const secondUrl = await checkImageLoad(data.image);
-            setImageUrl(secondUrl || url || routePlaceHolder.src);
-        };
-
-        loadImage();
-    }, [data.mapImage]);
+        useEffect(() => {
+            const loadImage = async () => {
+                const url = await checkImageLoad(data.mapImage);
+                const secondUrl = await checkImageLoad(data.image);
+                imageUrlRef.current = secondUrl || url || routePlaceHolder.src;
+                
+                // Force update the component to apply the new image (if needed)
+                // You can call some custom force update logic here if necessary.
+            };
+    
+            loadImage();
+        }, [data.mapImage, data.image]);
 
     const handelLike = async () => {
         const payload = {
@@ -376,7 +379,7 @@ const RideCard: React.FC<RideCardProps> = ({
                 <div className='px-5 py-3 rounded-md overflow-hidden border-b'>
                     <img
                         className='rounded-md aspect-video object-cover'
-                        src={imageUrl}
+                        src={imageUrlRef.current||""}
                         alt='map image'
                     />
                 </div>
