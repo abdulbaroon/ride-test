@@ -17,6 +17,7 @@ import { toast } from "react-toastify";
 import Lottie from "lottie-react";
 import { ratingLatt } from "@/assets";
 import { useRouter } from "next/navigation";
+import { IMAGE_URl } from "@/constant/appConfig";
 
 interface RatingPageProps {
     id: number;
@@ -308,7 +309,7 @@ export const RatingPage: FC<RatingPageProps> = ({ id }) => {
                             <div className='w-1/2 overflow-hidden'>
                                 <img
                                     className='w-full aspect-video object-contain rounded-md'
-                                    src={`https://dev.chasingwatts.com/ogmaps/ogmap_${rides?.activityID}.png`}
+                                    src={`${IMAGE_URl}/ogmaps/ogmap_${rides?.activityID}.png`}
                                     alt='Chasing Watts Ride Map'
                                 />
                             </div>

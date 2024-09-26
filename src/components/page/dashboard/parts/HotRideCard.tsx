@@ -1,17 +1,32 @@
-import React, { useRef, useState } from "react";
+import React from "react";
 import { format, parse, parseISO } from "date-fns";
 import { IoEyeOutline } from "react-icons/io5";
 import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/effect-creative";
-import { EffectCards, EffectCreative } from "swiper/modules";
+import { EffectCards } from "swiper/modules";
 import { FormattedRide } from "@/shared/types/dashboard.types";
 
+/**
+ * Props for the HotRideCard component.
+ *
+ * @interface HotRideCardProps
+ * @property {FormattedRide[]} data - An array of formatted ride objects to be displayed.
+ */
 interface HotRideCardProps {
     data: FormattedRide[];
 }
 
+/**
+ * HotRideCard component that displays a carousel of hot rides.
+ * Each ride card includes details such as the ride name, date, address, 
+ * type, distance, and view count.
+ *
+ * @component
+ * @param {HotRideCardProps} props - The props for the HotRideCard component.
+ * @returns {JSX.Element} The rendered HotRideCard component.
+ */
 const HotRideCard: React.FC<HotRideCardProps> = ({ data }) => {
     return (
         <div>

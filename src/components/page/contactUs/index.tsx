@@ -19,16 +19,28 @@ import Lottie from "lottie-react";
 import * as animationData from "../../../assets/lottieAssets/check.json";
 import { clear } from "console";
 
+/**
+ * Interface representing the values for the contact form.
+ */
 interface ContactFormValues {
+    /** User's email address */
     email: string;
+    /** User's name */
     name: string;
+    /** Subject of the message */
     subject: string;
+    /** Message content */
     message: string;
 }
 
-export const Contact = () => {
-    const [loading, setLoading] = useState(false);
-    const [submitted, setSubmitted] = useState(false);
+/**
+ * Contact component used for submitting feedback or messages.
+ *
+ * @returns {JSX.Element} Rendered Contact component.
+ */
+export const Contact = (): JSX.Element => {
+    const [loading, setLoading] = useState(false);  // Loading state for form submission
+    const [submitted, setSubmitted] = useState(false);  // State to track form submission
 
     const {
         register,
@@ -37,9 +49,14 @@ export const Contact = () => {
         reset,
     } = useForm<ContactFormValues>();
     const dispatch = useDispatch<AppDispatch>();
-    //const router = useRouter();
 
-    const onSubmit = async (data: ContactFormValues) => {
+    /**
+     * Handles the form submission for the contact form.
+     *
+     * @param {ContactFormValues} data - The form data that includes email, name, subject, and message.
+     * @returns {Promise<void>} Async function handling form submission logic.
+     */
+    const onSubmit = async (data: ContactFormValues): Promise<void> => {
         try {
             setLoading(true);
             const response = await dispatch(setContact(data));

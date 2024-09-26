@@ -18,16 +18,30 @@ const logindata = [
     "Web and Mobile",
 ];
 
+/**
+ * Interface representing the form values for the registration form.
+ * @interface
+ */
 interface RegisterFormValues {
     email: string;
     password: string;
     confirmPassword: string;
 }
-export const RegisterPage = () => {
+
+/**
+ * Functional component representing the registration page.
+ * @returns {JSX.Element} JSX element for the registration form.
+ */
+export const RegisterPage = (): JSX.Element => {
+    // State for controlling password visibility and loading state
     const [showPassword, setShowPassword] = useState(false);
     const [showConformPassword, setShowConformPassword] = useState(false);
     const [loading, setloading] = useState(false);
+
+    // Redux dispatch hook
     const dispatch = useDispatch<AppDispatch>();
+
+    // React Hook Form methods
     const {
         register,
         handleSubmit,
@@ -38,9 +52,15 @@ export const RegisterPage = () => {
         mode: "onTouched",
     });
 
+    // Watch for the password value from the form
     const password = watch("password", "");
 
-    const onSubmit = async (data: RegisterFormValues) => {
+    /**
+     * Handles the form submission process.
+     * @param {RegisterFormValues} data - The form data submitted by the user.
+     * @returns {Promise<void>} A promise that resolves when the form submission is complete.
+     */
+    const onSubmit = async (data: RegisterFormValues): Promise<void> => {
         const registerFormValues = {
             ...data,
             acceptTerms: true as boolean,

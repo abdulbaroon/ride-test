@@ -2,22 +2,47 @@ import React, { act, useEffect, useState } from "react";
 import { format, addDays } from "date-fns";
 import { RideItem } from "@/shared/types/dashboard.types";
 import { twMerge } from "tailwind-merge";
-import { filter, set } from "lodash";
 
+/**
+ * Interface representing the props for the DateFilterButton component.
+ */
 interface DateFilterButtonProps {
+    /** Array of ride data items. */
     ridedata: RideItem[];
+
+    /** Function to handle filtering the ride data. */
     handelFilterData: (data: RideItem[]) => void;
+
+    /** Boolean to indicate if a filter is currently applied. */
     filter: boolean;
 }
 
-interface DateButton {
+/**
+ * Interface representing the props for an individual DateButton component.
+ */
+interface DateButtonProps {
+    /** The date displayed on the button. */
     date: Date;
+
+    /** Callback function to be called when the button is clicked. */
     onClick: () => void;
+
+    /** Number of rides on the particular date. */
     item: number;
+
+    /** Boolean to indicate if the button is currently active. */
     active: boolean;
 }
-const DateButton = ({ date, onClick, item, active }: DateButton) => {
-    const [hover, setHover] = useState<boolean>();
+
+/**
+ * A button component that displays a date and the number of rides available on that date.
+ *
+ * @param {DateButtonProps} props - The props for the DateButton component.
+ * @returns {JSX.Element} The rendered DateButton component.
+ */
+const DateButton: React.FC<DateButtonProps> = ({ date, onClick, item, active }) => {
+    const [hover, setHover] = useState<boolean>(false);
+
     return (
         <button
             onClick={onClick}
@@ -44,37 +69,59 @@ const DateButton = ({ date, onClick, item, active }: DateButton) => {
     );
 };
 
+/**
+ * A date filter component that renders a series of buttons for the next 7 days.
+ * Each button shows the number of rides on that day, and allows filtering by date.
+ *
+ * @param {DateFilterButtonProps} props - The props for the DateFilterButton component.
+ * @returns {JSX.Element} The rendered DateFilterButton component.
+ */
 const DateFilterButton: React.FC<DateFilterButtonProps> = ({
     ridedata,
     handelFilterData,
     filter,
 }) => {
+    /** Index of the currently active filter. */
     const [filterIndex, setFilterIndex] = useState<number | null>(null);
+
     useEffect(() => {
         if (!filter) {
             setFilterIndex(null);
         }
     }, [filter]);
+
+    /**
+     * Handles the click event for filtering the data by date.
+     *
+     * @param {RideItem[]} data - The ride data to filter.
+     * @param {number} index - The index of the button clicked.
+     */
     const handleClick = (data: RideItem[], index: number) => {
         handelFilterData(data);
         setFilterIndex(index);
     };
+
+    /**
+     * Generates the date buttons for the next 7 days, with associated ride data.
+     */
     const buttons = Array.from({ length: 7 }, (_, i) => {
         const date = addDays(new Date(), i);
+
+        // Filter the rides that match the current date
         const filterdata = ridedata.filter(
             (item: RideItem) =>
-                format(
-                    item.activityDate ? item.activityDate : new Date(),
-                    "yyyy-MM-dd"
-                ) === format(date, "yyyy-MM-dd")
+                format(item.activityDate ?? new Date(), "yyyy-MM-dd") ===
+                format(date, "yyyy-MM-dd")
         );
+
         return {
             date: date,
             filterData: filterdata,
         };
     });
+
     return (
-        <div className='flex mt-6 gap-6 px-4'>
+        <div className="flex mt-6 gap-6 px-4">
             {buttons.map((data, index) => (
                 <DateButton
                     key={index}

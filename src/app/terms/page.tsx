@@ -2,12 +2,23 @@ import React from "react";
 import { Metadata } from "next";
 import CustomLayout from "@/layout/CustomLayout";
 import Link from "next/link";
-
+/**
+ * Metadata for the Terms of Service page.
+ *
+ * This metadata is used for SEO and social media sharing.
+ */
 export const metadata: Metadata = {
     title: "Chasing Watts | Terms of Service",
     description: "Terms of Service for Chasing Watts",
 };
 
+/**
+ * Terms of Service page component.
+ *
+ * This component renders the Terms of Service for the Chasing Watts application.
+ *
+ * @returns {JSX.Element} The rendered Terms of Service page.
+ */
 const TermsPage = () => {
     return (
         <CustomLayout>

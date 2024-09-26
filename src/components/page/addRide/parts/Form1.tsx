@@ -1,15 +1,19 @@
 "use client";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { IoAlert } from "react-icons/io5";
 
-export const placeholderStyle = {
-    color: "#050505",
-    fontSize: "15px",
-    fontWeight: 400,
-};
 
+
+/**
+ * Props for the Form1 component.
+ * @typedef {Object} Form1Props
+ * @property {(data: FormData) => void} nextForm - Function to handle moving to the next form step.
+ * @property {FormData} [formData] - Optional data passed from the previous form step.
+ * @property {() => void} startOver - Function to reset the form and start over.
+ * @property {() => void} [prevForm] - Optional function to navigate to the previous form step.
+ */
 interface Form1Props {
     nextForm: (data: FormData) => void;
     formData?: FormData;
@@ -17,10 +21,22 @@ interface Form1Props {
     prevForm?: () => void;
 }
 
+/**
+ * Interface for the form data object.
+ * @typedef {Object} FormData
+ * @property {string} [routeType] - The selected route type (gps, gpx, or noroute).
+ */
 interface FormData {
     routeType?: string;
 }
 
+/**
+ * First form component for selecting a route type. 
+ * Users can choose between linking a route, uploading a GPX file, or proceeding without a route.
+ * 
+ * @param {Form1Props} props - Component props.
+ * @returns {JSX.Element} The rendered component.
+ */
 const Form1: React.FC<Form1Props> = ({ nextForm, formData, startOver }) => {
     const {
         register,
@@ -30,9 +46,19 @@ const Form1: React.FC<Form1Props> = ({ nextForm, formData, startOver }) => {
         setValue,
         formState: { errors },
     } = useForm<FormData>();
+
+    /**
+     * Pre-fills the form fields with the provided data when the component mounts.
+     */
     useEffect(() => {
         setValue("routeType", formData?.routeType || "");
-    }, []);
+    }, [formData, setValue]);
+
+    /**
+     * Handles the form submission and triggers the next form step with the form data.
+     * 
+     * @param {FormData} data - The form data after submission.
+     */
     const handleSubmits: SubmitHandler<FormData> = (data) => {
         nextForm(data);
     };
@@ -42,16 +68,13 @@ const Form1: React.FC<Form1Props> = ({ nextForm, formData, startOver }) => {
             <form onSubmit={handleSubmit(handleSubmits)} className=''>
                 <div className='space-y-2 mt-4'>
                     <h1 className=' text-base tablet:text-xl desktop:text-2xl font-bold'>
-                        Have a route mapped out? Ride with GPS, Strava or
-                        Garmin?
+                        Have a route mapped out? Ride with GPS, Strava or Garmin?
                     </h1>
                     <p className='font-bold text-xs tablet:text-sm'>
-                        Quickly create a ride from any public route! Just paste
-                        url or upload a GPX file.
+                        Quickly create a ride from any public route! Just paste the URL or upload a GPX file.
                     </p>
                     <p className='font-bold text-xs tablet:text-sm pb-2'>
-                        If not, no worries! Just select &quot;No Route&quot; and
-                        create a ride with just a start location.
+                        If not, no worries! Just select &quot;No Route&quot; and create a ride with just a start location.
                     </p>
                 </div>
                 <div className='space-y-3 m-5 pt-4'>
@@ -106,21 +129,10 @@ const Form1: React.FC<Form1Props> = ({ nextForm, formData, startOver }) => {
                 <div className='flex items-center text-gray-600 gap-2 border-b py-5 mt-9 text-sm tablet:text-base'>
                     <IoAlert className='bg-gray-300 text-sm p-[1px] rounded-sm' />
                     <p>
-                        Want to create some great routes?? Check out
-                        <Link
-                            href={"https://ridewithgps.com"}
-                            className='text-primaryText'>
-                            {" "}
-                            Ride with GPS{" "}
-                        </Link>
-                        or
-                        <Link
-                            href={"https://strava.com "}
-                            className='text-primaryText'>
-                            {" "}
-                            Strava
-                        </Link>
-                        !
+                        Want to create some great routes? Check out 
+                        <Link href={"https://ridewithgps.com"} className='text-primaryText'> Ride with GPS </Link>
+                        or 
+                        <Link href={"https://strava.com"} className='text-primaryText'> Strava </Link>!
                     </p>
                 </div>
                 <div className='flex justify-between mt-5'>

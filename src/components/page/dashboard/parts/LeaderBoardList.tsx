@@ -5,7 +5,15 @@ import React from "react";
 import { BsLightningCharge } from "react-icons/bs";
 import { useSelector } from "react-redux";
 
-const LeaderBoardList = () => {
+/**
+ * LeaderBoardList component that displays a leaderboard of users' points.
+ * It shows the top users along with their point totals and provides a link 
+ * for users to earn points.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered LeaderBoardList component.
+ */
+const LeaderBoardList: React.FC = () => {
     const leaderBoard = useSelector<RootState, LeaderBoardItem[]>(
         (state) => state.dashboard.leaderBoard
     );

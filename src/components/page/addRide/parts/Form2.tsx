@@ -23,12 +23,14 @@ import { useDispatch, useSelector } from "react-redux";
 import RWGPSModal from "./RWGPSModal";
 import StravaModal from "./StravaModal";
 
-export const placeholderStyle = {
-    color: "#050505",
-    fontSize: "15px",
-    fontWeight: 400,
-};
-
+/**
+ * Props for the Form2 component.
+ * @typedef {Object} Form1Props
+ * @property {(data: FormData) => void} nextForm - Function to handle moving to the next form step.
+ * @property {FormData} [formData] - Optional data passed from the previous form step.
+ * @property {() => void} startOver - Function to reset the form and start over.
+ * @property {() => void} prevForm - Function to navigate to the previous form step.
+ */
 interface Form1Props {
     nextForm: (data: FormData) => void;
     formData?: FormData;
@@ -36,6 +38,19 @@ interface Form1Props {
     prevForm: () => void;
 }
 
+/**
+ * Interface for the form data object.
+ * @typedef {Object} FormData
+ * @property {string} [routeType] - The selected route type (gps, gpx, or noroute).
+ * @property {string} [url] - The URL for the route.
+ * @property {string} [difficulty] - The selected difficulty level.
+ * @property {string} [distance] - The calculated distance of the route.
+ * @property {string} [avgSpeed] - The average speed for the ride.
+ * @property {boolean} [isGroup] - Indicates if the ride is for a group.
+ * @property {any} [geoJSON] - GeoJSON representation of the route.
+ * @property {File} [gpxFile] - The uploaded GPX file.
+ * @property {string} [routeName] - The name of the route.
+ */
 interface FormData {
     routeType?: string;
     url?: string;
@@ -48,6 +63,14 @@ interface FormData {
     routeName?: string;
 }
 
+/**
+ * Interface for form headings based on route type.
+ * @typedef {Object} FormHeading
+ * @property {string} gps - Heading for GPS linked route.
+ * @property {string} strava - Heading for Strava linked route.
+ * @property {string} gpx - Heading for GPX file.
+ * @property {string} noroute - Heading for no route.
+ */
 interface FormHeading {
     gps: string;
     strava: string;
@@ -56,6 +79,15 @@ interface FormHeading {
     [key: string]: string;
 }
 
+/**
+ * Interface for difficulty levels.
+ * @typedef {Object} DifficultyLevel
+ * @property {number} difficultyLevelID - Unique identifier for the difficulty level.
+ * @property {string} levelName - Name of the difficulty level.
+ * @property {string} levelDescription - Description of the difficulty level.
+ * @property {string} levelColor - Color associated with the difficulty level.
+ * @property {string} levelIcon - Icon associated with the difficulty level.
+ */
 interface DifficultyLevel {
     difficultyLevelID: number;
     levelName: string;
@@ -64,6 +96,7 @@ interface DifficultyLevel {
     levelIcon: string;
 }
 
+// Define headings for different form types
 const formHeading: FormHeading = {
     gps: "Link a Route",
     strava: "Link a Route",
@@ -71,8 +104,16 @@ const formHeading: FormHeading = {
     noroute: "No Route",
 };
 
+// Supported file types for upload
 const fileTypes = ["GPX", "GPS"];
 
+/**
+ * Second form component for uploading a GPX file or linking a route. 
+ * Allows users to specify route details and select difficulty level.
+ * 
+ * @param {Form1Props} props - Component props.
+ * @returns {JSX.Element} The rendered component.
+ */
 const Form2: React.FC<Form1Props> = ({
     nextForm,
     formData,
@@ -149,6 +190,11 @@ const Form2: React.FC<Form1Props> = ({
         }
     }, [features, routeDistance]);
 
+    /**
+     * Handles form submission and prepares data for the next form step.
+     * 
+     * @param {FormData} data - The form data after submission.
+     */
     const handleSubmits: SubmitHandler<FormData> = async (data) => {
         if (formData?.routeType === "gpx" && !gpxFile && !formData?.gpxFile) {
             setError("gpxFile", {
@@ -177,6 +223,11 @@ const Form2: React.FC<Form1Props> = ({
 
     const heading = formData?.routeType && formHeading[formData.routeType];
 
+    /**
+     * Handles the GPX file selection.
+     * 
+     * @param {File} file - The selected GPX file.
+     */
     const handleFile = (file: File) => {
         setGpxFile(file);
         handlePickDocument(file);

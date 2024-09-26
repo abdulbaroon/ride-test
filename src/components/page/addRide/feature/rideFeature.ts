@@ -5,21 +5,42 @@ import { uploadedFile } from '@/redux/slices/authSlice';
 import { addRide } from '@/redux/slices/addRideSlice';
 import { format } from 'date-fns';
 
+/**
+ * Interface representing the user's profile information.
+ * @property {string} userID - The ID of the user.
+ */
 interface UserProfile {
     userID: string;
 }
 
+/**
+ * Interface representing the payload data for the ride creation process.
+ * @property {object} [user] - Optional user data, including profile information.
+ * @property {RouteData} [routeData] - Optional route data for the ride.
+ */
 interface Payload {
     user?: { userProfile?: UserProfile };
     routeData?: RouteData;
 }
 
+/**
+ * Interface representing the structure for file uploads associated with the activity.
+ * @property {number} activityID - The ID of the activity to which the file belongs.
+ * @property {number} fileUploadTypeID - The type of file being uploaded.
+ * @property {string} uploadedFile - The base64-encoded content of the uploaded file.
+ */
 interface FileUploadModel {
     activityID: number;
     fileUploadTypeID: number;
     uploadedFile: string;
 }
 
+/**
+ * Restructures the ride data into a format suitable for API consumption.
+ * 
+ * @param {Payload} payload - The payload containing user and route data.
+ * @returns {object} The restructured data containing activity, activityRoute, activityTags, and dalleUrl.
+ */
 export const restructureRideData = (payload: Payload) => {
     const { user, routeData } = payload;
     const { userID } = user?.userProfile ?? {};
@@ -78,6 +99,12 @@ export const restructureRideData = (payload: Payload) => {
     };
 }
 
+/**
+ * Determines the map source ID based on the URL provided.
+ * 
+ * @param {string | null | undefined} url - The URL of the map or GPX file.
+ * @returns {object} An object containing the mapSourceID.
+ */
 export const getMapSourceID = (url: string | null | undefined): { mapSourceID: number } => {
     if (url?.includes('ridewithgps.com')) {
         return { mapSourceID: 1 };
@@ -92,6 +119,14 @@ export const getMapSourceID = (url: string | null | undefined): { mapSourceID: n
     }
 }
 
+/**
+ * Saves the ride by dispatching necessary API calls for uploading files, adding the ride, and processing geoJSON or GPX files.
+ * 
+ * @param {function} dispatch - Redux dispatch function to trigger actions.
+ * @param {function} onSuccess - Callback function to execute upon successful ride creation.
+ * @param {function} onError - Callback function to execute in case of an error.
+ * @param {object} payload - The payload containing ride data and user information.
+ */
 export const saveRide = async (
     dispatch: any,
     onSuccess: (response: any) => void,
@@ -166,7 +201,6 @@ export const saveRide = async (
                 console.error(error);
             }
         }
-
 
         if (fileUploadModelBinary.length > 0) {
             const filePayload = { fileUploadModelBinary };

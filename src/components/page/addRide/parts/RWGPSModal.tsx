@@ -17,13 +17,25 @@ import { AppDispatch, RootState } from "@/redux/store/store";
 import { getRwgpsUserRoute } from "@/redux/slices/externalServicesSlice";
 import Link from "next/link";
 
+/**
+ * Interface representing the props for the RWGPSModal component.
+ */
 interface RWGPSModalProps {
+    /** Indicates whether the modal is open. */
     isOpen: boolean;
+    /** Function to close the modal. */
     onClose: () => void;
+    /** Optional user ID to fetch routes. */
     userId?: any;
     setValue: any;
 }
 
+/**
+ * RWGPSModal component for selecting routes from RWGPS.
+ * 
+ * @param {RWGPSModalProps} props - Props for the component.
+ * @returns {JSX.Element} Rendered RWGPSModal component.
+ */
 const RWGPSModal: React.FC<RWGPSModalProps> = ({
     isOpen,
     onClose,
@@ -32,24 +44,33 @@ const RWGPSModal: React.FC<RWGPSModalProps> = ({
 }) => {
     const { register, handleSubmit } = useForm();
     const dispatch = useDispatch<AppDispatch>();
-    const [searchTerm, setSearchTerm] = useState("");
-    const [loading, setLoading] = useState(false);
+    const [searchTerm, setSearchTerm] = useState<string>("");  // Search term for filtering routes
+    const [loading, setLoading] = useState<boolean>(false);    // Loading state for modal operations
+
+    // Select the RWGPS user routes from the Redux store
     const RwgpsUserRoute = useSelector<RootState, any>(
         (state) => state.externalServices.RwgpsUserRoute
     );
 
     useEffect(() => {
+        // Fetch user routes if userId is provided
         if (userId) {
             dispatch(getRwgpsUserRoute(userId));
         }
     }, [userId, dispatch]);
 
+    // Filter user routes based on the search term
     const userRoute =
         isArray(RwgpsUserRoute) &&
         RwgpsUserRoute.filter((route: any) =>
             route.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
 
+    /**
+     * Handles the selection of a route.
+     * 
+     * @param {number} id - The ID of the selected route.
+     */
     const handleSelectRoute = (id: number) => {
         setValue("url", `https://www.ridewithgps.com/routes/${id}`);
         onClose();

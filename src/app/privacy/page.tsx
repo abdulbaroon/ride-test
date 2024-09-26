@@ -3,12 +3,27 @@ import { Metadata } from "next";
 import CustomLayout from "@/layout/CustomLayout";
 import Link from "next/link";
 
+/**
+ * Metadata for the Privacy Policy page.
+ * @type {Metadata}
+ * @property {string} title - The title of the page.
+ * @property {string} description - A brief description of the page.
+ */
 export const metadata: Metadata = {
     title: "Chasing Watts | Privacy Policy",
     description: "Privacy Policy for Chasing Watts",
 };
 
-const PrivacyPolicyPage = () => {
+/**
+ * Privacy Policy page component.
+ *
+ * This page outlines the privacy policy of Chasing Watts, including
+ * information about data collection, usage, and users' rights regarding
+ * their personal information.
+ *
+ * @returns {JSX.Element} The rendered Privacy Policy page.
+ */
+const PrivacyPolicyPage = (): JSX.Element => {
     return (
         <CustomLayout>
             <section className='py-10 mt-28'>

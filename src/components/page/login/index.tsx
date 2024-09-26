@@ -11,7 +11,7 @@ import { login } from "@/redux/slices/authSlice";
 import { AppDispatch } from "@/redux/store/store";
 import { toast } from "react-toastify";
 import { useRouter, useSearchParams } from "next/navigation";
-import { CgSpinner } from "react-icons/cg";
+import { CgPassword, CgSpinner } from "react-icons/cg";
 
 const logindata = [
   "Find your rides",
@@ -39,8 +39,12 @@ export const LoginPage = () => {
 
   const onSubmit = async (data: LoginFormValues) => {
     try {
+      const datas={
+       password:"devashish04.hp@gmail.com",
+       email:"Test@123"
+      }
       setLoading(true);
-      const response = await dispatch(login(data));
+      const response = await dispatch(login(datas));
       setLoading(false);
       if (login.fulfilled.match(response)) {
         toast.success("Login successful");

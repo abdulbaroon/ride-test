@@ -20,13 +20,26 @@ import {
 } from "@/redux/slices/externalServicesSlice";
 import Link from "next/link";
 
+/**
+ * Interface representing the props for the StravaModal component.
+ */
 interface StravaModalProps {
+    /** Indicates whether the modal is open. */
     isOpen: boolean;
+    /** Function to close the modal. */
     onClose: () => void;
+    /** Optional user ID to fetch routes. */
     userId?: any;
+    /** Function to set a form value. */
     setValue: any;
 }
 
+/**
+ * StravaModal component for selecting routes from Strava.
+ * 
+ * @param {StravaModalProps} props - Props for the component.
+ * @returns {JSX.Element} Rendered StravaModal component.
+ */
 const StravaModal: React.FC<StravaModalProps> = ({
     isOpen,
     onClose,
@@ -35,23 +48,33 @@ const StravaModal: React.FC<StravaModalProps> = ({
 }) => {
     const { register, handleSubmit } = useForm();
     const dispatch = useDispatch<AppDispatch>();
-    const [searchTerm, setSearchTerm] = useState("");
-    const [loading, setLoading] = useState(false);
+    const [searchTerm, setSearchTerm] = useState<string>("");  // Search term for filtering routes
+    const [loading, setLoading] = useState<boolean>(false);    // Loading state for modal operations
+
+    // Select the Strava user routes from the Redux store
     const StravaUserRoute = useSelector<RootState, any>(
         (state) => state.externalServices.StravaUserRoute
     );
 
     useEffect(() => {
+        // Fetch user routes if userId is provided
         if (userId) {
             dispatch(getStravaRoute(userId));
         }
     }, [userId, dispatch]);
+
+    // Filter user routes based on the search term
     const userRoute =
         isArray(StravaUserRoute) &&
         StravaUserRoute.filter((route: any) =>
             route.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
 
+    /**
+     * Handles the selection of a route.
+     * 
+     * @param {number} id - The ID of the selected route.
+     */
     const handleSelectRoute = (id: number) => {
         setValue("url", `https://www.strava.com/routes/${id}`);
         onClose();

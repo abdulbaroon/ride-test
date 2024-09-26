@@ -1,5 +1,5 @@
 import { FormattedRide } from "@/shared/types/dashboard.types";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { format, parse, parseISO } from "date-fns";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store/store";
@@ -38,6 +38,7 @@ import { faTriangle } from "@fortawesome/pro-solid-svg-icons/faTriangle";
 import { faExclamation } from "@fortawesome/pro-solid-svg-icons/faExclamation";
 import { faCalendar } from "@fortawesome/pro-light-svg-icons/faCalendar";
 import { faLocationDot } from "@fortawesome/pro-light-svg-icons/faLocationDot";
+import { faChevronRight } from "@fortawesome/pro-solid-svg-icons/faChevronRight";
 import { faBicycle } from "@fortawesome/pro-light-svg-icons/faBicycle";
 import { faRuler } from "@fortawesome/pro-light-svg-icons/faRuler";
 import { faShareNodes } from "@fortawesome/pro-light-svg-icons/faShareNodes";
@@ -46,17 +47,32 @@ import { getDifficultyLevel } from "@/redux/slices/addRideSlice";
 import { MY_DOMAIN } from "@/constant/appConfig";
 
 interface RideCardProps {
+    /** The ride data to display. */
     data: FormattedRide;
+    /** Optional callback function to handle like actions. */
     handleLike?: () => void;
+    /** Optional user data for the current user. */
     userData?: any;
+    /** Flag indicating if the like button should be shown. Defaults to true. */
     isLike?: boolean;
+    /** Flag indicating if the ride picture should be shown. Defaults to true. */
     showPicture?: boolean;
 }
-const data=0
+
+/**
+ * Returns a FontAwesome icon representing the difficulty level of a ride.
+ *
+ * @param {string} iconName - The name of the difficulty level (e.g., "Easy", "Moderate", "Difficult", "Extreme").
+ * @param {string} iconColor - The color to apply to the icon.
+ * @returns {JSX.Element} The FontAwesomeIcon component representing the difficulty level.
+ *
+ * @example
+ * const icon = setDifficultyIcon("Easy", "green");
+ */
 export const setDifficultyIcon = (
     iconName: string | any,
     iconColor: string | any
-) => {
+): JSX.Element => {
     switch (iconName) {
         case "Easy":
             return (
@@ -101,6 +117,20 @@ export const setDifficultyIcon = (
     }
 };
 
+/**
+ * Represents a card component that displays information about a ride.
+ *
+ * @component
+ * @param {RideCardProps} props - The props for the RideCard component.
+ * @returns {JSX.Element} The rendered RideCard component.
+ *
+ * @example
+ * <RideCard
+ *     data={rideData}
+ *     handleLike={handleLike}
+ *     userData={currentUser}
+ * />
+ */
 const RideCard: React.FC<RideCardProps> = ({
     data,
     handleLike,
@@ -109,24 +139,25 @@ const RideCard: React.FC<RideCardProps> = ({
     showPicture = true,
 }) => {
     const [like, setLike] = useState(false);
-    const imageUrlRef = useRef<string | null>(null);
-        const dispatch = useDispatch<AppDispatch>();
+    const [imageUrl, setImageUrl] = useState<string | any>(null);
+    const dispatch = useDispatch<AppDispatch>();
 
-        console.log("Ride Data: ", data);
+    console.log("Ride Data: ", data);
 
-        useEffect(() => {
-            const loadImage = async () => {
-                const url = await checkImageLoad(data.mapImage);
-                const secondUrl = await checkImageLoad(data.image);
-                imageUrlRef.current = secondUrl || url || routePlaceHolder.src;
-                
-                // Force update the component to apply the new image (if needed)
-                // You can call some custom force update logic here if necessary.
-            };
-    
-            loadImage();
-        }, [data.mapImage, data.image]);
+    useEffect(() => {
+        const loadImage = async () => {
+            const url = await checkImageLoad(data.mapImage);
+            const secondUrl = await checkImageLoad(data.image);
+            setImageUrl(secondUrl || url || routePlaceHolder.src);
+        };
 
+        loadImage();
+    }, [data.mapImage]);
+
+    /**
+     * Handles the like action for the ride.
+     * Dispatches a like action to the Redux store and shows a success toast.
+     */
     const handelLike = async () => {
         const payload = {
             activityID: data?.activityID,
@@ -143,6 +174,7 @@ const RideCard: React.FC<RideCardProps> = ({
             toast.success("Thanks for the support.");
         }
     };
+
     return (
         <div
             style={{
@@ -166,7 +198,23 @@ const RideCard: React.FC<RideCardProps> = ({
                         : data.userResponseColor,
             }}
             className={`min-h-52 border border-neutral-300 rounded-md bg-white mb-6`}>
-            <div className='border-b px-5 py-3 flex justify-between'>
+            {data?.hubID !== undefined && data.hubID > 0 && (
+                <Link href={`/hubs/${data?.hubID}`}>
+                    <div className='bg-lime-200 border border-lime-400 px-2 py-2 rounded-md m-2 flex items-center justify-between'>
+                        <div className='font-semibold text-sm'>
+                            Presented by {data?.hubName || "A Great Hub"}
+                        </div>
+                        <div>
+                            <FontAwesomeIcon
+                                icon={faChevronRight}
+                                size='sm'
+                                className='text-neutral-500'
+                            />
+                        </div>
+                    </div>
+                </Link>
+            )}
+            <div className='border-b px-5 pt-1 pb-2 flex justify-between items-center'>
                 <div className='flex flex-col'>
                     <Link
                         href={`/ride/${data.activityID}`}
@@ -379,7 +427,7 @@ const RideCard: React.FC<RideCardProps> = ({
                 <div className='px-5 py-3 rounded-md overflow-hidden border-b'>
                     <img
                         className='rounded-md aspect-video object-cover'
-                        src={imageUrlRef.current||""}
+                        src={imageUrl}
                         alt='map image'
                     />
                 </div>

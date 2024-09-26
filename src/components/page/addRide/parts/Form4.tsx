@@ -22,6 +22,10 @@ import { ImGlass } from "react-icons/im";
 import Success from "./Success";
 import { useRouter } from "next/navigation";
 
+/**
+ * Interface representing the props for the Form4 component.
+ */
+
 const customStyles = {
     content: {
         top: "50%",
@@ -32,31 +36,53 @@ const customStyles = {
         transform: "translate(-50%, -50%)",
     },
 };
-
 interface Form1Props {
-    nextForm: (data: FormData | any) => void;
-    formData?: FormData | any;
-    startOver: () => void;
-    prevForm?: () => void;
-    setSuccess?: (id: number) => void;
+    /** Function to proceed to the next form */
+    nextForm: (data: FormData | any) => void;  
+    /** Initial form data */
+    formData?: FormData | any;                  
+    /** Function to reset the form */
+    startOver: () => void;                      
+    /** Function to go to the previous form */
+    prevForm?: () => void;                      
+    /** Optional function to handle success state */
+    setSuccess?: (id: number) => void;         
 }
 
+/**
+ * Interface representing the data structure for the form.
+ */
 interface FormData {
-    routeType?: string;
-    isGroup?: boolean;
-    activityTags?: string[];
-    hubID?: number[];
-    promoLink?: string;
+    /** Type of route for the ride */
+    routeType?: string;        
+    /** Indicates if the ride is a group ride */
+    isGroup?: boolean;         
+    /** Tags associated with the ride activity */
+    activityTags?: string[];   
+    /** IDs of the hubs involved in the ride */
+    hubID?: number[];          
+    /** Promotional link associated with the ride */
+    promoLink?: string;        
 }
 
+/**
+ * Interface representing the structure for a hub.
+ */
 interface HubList {
-    hubID: number;
-    hubName: string;
+    /** Unique identifier for the hub */
+    hubID: number;            
+    /** Name of the hub */
+    hubName: string;          
 }
 
+/**
+ * Interface representing the structure for an option in the select dropdown.
+ */
 interface Option {
-    readonly label: string;
-    readonly value: string;
+    /** Display label for the option */
+    readonly label: string;   
+    /** Value associated with the option */
+    readonly value: string;   
 }
 
 const indicatorSeparatorStyle = {
@@ -74,6 +100,12 @@ const createOption = (label: string) => ({
 const components = {
     DropdownIndicator: null,
 };
+/**
+ * Form4 component for ride details including image generation and document upload.
+ * 
+ * @param {Form1Props} props - Props for the component.
+ * @returns {JSX.Element} Rendered Form4 component.
+ */
 const Form4: React.FC<Form1Props> = ({
     nextForm,
     formData,
@@ -93,25 +125,37 @@ const Form4: React.FC<Form1Props> = ({
     const [inputValue, setInputValue] = useState("");
     const [select, setSelect] = useState<string[]>([]);
     const [value, setValue] = useState<readonly Option[]>(formData.tags || []);
+    
     const {
         register,
         handleSubmit,
         watch,
         formState: { errors },
     } = useForm<FormData>();
+
     const dispatch = useDispatch<AppDispatch>();
     const { push } = useRouter();
+
     const activityTags = useSelector<RootState, string[]>(
         (state) => state.addRide.activityTags
     );
+
     const hubList = useSelector<RootState, HubList[]>(
         (state) => state.addRide.hubList
     );
+
     const formattedActivityTags = activityTags.map((tag) => ({
         label: tag,
         value: tag,
     }));
+
     const userData = useSelector<RootState>((state) => state.auth.user) as User;
+
+    /**
+     * Handles form submission.
+     * 
+     * @param {FormData} data - The form data submitted by the user.
+     */
     const handleSubmits: SubmitHandler<FormData> = async (data) => {
         const payload = {
             routeData: {
@@ -134,15 +178,24 @@ const Form4: React.FC<Form1Props> = ({
         const onError = (error: any) => {
             toast.error("Error while saving ride");
         };
+
         setFinalLoading(true);
         await saveRide(dispatch, onSuccess, onError, payload);
         setFinalLoading(false);
     };
 
+    /**
+     * Handles changes in the DALL-E input field.
+     * 
+     * @param {ChangeEvent<HTMLInputElement>} e - The change event from the input field.
+     */
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         setDallEInput(e.target.value);
     };
 
+    /**
+     * Generates an image based on the DALL-E input.
+     */
     const handleGenerate = async () => {
         const payload = {
             prompt: dallEInput,
@@ -158,26 +211,53 @@ const Form4: React.FC<Form1Props> = ({
         }
     };
 
+    /**
+     * Opens the modal for image generation.
+     */
     const handleOpenModal = () => {
         setIsOpen(true);
     };
 
+    /**
+     * Closes the modal for image generation.
+     */
     const handleCloseModal = () => {
         setIsOpen(false);
     };
+
+    /**
+     * Handles the uploaded waiver document.
+     * 
+     * @param {File} file - The uploaded file.
+     */
     const handleWaiver = (file: File) => {
         setWaiver(file);
     };
+
+    /**
+     * Handles the uploaded image.
+     * 
+     * @param {File} file - The uploaded file.
+     */
     const handleImage = (file: File) => {
         setImage(file);
     };
 
+    /**
+     * Renders a checkbox for the form.
+     * 
+     * @param {string} label - The label for the checkbox.
+     * @param {string} description - The description for the checkbox.
+     * @param {string} field - The field name for form registration.
+     * @param {boolean} [defaultValue] - Optional default value for the checkbox.
+     * @returns {JSX.Element} The rendered checkbox component.
+     */
     const renderCheckbox = (
         label: string,
         description: string,
         field: string,
         defaultValue?: boolean | any
-    ) => (
+    ): JSX.Element => (
         <div className='border-b w-full tablet:w-1/2 pb-2'>
             <label className='inline-flex items-center cursor-pointer'>
                 <input
@@ -195,6 +275,9 @@ const Form4: React.FC<Form1Props> = ({
         </div>
     );
 
+    /**
+     * Handles the action when going to the previous form.
+     */
     const handelPrevious = () => {
         const correntFromData = watch();
         const data = {

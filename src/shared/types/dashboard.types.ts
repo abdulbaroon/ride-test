@@ -52,6 +52,7 @@ export interface ActivityCountsModel {
 }
 
 export interface ActivityHubDetailModel {
+    hubID: number;
     hubName: string;
     hubLogoUrl: string;
 }
@@ -173,9 +174,9 @@ export interface FormattedRideData {
     hasWaiver: boolean | null;
     document?: string | null;
     rideViews: number;
-    hubID: number;
-    hubName: string;
-    hubLogoUrl: string;
+    hubID?: number;
+    hubName?: string;
+    hubTypeName?: string;
     rideCreateFirstName: string;
     rideCreateLastName: string;
     rideCreateUoM: number;
@@ -248,6 +249,9 @@ export interface RideItem {
     userHasLiked?: boolean | undefined;
     userResponseColor?: string | null;
     viewStatus: string;
+    hubID?: number;
+    hubName?: string;
+    hubTypeName?: string;
 }
 
 export interface FormattedRide {
@@ -297,6 +301,9 @@ export interface FormattedRide {
     userHasLiked?: boolean | undefined;
     userResponseColor?: string;
     viewStatus: string;
+    hubID?: number;
+    hubName?: string;
+    hubTypeName?: string;
 }
 
 export interface Explore {

@@ -9,6 +9,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import { MdOutlineMyLocation } from "react-icons/md";
 import { IoMdHome } from "react-icons/io";
 import { circleIcon, rectangleIcon, routePlaceHolder } from "@/assets";
+import { IMAGE_URl } from "@/constant/appConfig";
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN as string;
 
@@ -248,11 +249,11 @@ const MapBoxModal: React.FC<MapBoxModalProps> = ({ profile }) => {
                   ${
                     mag.exploreType === "Ride"
                       ? `<img class="w-full rounded mb-2 h-36" 
-                      src="https://dev.chasingwatts.com/ogmaps/ogmap_${mag.entityID}.png"
+                      src="${IMAGE_URl}/ogmaps/ogmap_${mag.entityID}.png"
                       onerror="this.onerror=null; this.src='${routePlaceHolder.src}';" alt="img" />`
                       : `<img class="w-full rounded mb-2 h-36" 
-                      src="https://dev.chasingwatts.com/useravatar/pfimg_${mag.entityID}.png"
-                      onerror="this.onerror=null; this.src='https://dev.chasingwatts.com/useravatar/defaultavatar.jpg';" alt="img" />`
+                      src="${IMAGE_URl}/useravatar/pfimg_${mag.entityID}.png"
+                      onerror="this.onerror=null; this.src='${IMAGE_URl}/useravatar/defaultavatar.jpg';" alt="img" />`
                   }
                   <h4 class="text-base font-semibold text-gray-700 ms-2">${
                     mag.entityName

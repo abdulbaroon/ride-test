@@ -151,7 +151,7 @@ export const Friend: React.FC<FriendProps> = ({ id }) => {
             );
             setImageUrl(
                 url ||
-                    "https://dev.chasingwatts.com/useravatar/defaultavatar.jpg"
+                    `${IMAGE_URl}/useravatar/defaultavatar.jpg`
             );
         };
 

@@ -15,6 +15,9 @@ import Form4 from "./parts/Form4";
 import Success from "./parts/Success";
 import { User } from "@/shared/types/account.types";
 
+/**
+ * Names of each step in the form process.
+ */
 const stepName = [
     "Have a Route?",
     "Route Details",
@@ -22,11 +25,22 @@ const stepName = [
     "Ride Options",
 ];
 
+/**
+ * Interface for form data, with optional keys to accommodate different forms.
+ */
 interface FormData {
     [key: string]: any;
     routeType?: string;
 }
 
+/**
+ * Props passed to each form component.
+ * @property nextForm - A function to move to the next form.
+ * @property formData - Data gathered from previous forms.
+ * @property startOver - A function to reset the entire form process.
+ * @property prevForm - A function to move to the previous form.
+ * @property form - The current form step number.
+ */
 interface FormProps {
     nextForm: (data: FormData) => void;
     formData: FormData;
@@ -35,12 +49,22 @@ interface FormProps {
     form: number;
 }
 
+/**
+ * Main component for adding a ride.
+ * Manages multiple form steps and user inputs across steps.
+ *
+ * @returns JSX.Element - The add ride page UI.
+ */
 export const AddRidePage: React.FC = () => {
     const [currentForm, setCurrentForm] = useState<number>(1);
     const [formData, setFormData] = useState<FormData>({});
     const [success, setSuccess] = useState<number>();
     const userData = useSelector<RootState>((state) => state.auth.user) as User;
     const dispatch = useDispatch<AppDispatch>();
+
+    /**
+     * Fetch necessary data on initial render and when user data changes.
+     */
     useEffect(() => {
         dispatch(getDifficultyLevel());
         dispatch(getActivityType());
@@ -49,6 +73,11 @@ export const AddRidePage: React.FC = () => {
             dispatch(getHubList(userData.id));
         }
     }, [userData]);
+
+    /**
+     * Moves to the next form, while merging new form data with existing data.
+     * @param data - New form data to merge with existing state.
+     */
     const nextForm = (data: FormData) => {
         setFormData({ ...formData, ...data });
         if (currentForm < stepName.length) {
@@ -56,6 +85,9 @@ export const AddRidePage: React.FC = () => {
         }
     };
 
+    /**
+     * Moves to the previous form and clears data if going back to the first step.
+     */
     const prevForm = () => {
         if (currentForm > 1) {
             setCurrentForm(currentForm - 1);
@@ -64,11 +96,18 @@ export const AddRidePage: React.FC = () => {
             setFormData({});
         }
     };
+
+    /**
+     * Resets the form process to the first step and clears all data.
+     */
     const startOver = () => {
         setCurrentForm(1);
         setFormData({});
     };
 
+    /**
+     * Mapping of form step numbers to corresponding form components.
+     */
     const resultBox: { [key: number]: JSX.Element } = {
         1: (
             <Form1

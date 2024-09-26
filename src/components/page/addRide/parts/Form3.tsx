@@ -17,54 +17,72 @@ import { IoMdArrowDropdown } from "react-icons/io";
 import ReactQuill from "react-quill";
 import { useSelector } from "react-redux";
 
+/**
+ * Represents the props for the Form3 component.
+ */
 interface Form1Props {
-    nextForm: (data: FormData) => void;
-    formData?: FormData;
-    startOver: () => void;
-    prevForm: () => void;
+    nextForm: (data: FormData) => void;  // Function to handle form submission
+    formData?: FormData;                  // Initial form data
+    startOver: () => void;                // Function to reset the form
+    prevForm: () => void;                 // Function to go to the previous form
 }
 
+/**
+ * Represents the data structure for the form.
+ */
 interface FormData {
-    rideName?: string;
-    note?: string | undefined;
-    startDate?: Date | null;
-    startTime?: Date | null;
-    startLat?: number;
-    startLng?: number;
-    startState?: string;
-    startCountry?: string;
-    startCity?: string;
-    endTime?: Date | null;
-    location?: string;
-    routeType?: string;
-    distance?: string;
-    centerLatitude?: number;
-    centerLongitude?: any;
-    rideType?: string;
-    startAddress?: string;
+    rideName?: string;                     // Name of the ride
+    note?: string | undefined;             // Notes for the ride
+    startDate?: Date | null;               // Start date of the ride
+    startTime?: Date | null;               // Start time of the ride
+    startLat?: number;                     // Starting latitude
+    startLng?: number;                     // Starting longitude
+    startState?: string;                   // Starting state
+    startCountry?: string;                 // Starting country
+    startCity?: string;                    // Starting city
+    endTime?: Date | null;                 // End time of the ride
+    location?: string;                     // Location description
+    routeType?: string;                    // Type of route
+    distance?: string;                     // Distance of the ride
+    centerLatitude?: number;               // Center latitude for the map
+    centerLongitude?: any;                 // Center longitude for the map
+    rideType?: string;                     // Type of the ride
+    startAddress?: string;                 // Starting address
     geoJSON?: {
-        features?: any[];
+        features?: any[];                  // GeoJSON features for the map
     };
 }
 
+/**
+ * Represents the component type for address components from Google Places API.
+ */
 interface ComponentType {
-    types: string[];
-    long_name: string;
+    types: string[];                       // Types of the address component
+    long_name: string;                     // Long name of the address component
 }
 
+/**
+ * Represents the structure for activity types.
+ */
 interface ActivityType {
-    activityTypeID: number;
-    activityTypeName: string;
-    activityTypeIcon: string;
-    activityTypeColor: string;
+    activityTypeID: number;               // ID of the activity type
+    activityTypeName: string;              // Name of the activity type
+    activityTypeIcon: string;              // Icon for the activity type
+    activityTypeColor: string;             // Color associated with the activity type
 }
 
+/**
+ * Represents the root state structure for Redux.
+ */
 interface RootStates {
     addRide: {
-        activityTypes: ActivityType[];
+        activityTypes: ActivityType[];     // List of activity types
     };
 }
 
+/**
+ * Module configuration for ReactQuill toolbar.
+ */
 const modules = {
     toolbar: [
         [{ header: [1, 2, 3, 4, 5, 6, false] }],
@@ -79,6 +97,9 @@ const modules = {
     ],
 };
 
+/**
+ * Formats for ReactQuill editor.
+ */
 const formats = [
     "header",
     "bold",
@@ -97,6 +118,11 @@ const formats = [
     "font",
 ];
 
+/**
+ * Form3 component for ride details.
+ * 
+ * @param {Form1Props} props - Props for the component.
+ */
 const Form3: React.FC<Form1Props> = ({
     nextForm,
     formData,
@@ -106,6 +132,7 @@ const Form3: React.FC<Form1Props> = ({
     const profile = useSelector<RootState, any>(
         (state) => state.auth.profileData
     );
+    
     const [lat, setLat] = useState<number>(
         formData?.startLat || profile?.homeBaseLat
     );
@@ -136,6 +163,7 @@ const Form3: React.FC<Form1Props> = ({
     const [endTime, setEndTime] = useState<Date | null>(
         setHours(setMinutes(new Date(), 30), 11)
     );
+
     const {
         register,
         handleSubmit,
@@ -143,27 +171,36 @@ const Form3: React.FC<Form1Props> = ({
         watch,
         formState: { errors },
     } = useForm<FormData>();
+
     const ridetype = watch("rideType");
+
     const activityType = useSelector<RootState, ActivityType[]>(
         (state) => state.addRide.activityTypes
     );
+
     useEffect(() => {
         if (formData?.startDate) {
-            setStartDate(formData?.startDate);
+            setStartDate(formData.startDate);
         }
         if (formData?.startTime) {
-            setStartTime(formData?.startTime);
+            setStartTime(formData.startTime);
         }
         if (formData?.endTime) {
-            setEndTime(formData?.endTime);
+            setEndTime(formData.endTime);
         }
         if (formData?.startLat) {
-            setLat(formData?.startLat);
+            setLat(formData.startLat);
         }
         if (formData?.startLng) {
-            setLng(formData?.startLng);
+            setLng(formData.startLng);
         }
     }, []);
+
+    /**
+     * Handles form submission.
+     * 
+     * @param {FormData} data - The form data submitted by the user.
+     */
     const handleSubmits: SubmitHandler<FormData> = (data) => {
         const payload = {
             ...data,
@@ -192,21 +229,18 @@ const Form3: React.FC<Form1Props> = ({
     }, []);
 
     const initAutocomplete = useCallback(() => {
-        const input = document.getElementById(
-            "autocomplete"
-        ) as HTMLInputElement;
+        const input = document.getElementById("autocomplete") as HTMLInputElement;
         if (input) {
-            autocompleteRef.current =
-                new window.google.maps.places.Autocomplete(input, {
-                    types: ["establishment", "geocode"],
-                });
-            autocompleteRef.current.addListener(
-                "place_changed",
-                handlePlaceSelect
-            );
+            autocompleteRef.current = new window.google.maps.places.Autocomplete(input, {
+                types: ["establishment", "geocode"],
+            });
+            autocompleteRef.current.addListener("place_changed", handlePlaceSelect);
         }
     }, []);
 
+    /**
+     * Handles the selection of a place from the autocomplete suggestions.
+     */
     const handlePlaceSelect = useCallback((): void => {
         const place = autocompleteRef.current?.getPlace();
         if (place && place.geometry) {
@@ -223,30 +257,25 @@ const Form3: React.FC<Form1Props> = ({
             let postalCode = "";
 
             components.forEach((component: ComponentType) => {
-                if (component.types.includes("street_number"))
-                    streetNumber = component.long_name;
-                if (component.types.includes("route"))
-                    route = component.long_name;
-                if (component.types.includes("locality"))
-                    homeBaseCity = component.long_name;
-                if (component.types.includes("administrative_area_level_1"))
-                    homeBaseState = component.long_name;
-                if (component.types.includes("country"))
-                    homeBaseCountry = component.long_name;
-                if (component.types.includes("postal_code"))
-                    postalCode = component.long_name;
+                if (component.types.includes("street_number")) streetNumber = component.long_name;
+                if (component.types.includes("route")) route = component.long_name;
+                if (component.types.includes("locality")) homeBaseCity = component.long_name;
+                if (component.types.includes("administrative_area_level_1")) homeBaseState = component.long_name;
+                if (component.types.includes("country")) homeBaseCountry = component.long_name;
+                if (component.types.includes("postal_code")) postalCode = component.long_name;
             });
 
             const fullAddress = `${streetNumber} ${route}, ${homeBaseCity}, ${homeBaseState}, ${postalCode}, ${homeBaseCountry}`;
 
-            // Use placeName and placeVicinity as fallback
-            const selectedAddress = placeName
-                ? `${placeName}, ${placeVicinity}, ${homeBaseState}`
+            // Selected address fallback
+            const selectedAddress = place.name
+                ? `${place.name}, ${place.vicinity}, ${homeBaseState}`
                 : fullAddress;
 
             const homeBaseLat = place.geometry.location.lat();
             const homeBaseLng = place.geometry.location.lng();
 
+            // Update state with the selected address
             setLat(homeBaseLat);
             setLng(homeBaseLng);
             setCity(homeBaseCity);
@@ -265,27 +294,35 @@ const Form3: React.FC<Form1Props> = ({
         }
         return () => {
             if (autocompleteRef.current) {
-                window.google.maps.event.clearInstanceListeners(
-                    autocompleteRef.current
-                );
+                window.google.maps.event.clearInstanceListeners(autocompleteRef.current);
             }
         };
     }, [loadGoogleMapsScript, initAutocomplete]);
 
+    /**
+     * Handles changes in the content of the procedure.
+     * 
+     * @param {string} content - The new content.
+     */
     const handleProcedureContentChange = useCallback((content: string) => {
         setCode(content);
     }, []);
 
+    /**
+     * Handles changes in marker position on the map.
+     * 
+     * @param {[number, number]} cords - The new coordinates for the marker.
+     */
     const handelMarkerChnage = (cords: [number, number]) => {
         setLng(cords[0]);
         setLat(cords[1]);
     };
+
     const mapMemo = useMemo(
         () => (
             <MapBox
                 center={[lng, lat]}
                 initialZoom={11}
-                //circle={10 * 1}
                 className={"h-[30vh]"}
                 setMarkerPos={handelMarkerChnage}
             />

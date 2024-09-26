@@ -26,7 +26,12 @@ import { MdOutlineCancelPresentation } from "react-icons/md";
 import Link from "next/link";
 import { checkUserInRide } from "@/redux/slices/ratingSlice";
 import { toast } from "react-toastify";
-import {  notFound, usePathname, useRouter, useSearchParams } from "next/navigation";
+import {
+    notFound,
+    usePathname,
+    useRouter,
+    useSearchParams,
+} from "next/navigation";
 import Lottie from "lottie-react";
 import * as animationData from "../../../assets/lottieAssets/loader.json";
 import { Alert, AlertIcon } from "@chakra-ui/react";
@@ -43,8 +48,8 @@ export const RideDetails = ({ id }: { id: number }) => {
     const shareCode = searchParams.get("share");
     const user = useSelector<RootState>((state) => state.auth.user) as User;
     const router = useRouter();
-    const pathname=usePathname()
-    console.log(pathname,"path")
+    const pathname = usePathname();
+    console.log(pathname, "path");
 
     const dispatch = useDispatch<AppDispatch>();
 
@@ -53,7 +58,7 @@ export const RideDetails = ({ id }: { id: number }) => {
             const response = await dispatch(getRideDetails(id));
             if (getRideDetails.fulfilled.match(response)) {
                 const formatedRide = formatRideData(response.payload);
-                console.log("ride fetching")
+                console.log("ride fetching");
                 setRideDetails(formatedRide);
 
                 const params = {
@@ -86,9 +91,9 @@ export const RideDetails = ({ id }: { id: number }) => {
                     dispatch(getresponsetype()),
                 ]);
                 return response.payload;
-            }else if(getRideDetails.rejected.match(response)){
-                console.log("sadfasdfasdf=======>retun")
-               return notFound()
+            } else if (getRideDetails.rejected.match(response)) {
+                console.log("sadfasdfasdf=======>retun");
+                return notFound();
             }
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -147,21 +152,28 @@ export const RideDetails = ({ id }: { id: number }) => {
                 console.log("***** Ride index userLogin:", userLogin);
 
                 if (!userCookie && res2?.isPrivate) {
+                    //no login and private
                     setLoadingMessage(
-                        "Hey, looks like you don't have access to this ride!"
+                        "Hey, you don't have access to this ride!"
                     );
-                    //router.push("/account/login");
                     setTimeout(() => {
                         setLoadingMessage("Redirecting to login...");
                         router.push(`/account/login?returnurl=${pathname}`);
                     }, 2000);
-
                 } else if (!res1 && res2?.isPrivate) {
-                    if (res2.shareCode === shareCode) {
-                        return true;
+                    // login but private and not in ride
+                    if (
+                        res2.shareCode === shareCode ||
+                        user?.role?.toLowerCase() === "admin"
+                    ) {
+                        // ok, move on to ride
+                        setTimeout(() => {
+                            setLoadingMessage("On to the ride...");
+                            setLoading(false);
+                        }, 2000);
                     } else {
                         setLoadingMessage(
-                            "Hey, looks like you don't have access to this ride!"
+                            "Hey, you don't have access to this ride!"
                         );
                         setTimeout(() => {
                             setLoadingMessage("Redirecting to dashboard...");
@@ -169,6 +181,7 @@ export const RideDetails = ({ id }: { id: number }) => {
                         }, 2000);
                     }
                 } else {
+                    // not private
                     setLoading(false);
                 }
             } catch (error) {
@@ -212,7 +225,9 @@ export const RideDetails = ({ id }: { id: number }) => {
                         <AlertIcon />
                         <div>
                             Hello! You are viewing this ride as a guest. Please{" "}
-                            <Link href={`/account/login?returnurl=${pathname}`} className='font-bold'>
+                            <Link
+                                href={`/account/login?returnurl=${pathname}`}
+                                className='font-bold'>
                                 login
                             </Link>{" "}
                             or{" "}
@@ -265,8 +280,7 @@ export const RideDetails = ({ id }: { id: number }) => {
                     </Alert>
                 )}
                 {rideDetails?.isPrivate &&
-                    userInRide &&
-                    userLogin &&
+                    rideDetails?.userID === user.id &&
                     !rideDetails.isCancelled && (
                         <Alert
                             status='warning'

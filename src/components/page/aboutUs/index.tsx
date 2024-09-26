@@ -3,14 +3,31 @@ import { appleStore, featbg, googleStore } from "@/assets";
 import React from "react";
 import { FaRegEye, FaRoute } from "react-icons/fa";
 import { MdDirectionsBike, MdPeopleAlt } from "react-icons/md";
-
 import AnimatedNumbers from "react-animated-numbers";
 import { RiArrowRightSLine } from "react-icons/ri";
 import Link from "next/link";
 import { BiLayerPlus } from "react-icons/bi";
 import { FaRegSquareCheck } from "react-icons/fa6";
 
-const rideFeatures = [
+/**
+ * Defines the structure for the ride feature object.
+ * 
+ * @property {string} title - The title of the feature.
+ * @property {string} description - A short description of the feature.
+ * @property {JSX.Element} icon - An icon representing the feature.
+ */
+type RideFeature = {
+    title: string;
+    description: string;
+    icon: JSX.Element;
+};
+
+/** 
+ * An array of features cyclists can explore including creating, joining, and riding.
+ * 
+ * @type {RideFeature[]}
+ */
+const rideFeatures: RideFeature[] = [
     {
         title: "Create",
         description:
@@ -31,7 +48,15 @@ const rideFeatures = [
     },
 ];
 
-export const AboutUs = () => {
+/**
+ * The AboutUs component renders the information section about the cycling platform.
+ * It includes statistics about rides, cyclists, and ride features, as well as
+ * promotional content for downloading the app and getting started.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered About Us section.
+ */
+export const AboutUs: React.FC = (): JSX.Element => {
     return (
         <div
             className='min-h-screen '
@@ -53,6 +78,7 @@ export const AboutUs = () => {
                     easily as possible.
                 </p>
             </div>
+
             <div className='bg-transparent py-16 h-[330px] justify-center items-center '>
                 <div className='flex !max-w-[1320px] mx-auto'>
                     <div className='w-4/12 flex flex-col items-center justify-center '>
@@ -70,6 +96,7 @@ export const AboutUs = () => {
                         </div>
                         <p className='text-white text-lg '>Rides created</p>
                     </div>
+
                     <div className='w-4/12 flex flex-col items-center justify-center '>
                         <FaRegEye className='text-5xl text-white  me-3 ' />
                         <div className='text-5xl text-white font-bold mt-2  flex flex-row'>
@@ -85,6 +112,7 @@ export const AboutUs = () => {
                         </div>
                         <p className='text-white text-lg '>Rides viewed</p>
                     </div>
+
                     <div className='w-4/12 flex flex-col items-center justify-center   '>
                         <MdPeopleAlt className='text-5xl text-white  ' />
                         <div className='text-5xl text-white font-bold mt-2 flex flex-row'>
@@ -102,6 +130,7 @@ export const AboutUs = () => {
                     </div>
                 </div>
             </div>
+
             <div className='bg-LinkColor w-full h-[700px]'>
                 <div className=' !max-w-[1320px] mx-auto'>
                     <div className='flex  gap-28 '>
@@ -139,6 +168,7 @@ export const AboutUs = () => {
                                 </div>
                             </div>
                         </div>
+
                         <div className='w-1/2 py-12 text-gray-600 text-lg space-y-7'>
                             <p className='text-gray-700 font-bold text-4xl '>
                                 For cyclists, by cyclists!
@@ -170,6 +200,7 @@ export const AboutUs = () => {
                             </div>
                         </div>
                     </div>
+
                     <div className='flex gap-7 mt-6'>
                         {rideFeatures?.map((feature, index) => (
                             <div

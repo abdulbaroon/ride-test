@@ -19,13 +19,11 @@ export const extractRouteId = (url: string) => {
         return null;
     }
 };
-export function removeTags(str:string| any) {
-    if ((str === null) || (str === ''))
-        return false;
-    else
-        str = str.toString();
+export function removeTags(str: string | any) {
+    if (str === null || str === "") return false;
+    else str = str.toString();
 
-    return str.replace(/(<([^>]+)>)/ig, '');
+    return str.replace(/(<([^>]+)>)/gi, "");
 }
 
 export const readFileAsBase64 = (filePath: string): Promise<string> => {
@@ -95,6 +93,8 @@ export const formatRideData = (item: Item): FormattedRideData => {
         item.activityDate
     );
 
+    //console.log("******  formatted ride item", item);
+
     return {
         userID: item.userID,
         activityID: item?.activityID,
@@ -155,7 +155,7 @@ export const formatRideData = (item: Item): FormattedRideData => {
         rideViews: item.activityCountsModel?.viewCount || 0,
         hubID: item?.teamID || 0,
         hubName: item?.activityHubDetailModel?.hubName || "",
-        hubLogoUrl: item?.activityHubDetailModel?.hubLogoUrl || "",
+        //hubTypeName: item?.activityHubDetailModel?.hub || "",
         rideCreateFirstName: item?.userProfileModel?.firstName || "",
         rideCreateLastName: item?.userProfileModel?.lastName || "",
         rideCreateUoM: item?.unitOfMeasureID || 1,
@@ -204,6 +204,10 @@ export const formatRideList = (item: RideItem): FormattedRide => {
         item.activityStartTime,
         item.activityDate
     );
+
+    //console.log("******  formatted ride list", item);
+    //console.log("hub model", item?.hubID);
+
     return {
         userID: item.userID,
         activityID: item?.activityID,
@@ -255,6 +259,9 @@ export const formatRideList = (item: RideItem): FormattedRide => {
         userHasLiked: item?.userHasLiked,
         userResponseColor: item?.userResponseColor || undefined,
         viewStatus: item?.viewStatus || "Let's Ride",
+        hubID: item?.hubID || 0,
+        hubName: item?.hubName || "",
+        hubTypeName: item?.hubTypeName || "",
     };
 };
 

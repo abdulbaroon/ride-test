@@ -8,17 +8,22 @@ import "react-datepicker/dist/react-datepicker.css";
 import "@progress/kendo-theme-default/dist/all.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import CustomLayout from "@/layout/CustomLayout";
 import Chakra from "@/shared/providers/Chakra";
 import MainLayout from "@/shared/providers/MainLayout";
-import Navbar from "@/components/basic/Navbar";
 
+// Import FontAwesome for icons
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 config.autoAddCss = false;
 
+// Load the Inter font from Google Fonts
 const inter = Inter({ subsets: ["latin"] });
 
+/**
+ * Metadata for the application.
+ *
+ * This metadata is used for SEO and social media sharing.
+ */
 export const metadata: Metadata = {
     title: "Chasing Watts",
     description: "Chasing Watts - Connecting Cyclists",
@@ -27,6 +32,15 @@ export const metadata: Metadata = {
     },
 };
 
+/**
+ * Root layout component for the application.
+ *
+ * This component wraps all pages and includes providers for state management
+ * and UI libraries.
+ *
+ * @param {React.ReactNode} children - The child components to be rendered within this layout.
+ * @returns {JSX.Element} The rendered layout.
+ */
 export default function RootLayout({
     children,
 }: Readonly<{

@@ -1,3 +1,4 @@
+import { IMAGE_URl } from "@/constant/appConfig";
 import { formatDates, formatTime } from "@/shared/util/dateFormat.util";
 import { format, parse, parseISO } from "date-fns";
 import Link from "next/link";
@@ -77,7 +78,7 @@ const MapCard = ({ data }: { data: ActivityData | any }) => {
             <div className='p-4 h-64 w-[350px]'>
                 <img
                     className='rounded-lg h-full w-full object-fill'
-                    src={`https://dev.chasingwatts.com${data.activityPictures[0].picturePath}`}
+                    src={`${IMAGE_URl}${data.activityPictures[0].picturePath}`}
                     alt='map'
                 />
             </div>

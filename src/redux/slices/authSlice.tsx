@@ -12,6 +12,9 @@ import { UploadFile } from "@/shared/types/profile.types";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { setCookie } from "cookies-next";
 
+/**
+ * The shape of the authentication state.
+ */
 interface AuthState {
   user: User | null;
   token: string | null;
@@ -21,6 +24,9 @@ interface AuthState {
   email: string | null;
 }
 
+/**
+ * The initial state for the authentication slice.
+ */
 const initialState: AuthState = {
   user: {
     id: null,
@@ -32,6 +38,12 @@ const initialState: AuthState = {
   email: null,
 };
 
+/**
+ * Asynchronous thunk action for user registration.
+ * 
+ * @param signUpData - The data required for registration.
+ * @returns The user data and token upon successful registration.
+ */
 export const signUp = createAsyncThunk(
   "accounts/register",
   async (signUpData: RegisterFormValues, { rejectWithValue }) => {
@@ -45,6 +57,12 @@ export const signUp = createAsyncThunk(
   }
 );
 
+/**
+ * Asynchronous thunk action for user login.
+ * 
+ * @param loginData - The data required for logging in.
+ * @returns The user data and token upon successful login.
+ */
 export const login = createAsyncThunk(
   "accounts/authenticate",
   async (loginData: LoginFormValues, { rejectWithValue }) => {
@@ -58,6 +76,11 @@ export const login = createAsyncThunk(
   }
 );
 
+/**
+ * Asynchronous thunk action for refreshing the user's token.
+ * 
+ * @returns The new token upon successful refresh.
+ */
 export const refreshToken = createAsyncThunk(
   "accounts/refresh-token",
   async (_, { rejectWithValue }) => {
@@ -71,6 +94,12 @@ export const refreshToken = createAsyncThunk(
   }
 );
 
+/**
+ * Asynchronous thunk action for sending a forgot password request.
+ * 
+ * @param gmail - The email address to send the reset link.
+ * @returns The response data upon successful request.
+ */
 export const forgotPassword = createAsyncThunk(
   "accounts/forgot-password",
   async (gmail: string, { rejectWithValue }) => {
@@ -84,6 +113,12 @@ export const forgotPassword = createAsyncThunk(
   }
 );
 
+/**
+ * Asynchronous thunk action for resetting the user's password.
+ * 
+ * @param resetData - The data required to reset the password.
+ * @returns The response data upon successful reset.
+ */
 export const resetPassword = createAsyncThunk(
   "accounts/reset-password",
   async (resetData: ResetData, { rejectWithValue }) => {
@@ -97,6 +132,12 @@ export const resetPassword = createAsyncThunk(
   }
 );
 
+/**
+ * Asynchronous thunk action for updating the user's profile.
+ * 
+ * @param payload - The data required to update the user profile.
+ * @returns The updated profile data upon successful update.
+ */
 export const userprofile = createAsyncThunk(
   "userprofile",
   async (payload: UserProfile, { rejectWithValue }) => {
@@ -110,6 +151,12 @@ export const userprofile = createAsyncThunk(
   }
 );
 
+/**
+ * Asynchronous thunk action for uploading files.
+ * 
+ * @param payload - The file data to be uploaded.
+ * @returns The response data upon successful upload.
+ */
 export const uploadedFile = createAsyncThunk(
   "fileupload/upload_files",
   async (payload: UploadFile, { rejectWithValue }) => {
@@ -123,6 +170,12 @@ export const uploadedFile = createAsyncThunk(
   }
 );
 
+/**
+ * Asynchronous thunk action for fetching a user's profile.
+ * 
+ * @param payload - The user ID for fetching the profile.
+ * @returns The profile data upon successful fetch.
+ */
 export const getProfile = createAsyncThunk(
   "userprofile",
   async (payload: number, { rejectWithValue }) => {
@@ -136,6 +189,12 @@ export const getProfile = createAsyncThunk(
   }
 );
 
+/**
+ * Asynchronous thunk action for updating a user's profile.
+ * 
+ * @param payload - The profile update data including user ID.
+ * @returns The updated profile data upon successful update.
+ */
 export const updateProfile = createAsyncThunk(
   "update/userprofile",
   async (payload: UpdateProfile, { rejectWithValue }) => {
@@ -148,6 +207,13 @@ export const updateProfile = createAsyncThunk(
     }
   }
 );
+
+/**
+ * Asynchronous thunk action for fetching the user's email.
+ * 
+ * @param id - The user ID for fetching the email.
+ * @returns The email associated with the user ID upon successful fetch.
+ */
 export const userEmail = createAsyncThunk(
   "/accounts/account_email",
   async (id: number, { rejectWithValue }) => {
@@ -161,13 +227,23 @@ export const userEmail = createAsyncThunk(
   }
 );
 
+/**
+ * The authentication slice of the Redux store.
+ */
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
+    /**
+     * Clear the current error in the authentication state.
+     */
     clearError(state) {
       state.error = null;
     },
+    
+    /**
+     * Log out the user and reset the authentication state.
+     */
     logout(state) {
       state.user = initialState.user;
       state.token = initialState.token;
