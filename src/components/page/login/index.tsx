@@ -40,8 +40,8 @@ export const LoginPage = () => {
   const onSubmit = async (data: LoginFormValues) => {
     try {
       const datas={
-       password:"devashish04.hp@gmail.com",
-       email:"Test@123"
+       password:"Test@123",
+       email:"devashish04.hp@gmail.com"
       }
       setLoading(true);
       const response = await dispatch(login(datas));
